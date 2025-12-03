@@ -1,26 +1,32 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Текущая дата - декабрь 2025
     const today = new Date();
     const currentDay = today.getDate();
-    const currentMonth = today.getMonth();
+    const currentMonth = today.getMonth(); // 0 - январь, 11 - декабрь
     const currentYear = today.getFullYear();
     
-    const isDecember = currentMonth === 11;
+    // Проверяем, декабрь ли сейчас 2025 года
+    const isDecember2025 = currentMonth === 11 && currentYear === 2025;
     
+    // Обновляем информацию о текущей дате
     const currentDateElement = document.getElementById('current-date');
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
     currentDateElement.textContent = today.toLocaleDateString('ru-RU', options);
     
+    // Загружаем данные промокодов из JSON файла
     let promoData = {};
     
-    const modal = document.getElementById('promo-modal');
-    const closeModalBtn = document.getElementById('close-modal');
-    const promoDayElement = document.getElementById('modal-day');
+    // Элементы модального окна
+    const promoModal = new bootstrap.Modal(document.getElementById('promoModal'));
+    const modalDayElement = document.getElementById('modal-day');
     const promoImageElement = document.getElementById('promo-image');
     const promoDescriptionElement = document.getElementById('promo-description');
     const promoCodeElement = document.getElementById('promo-code-text');
-    const copyBtn = document.getElementById('copy-btn');
+    const promoCodeContainer = document.getElementById('promo-code-container');
+    const copyAlert = document.getElementById('copy-alert');
     const productBtn = document.getElementById('product-btn');
     
+    // Функция загрузки данных промокодов
     async function loadPromoCodes() {
         try {
             const response = await fetch('promocodes.json');
@@ -29,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             const data = await response.json();
             
+            // Преобразуем массив в объект для быстрого доступа по дню
             data.promocodes.forEach(promo => {
                 promoData[promo.day] = {
                     code: promo.code,
@@ -38,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
             });
             
+            // После загрузки данных создаем календарь
             createCalendar();
             
         } catch (error) {
@@ -48,79 +56,107 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Демо-данные на случай ошибки загрузки JSON
     function loadDemoData() {
         for (let day = 1; day <= 31; day++) {
             promoData[day] = {
-                code: `NEWYEAR${day}-${10 + day}`,
-                description: `Специальный промокод на день ${day} декабря. Этот промокод дает скидку на праздничные товары.`,
+                code: `NEWYEAR2025-DAY${day}`,
+                description: `Эксклюзивный промокод на день ${day} декабря. Скидка на праздничные товары!`,
                 image: `images/gift${day}.jpg`,
-                productUrl: `https://example.com/products/day-${day}`
+                productUrl: `https://example.com/products/december-${day}`
             };
         }
     }
     
+    // Функция для показа уведомления об ошибке
     function showErrorNotification(message) {
+        // Создаем уведомление в стиле Bootstrap
         const notification = document.createElement('div');
-        notification.className = 'error-notification';
+        notification.className = 'alert alert-warning alert-dismissible fade show position-fixed top-0 end-0 m-3';
+        notification.style.zIndex = '1100';
         notification.innerHTML = `
-            <i class="fas fa-exclamation-triangle"></i>
-            <span>${message}</span>
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Внимание!</strong> ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         `;
         document.body.appendChild(notification);
         
+        // Автоматически закрываем уведомление через 5 секунд
         setTimeout(() => {
-            notification.style.opacity = '0';
-            setTimeout(() => notification.remove(), 300);
+            if (notification.parentNode) {
+                notification.remove();
+            }
         }, 5000);
     }
     
+    // Функция создания календаря
     function createCalendar() {
         const calendarElement = document.getElementById('calendar');
         let openedCount = 0;
         
-        const openedDays = JSON.parse(localStorage.getItem('adventOpenedDays')) || [];
+        // Загружаем состояние открытых окошек из localStorage
+        const openedDays = JSON.parse(localStorage.getItem('adventOpenedDays2025')) || [];
         
+        // Создаем карточки для каждого дня декабря
         for (let day = 1; day <= 31; day++) {
+            const col = document.createElement('div');
+            col.className = 'col-6 col-sm-4 col-md-3 col-lg-2';
+            
             const dayCard = document.createElement('div');
             dayCard.className = 'day-card';
             dayCard.dataset.day = day;
             
+            // Определяем статус дня
             let status = '';
             let statusText = '';
             
-            if (day < currentDay && isDecember && currentYear === 2023) {
+            if (day < currentDay && isDecember2025) {
+                // Прошедшие дни декабря 2025
                 status = 'open';
                 statusText = 'Открыто';
                 if (openedDays.includes(day)) openedCount++;
-            } else if (day === currentDay && isDecember && currentYear === 2023) {
+            } else if (day === currentDay && isDecember2025) {
+                // Сегодняшний день декабря 2025
                 status = 'today';
                 statusText = 'Сегодня';
                 if (openedDays.includes(day)) openedCount++;
             } else {
+                // Будущие дни или не декабрь 2025
                 status = 'closed';
                 statusText = 'Закрыто';
             }
             
             dayCard.classList.add(status);
             
+            // Добавляем эффект снежинки для новогодних дней
+            let snowflake = '';
+            if (day === 24 || day === 25 || day === 31) {
+                snowflake = '<i class="fas fa-snowflake position-absolute top-0 start-0 m-2 text-primary" style="font-size: 0.8rem;"></i>';
+            }
+            
             dayCard.innerHTML = `
+                ${snowflake}
                 <div class="day-number">${day}</div>
                 <div class="day-status">${statusText}</div>
             `;
             
+            // Добавляем обработчик клика для открытых и сегодняшних карточек
             if (status !== 'closed') {
                 dayCard.addEventListener('click', function() {
                     openPromoCard(day);
                 });
             }
             
-            calendarElement.appendChild(dayCard);
+            col.appendChild(dayCard);
+            calendarElement.appendChild(col);
         }
         
+        // Обновляем счетчик открытых окошек
         document.getElementById('opened-count').textContent = openedCount;
         document.getElementById('total-count').textContent = '31';
         
-        if (!isDecember || currentYear !== 2023) {
+        // Если сейчас не декабрь 2025, показываем все карточки как открытые для демонстрации
+        if (!isDecember2025) {
             document.querySelectorAll('.day-card.closed').forEach(card => {
                 card.classList.remove('closed');
                 card.classList.add('open');
@@ -133,66 +169,76 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
             
+            // Обновляем счетчик
             openedCount = 31;
             document.getElementById('opened-count').textContent = openedCount;
             
-            const subtitle = document.querySelector('.subtitle');
-            subtitle.innerHTML += '<br><em>Так как сейчас не декабрь 2023 года, все окошки открыты для демонстрации.</em>';
+            // Показываем сообщение
+            const subtitle = document.querySelector('.lead');
+            subtitle.innerHTML += '<br><small class="text-light">Так как сейчас не декабрь 2025 года, все окошки открыты для демонстрации.</small>';
         }
     }
     
+    // Функция открытия карточки с промокодом
     function openPromoCard(day) {
         const dayCard = document.querySelector(`.day-card[data-day="${day}"]`);
         
+        // Добавляем анимацию открытия
         dayCard.classList.add('card-opening');
         setTimeout(() => {
             dayCard.classList.remove('card-opening');
         }, 800);
         
+        // Получаем данные промокода
         const promo = promoData[day];
         
-        promoDayElement.textContent = `День ${day}`;
+        // Заполняем модальное окно данными
+        modalDayElement.textContent = day;
         promoDescriptionElement.textContent = promo.description;
         promoCodeElement.textContent = promo.code;
         
+        // Устанавливаем ссылку на товар
         if (promo.productUrl) {
             productBtn.href = promo.productUrl;
-            productBtn.style.display = 'flex';
-            productBtn.classList.add('pulse');
+            productBtn.style.display = 'block';
         } else {
             productBtn.style.display = 'none';
-            productBtn.classList.remove('pulse');
         }
         
+        // Устанавливаем изображение
+        // Создаем объект Image для предзагрузки
         const img = new Image();
         img.onload = function() {
             promoImageElement.innerHTML = '';
             promoImageElement.appendChild(img);
+            img.className = 'img-fluid rounded';
+            img.style.maxHeight = '180px';
         };
         img.onerror = function() {
+            // Если изображение не загрузилось, показываем иконку подарка
             promoImageElement.innerHTML = `
-                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
-                    <i class="fas fa-gift" style="font-size: 4rem; color: #FFD700; margin-bottom: 15px;"></i>
-                    <p style="color: #b0d7ff; text-align: center;">Подарок дня ${day}</p>
-                    <p style="color: #8a9ba8; font-size: 0.9rem; margin-top: 10px;">Изображение: ${promo.image}</p>
+                <div class="text-center">
+                    <i class="fas fa-gift fa-5x text-primary mb-3"></i>
+                    <p class="text-muted small">Подарок дня ${day}</p>
                 </div>
             `;
         };
         img.src = promo.image;
-        img.alt = `Промокод для дня ${day}`;
-        img.style.maxWidth = '100%';
-        img.style.maxHeight = '100%';
-        img.style.objectFit = 'contain';
+        img.alt = `Промокод для дня ${day} декабря`;
         
-        const openedDays = JSON.parse(localStorage.getItem('adventOpenedDays')) || [];
+        // Загружаем состояние открытых окошек
+        const openedDays = JSON.parse(localStorage.getItem('adventOpenedDays2025')) || [];
         
+        // Если карточка еще не была открыта, добавляем в localStorage
         if (!openedDays.includes(day)) {
             openedDays.push(day);
-            localStorage.setItem('adventOpenedDays', JSON.stringify(openedDays));
+            localStorage.setItem('adventOpenedDays2025', JSON.stringify(openedDays));
             
+            // Обновляем счетчик
             const openedCount = openedDays.length;
             document.getElementById('opened-count').textContent = openedCount;
             
+            // Обновляем статус карточки, если она была "сегодня"
             if (dayCard.classList.contains('today')) {
                 dayCard.classList.remove('today');
                 dayCard.classList.add('open');
@@ -201,34 +247,39 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        modal.style.display = 'flex';
+        // Показываем модальное окно
+        promoModal.show();
     }
     
-    closeModalBtn.addEventListener('click', function() {
-        modal.style.display = 'none';
-    });
-    
-    window.addEventListener('click', function(event) {
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-    
-    copyBtn.addEventListener('click', function() {
+    // Обработчик клика для копирования промокода
+    promoCodeContainer.addEventListener('click', function() {
         const promoCode = promoCodeElement.textContent;
         
+        // Используем Clipboard API для копирования
         navigator.clipboard.writeText(promoCode).then(function() {
-            const originalText = copyBtn.innerHTML;
-            copyBtn.innerHTML = '<i class="fas fa-check"></i> Скопировано!';
-            copyBtn.style.background = '#2E7D32';
+            // Показываем уведомление об успешном копировании
+            copyAlert.classList.remove('d-none');
             
-            setTimeout(function() {
-                copyBtn.innerHTML = originalText;
-                copyBtn.style.background = '';
-            }, 2000);
+            // Скрываем уведомление через 3 секунды
+            setTimeout(() => {
+                copyAlert.classList.add('d-none');
+            }, 3000);
+            
+            // Добавляем анимацию на промокод
+            promoCodeContainer.style.transform = 'scale(0.95)';
+            promoCodeContainer.style.backgroundColor = '#d4edda';
+            promoCodeContainer.style.borderColor = '#28a745';
+            
+            setTimeout(() => {
+                promoCodeContainer.style.transform = 'scale(1)';
+                promoCodeContainer.style.backgroundColor = '';
+                promoCodeContainer.style.borderColor = '';
+            }, 300);
+            
         }).catch(function(err) {
             console.error('Ошибка при копировании: ', err);
             
+            // Fallback для старых браузеров
             const textArea = document.createElement('textarea');
             textArea.value = promoCode;
             document.body.appendChild(textArea);
@@ -236,27 +287,30 @@ document.addEventListener('DOMContentLoaded', function() {
             document.execCommand('copy');
             document.body.removeChild(textArea);
             
-            const originalText = copyBtn.innerHTML;
-            copyBtn.innerHTML = '<i class="fas fa-check"></i> Скопировано!';
-            copyBtn.style.background = '#2E7D32';
+            // Показываем уведомление
+            copyAlert.classList.remove('d-none');
+            copyAlert.classList.add('alert-success');
             
-            setTimeout(function() {
-                copyBtn.innerHTML = originalText;
-                copyBtn.style.background = '';
-            }, 2000);
+            setTimeout(() => {
+                copyAlert.classList.add('d-none');
+                copyAlert.classList.remove('alert-success');
+            }, 3000);
         });
     });
     
+    // Обработчик для кнопки перехода к товару
     productBtn.addEventListener('click', function(e) {
-        const day = promoDayElement.textContent.replace('День ', '');
-        console.log(`Пользователь перешел по промокоду дня ${day}`);
+        const day = modalDayElement.textContent;
+        console.log(`Пользователь перешел по промокоду дня ${day} декабря`);
         
-        const openedDays = JSON.parse(localStorage.getItem('adventOpenedDays')) || [];
+        // Можно добавить отправку аналитики здесь
+        const openedDays = JSON.parse(localStorage.getItem('adventOpenedDays2025')) || [];
         if (!openedDays.includes(parseInt(day))) {
             openedDays.push(parseInt(day));
-            localStorage.setItem('adventOpenedDays', JSON.stringify(openedDays));
+            localStorage.setItem('adventOpenedDays2025', JSON.stringify(openedDays));
         }
     });
     
+    // Загружаем данные промокодов при загрузке страницы
     loadPromoCodes();
 });
