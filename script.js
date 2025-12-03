@@ -34,13 +34,7 @@ function isTelegramWebApp() {
 function initTelegramWebApp() {
     if (isTelegramWebApp()) {
         tg = window.Telegram.WebApp;
-        
-        console.log('Telegram Web App обнаружен:', {
-            platform: tg.platform,
-            colorScheme: tg.colorScheme,
-            viewportHeight: tg.viewportHeight
-        });
-        
+        console.log('Telegram Web App обнаружен');
         return true;
     }
     return false;
@@ -49,13 +43,11 @@ function initTelegramWebApp() {
 // Улучшенная функция копирования для всех браузеров
 function copyToClipboard(text) {
     return new Promise(function(resolve, reject) {
-        // Метод для современных браузеров
         if (navigator.clipboard && window.isSecureContext) {
             navigator.clipboard.writeText(text)
                 .then(resolve)
                 .catch(reject);
         } else {
-            // Старый метод для Safari и других браузеров
             const textArea = document.createElement('textarea');
             textArea.value = text;
             textArea.style.position = 'fixed';
@@ -87,7 +79,6 @@ async function loadPromoCodes() {
         }
         const data = await response.json();
         
-        // Преобразуем массив в объект для быстрого доступа по дню
         data.promocodes.forEach(promo => {
             promoData[promo.day] = {
                 code: promo.code,
@@ -129,7 +120,7 @@ function showError(message) {
     alertDiv.innerHTML = `
         <i class="fas fa-exclamation-triangle me-2"></i>
         ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
     document.body.appendChild(alertDiv);
     
@@ -145,9 +136,6 @@ function createCalendar() {
     const calendarContainer = document.getElementById('calendar-container');
     calendarContainer.innerHTML = '';
     
-    const calendarWrapper = document.createElement('div');
-    calendarWrapper.id = 'calendar';
-    
     let openedCount = 0;
     
     // Текущая дата
@@ -159,7 +147,7 @@ function createCalendar() {
     
     // В Telegram Web App открываем все карточки для демонстрации
     const isTelegram = isTelegramWebApp();
-    const forceOpen = isTelegram; // В Telegram всегда открываем все карточки
+    const forceOpen = isTelegram;
     
     // Загружаем состояние открытых окошек из localStorage
     const openedDays = JSON.parse(localStorage.getItem('adventOpenedDays2025')) || [];
@@ -170,9 +158,6 @@ function createCalendar() {
     
     // Создаем карточки для каждого дня декабря
     for (let day = 1; day <= 31; day++) {
-        const dayCol = document.createElement('div');
-        dayCol.className = 'calendar-col';
-        
         const dayCard = document.createElement('div');
         dayCard.className = 'day-card';
         dayCard.dataset.day = day;
@@ -182,17 +167,14 @@ function createCalendar() {
         let statusText = '';
         
         if (forceOpen || day < currentDay && isDecember2025) {
-            // В Telegram открываем все, или прошедшие дни
             status = 'open';
             statusText = 'Открыто';
             if (openedDays.includes(day)) openedCount++;
         } else if (day === currentDay && isDecember2025) {
-            // Сегодняшний день
             status = 'today';
             statusText = 'Сегодня';
             if (openedDays.includes(day)) openedCount++;
         } else {
-            // Будущие дни
             status = 'closed';
             statusText = 'Закрыто';
         }
@@ -220,11 +202,8 @@ function createCalendar() {
             dayCard.style.cursor = 'not-allowed';
         }
         
-        dayCol.appendChild(dayCard);
-        calendarWrapper.appendChild(dayCol);
+        calendarContainer.appendChild(dayCard);
     }
-    
-    calendarContainer.appendChild(calendarWrapper);
     
     // Обновляем счетчик
     const finalOpenedCount = forceOpen ? 31 : openedCount;
@@ -337,37 +316,6 @@ function openPromoCard(day) {
     }
 }
 
-// Основная функция инициализации
-async function initApp() {
-    console.log('Инициализация приложения...');
-    
-    // Инициализируем Telegram Web App
-    const isTelegram = initTelegramWebApp();
-    
-    // Инициализируем модальное окно Bootstrap
-    const modalElement = document.getElementById('promoModal');
-    if (modalElement) {
-        promoModal = new bootstrap.Modal(modalElement);
-    }
-    
-    // Загружаем промокоды
-    await loadPromoCodes();
-    
-    // Создаем календарь
-    createCalendar();
-    
-    // Настраиваем обработчики событий
-    setupEventListeners();
-    
-    // Сообщаем Telegram о готовности
-    if (isTelegram && tg) {
-        tg.ready();
-        console.log('Приложение готово для Telegram Web App');
-    }
-    
-    console.log('Приложение инициализировано');
-}
-
 // Настройка обработчиков событий
 function setupEventListeners() {
     // Обработчик клика для копирования промокода
@@ -424,21 +372,41 @@ function setupEventListeners() {
             }
         });
     }
+}
+
+// Основная функция инициализации
+async function initApp() {
+    console.log('Инициализация приложения...');
     
-    // Обработчик для закрытия модального окна
-    const closeButtons = document.querySelectorAll('[data-bs-dismiss="modal"]');
-    closeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            if (promoModal) {
-                promoModal.hide();
-            }
-        });
-    });
+    // Инициализируем Telegram Web App
+    initTelegramWebApp();
+    
+    // Инициализируем модальное окно Bootstrap
+    const modalElement = document.getElementById('promoModal');
+    if (modalElement) {
+        promoModal = new bootstrap.Modal(modalElement);
+    }
+    
+    // Загружаем промокоды
+    await loadPromoCodes();
+    
+    // Создаем календарь
+    createCalendar();
+    
+    // Настраиваем обработчики событий
+    setupEventListeners();
+    
+    // Сообщаем Telegram о готовности
+    if (tg) {
+        tg.ready();
+        console.log('Приложение готово для Telegram Web App');
+    }
+    
+    console.log('Приложение инициализировано');
 }
 
 // Запуск приложения при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
-    // Небольшая задержка для стабилизации
     setTimeout(() => {
         initApp().catch(error => {
             console.error('Ошибка инициализации приложения:', error);
@@ -447,17 +415,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 100);
 });
 
-// Обработка изменения размера окна (важно для Telegram)
+// Обработка изменения размера окна
 window.addEventListener('resize', function() {
     if (tg) {
-        // Обновляем высоту в Telegram
         tg.viewportHeight = window.innerHeight;
     }
 });
-
-// Экспортируем функции для отладки
-window.app = {
-    openPromoCard,
-    copyToClipboard,
-    isTelegramWebApp: () => !!tg
-};
