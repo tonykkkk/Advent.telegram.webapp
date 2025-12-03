@@ -3,74 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Новогодний Advent календарь с промокодами</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Новогодний Advent календарь 2025</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome для иконок -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Dancing+Script:wght@500;600&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-gift"></i> Новогодний Advent календарь</h1>
-            <p class="subtitle">Открывайте окошки каждый день декабря, чтобы получить промокоды на подарки!</p>
-            <div class="date-info">
-                <p>Сегодня: <span id="current-date"></span></p>
-                <p>Открыто окошек: <span id="opened-count">0</span> из <span id="total-count">31</span></p>
+    <div class="container-fluid px-0">
+        <!-- Шапка с новогодней тематикой -->
+        <header class="header-bg py-4">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8 col-md-10 mx-auto text-center">
+                        <h1 class="display-4 fw-bold text-white mb-3">
+                            <i class="fas fa-gifts me-3"></i>Новогодний Advent календарь 2025
+                        </h1>
+                        <p class="lead text-light mb-4">Открывайте окошки каждый день декабря, чтобы получить эксклюзивные промокоды и подарки!</p>
+                        
+                        <div class="row justify-content-center">
+                            <div class="col-md-8">
+                                <div class="card bg-transparent border-light">
+                                    <div class="card-body py-3">
+                                        <div class="row text-center">
+                                            <div class="col-6">
+                                                <p class="mb-1 text-light">Сегодня:</p>
+                                                <p class="fw-bold fs-5 text-white" id="current-date">1 декабря 2025</p>
+                                            </div>
+                                            <div class="col-6">
+                                                <p class="mb-1 text-light">Открыто окошек:</p>
+                                                <p class="fw-bold fs-5 text-white">
+                                                    <span id="opened-count">0</span> из <span id="total-count">31</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </header>
-        
-        <main>
-            <div class="calendar-container">
-                <div class="calendar-header">
-                    <h2>Декабрь 2023</h2>
-                    <div class="legend">
-                        <div class="legend-item"><span class="legend-open"></span> Открыто</div>
-                        <div class="legend-item"><span class="legend-today"></span> Сегодня</div>
-                        <div class="legend-item"><span class="legend-closed"></span> Закрыто</div>
-                    </div>
-                </div>
-                
-                <div class="calendar" id="calendar">
-                    <!-- Календарь будет создан JavaScript -->
-                </div>
-            </div>
-            
-            <div class="promo-modal" id="promo-modal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 id="modal-day">День 1</h3>
-                        <button class="close-modal" id="close-modal">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="promo-image" id="promo-image">
-                            <!-- Изображение будет загружено через JS -->
-                        </div>
-                        <div class="promo-code-container">
-                            <p class="promo-description" id="promo-description">Описание промокода</p>
-                            <div class="promo-code">
-                                <span id="promo-code-text">PROMO-CODE</span>
-                                <button class="copy-btn" id="copy-btn">
-                                    <i class="far fa-copy"></i> Копировать
-                                </button>
+
+        <!-- Основное содержимое -->
+        <main class="py-5">
+            <div class="container">
+                <!-- Заголовок календаря -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
+                            <h2 class="fw-bold text-center text-md-start mb-3 mb-md-0">
+                                <i class="fas fa-calendar-alt me-2"></i>Декабрь 2025
+                            </h2>
+                            
+                            <div class="legend-box p-3 rounded">
+                                <div class="d-flex flex-wrap justify-content-center gap-3">
+                                    <div class="d-flex align-items-center">
+                                        <span class="legend-dot legend-open me-2"></span>
+                                        <span class="small">Открыто</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <span class="legend-dot legend-today me-2"></span>
+                                        <span class="small">Сегодня</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <span class="legend-dot legend-closed me-2"></span>
+                                        <span class="small">Закрыто</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="promo-actions">
-                                <a href="#" class="product-btn" id="product-btn" target="_blank">
-                                    <i class="fas fa-shopping-cart"></i> Перейти к товару
-                                </a>
-                            </div>
-                            <p class="promo-info"><i class="fas fa-info-circle"></i> Промокод действителен до 31.01.2024</p>
                         </div>
                     </div>
+                </div>
+
+                <!-- Календарь -->
+                <div class="row" id="calendar">
+                    <!-- Окошки календаря будут сгенерированы через JavaScript -->
                 </div>
             </div>
         </main>
-        
-        <footer>
-            <p>С наступающим Новым 2024 годом! <i class="fas fa-tree"></i></p>
-            <p class="instruction">Нажмите на открытые окошки, чтобы увидеть промокод. Закрытые окошки откроются в соответствующий день декабря.</p>
+
+        <!-- Футер -->
+        <footer class="footer-bg py-4 mt-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 mx-auto text-center">
+                        <p class="fs-5 mb-2 text-white">
+                            <i class="fas fa-tree me-2"></i>С наступающим Новым 2026 годом!
+                        </p>
+                        <p class="text-light small mb-0">
+                            Нажмите на открытые окошки, чтобы увидеть промокод. Закрытые окошки откроются в соответствующий день декабря.
+                            Кликните на промокод, чтобы скопировать его.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </footer>
     </div>
+
+    <!-- Модальное окно с промокодом -->
+    <div class="modal fade" id="promoModal" tabindex="-1" aria-labelledby="promoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header border-0 bg-gradient-promo text-white position-relative">
+                    <h5 class="modal-title fs-4 fw-bold" id="promoModalLabel">День <span id="modal-day">1</span> декабря</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    
+                    <!-- Декоративные снежинки -->
+                    <div class="snowflakes">
+                        <i class="fas fa-snowflake snowflake-1"></i>
+                        <i class="fas fa-snowflake snowflake-2"></i>
+                        <i class="fas fa-snowflake snowflake-3"></i>
+                    </div>
+                </div>
+                
+                <div class="modal-body p-0">
+                    <div class="row g-0">
+                        <!-- Изображение промокода -->
+                        <div class="col-md-6 d-flex align-items-center justify-content-center p-4 bg-light">
+                            <div class="promo-image-container" id="promo-image">
+                                <i class="fas fa-gift fa-5x text-primary"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Информация о промокоде -->
+                        <div class="col-md-6 p-4 d-flex flex-column">
+                            <div class="mb-4">
+                                <h6 class="text-uppercase text-muted small mb-2">Ваш промокод на сегодня:</h6>
+                                <div class="promo-code-box p-3 rounded text-center mb-3" id="promo-code-container">
+                                    <p class="fs-2 fw-bold text-primary mb-0" id="promo-code-text">NEWYEAR2025</p>
+                                    <div class="mt-2">
+                                        <small class="text-muted">Нажмите на промокод, чтобы скопировать</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="alert alert-success alert-copy d-none" id="copy-alert">
+                                    <i class="fas fa-check-circle me-2"></i>Промокод скопирован в буфер обмена!
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h6 class="text-uppercase text-muted small mb-2">Описание промокода:</h6>
+                                <p class="fs-5" id="promo-description">
+                                    Скидка 15% на все новогодние украшения
+                                </p>
+                            </div>
+                            
+                            <!-- Кнопка перехода к товару -->
+                            <div class="mt-auto">
+                                <a href="#" class="btn btn-lg btn-warning w-100 fw-bold" id="product-btn" target="_blank">
+                                    <i class="fas fa-shopping-cart me-2"></i>Перейти к товару
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer border-0 bg-light">
+                    <div class="w-100 text-center">
+                        <p class="text-muted small mb-0">
+                            <i class="fas fa-info-circle me-1"></i>Промокод действителен до 31 января 2026 года
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     
+    <!-- Custom JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
