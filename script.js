@@ -1,4 +1,4 @@
-// Полифиллы для старых браузеров
+// Полифиллы для совместимости
 if (!NodeList.prototype.forEach) {
     NodeList.prototype.forEach = Array.prototype.forEach;
 }
@@ -20,352 +20,444 @@ if (!Element.prototype.closest) {
     };
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Текущая дата - декабрь 2025
+// Глобальные переменные
+let tg = null;
+let promoModal = null;
+let promoData = {};
+
+// Проверяем, запущено ли в Telegram Web App
+function isTelegramWebApp() {
+    return window.Telegram && window.Telegram.WebApp;
+}
+
+// Инициализация Telegram Web App
+function initTelegramWebApp() {
+    if (isTelegramWebApp()) {
+        tg = window.Telegram.WebApp;
+        
+        console.log('Telegram Web App обнаружен:', {
+            platform: tg.platform,
+            colorScheme: tg.colorScheme,
+            viewportHeight: tg.viewportHeight
+        });
+        
+        return true;
+    }
+    return false;
+}
+
+// Улучшенная функция копирования для всех браузеров
+function copyToClipboard(text) {
+    return new Promise(function(resolve, reject) {
+        // Метод для современных браузеров
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text)
+                .then(resolve)
+                .catch(reject);
+        } else {
+            // Старый метод для Safari и других браузеров
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                resolve();
+            } catch (err) {
+                reject(err);
+            } finally {
+                textArea.remove();
+            }
+        }
+    });
+}
+
+// Функция загрузки данных промокодов
+async function loadPromoCodes() {
+    try {
+        const response = await fetch('promocodes.json');
+        if (!response.ok) {
+            throw new Error('Не удалось загрузить данные промокодов');
+        }
+        const data = await response.json();
+        
+        // Преобразуем массив в объект для быстрого доступа по дню
+        data.promocodes.forEach(promo => {
+            promoData[promo.day] = {
+                code: promo.code,
+                description: promo.description,
+                image: promo.image,
+                productUrl: promo.productUrl
+            };
+        });
+        
+        console.log('Промокоды загружены:', Object.keys(promoData).length, 'дней');
+        return true;
+        
+    } catch (error) {
+        console.error('Ошибка загрузки промокодов:', error);
+        showError('Не удалось загрузить промокоды. Используются демо-данные.');
+        loadDemoData();
+        return false;
+    }
+}
+
+// Демо-данные на случай ошибки загрузки JSON
+function loadDemoData() {
+    for (let day = 1; day <= 31; day++) {
+        promoData[day] = {
+            code: `NY2025-DAY${day}`,
+            description: `Эксклюзивный промокод на день ${day} декабря 2025 года. Скидка на праздничные товары!`,
+            image: `images/gift${day}.jpg`,
+            productUrl: `https://example.com/products/december-${day}`
+        };
+    }
+}
+
+// Функция для показа ошибки
+function showError(message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-warning alert-dismissible fade show position-fixed top-0 start-0 m-3';
+    alertDiv.style.zIndex = '1100';
+    alertDiv.style.maxWidth = '300px';
+    alertDiv.innerHTML = `
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
+}
+
+// Функция создания календаря
+function createCalendar() {
+    const calendarContainer = document.getElementById('calendar-container');
+    calendarContainer.innerHTML = '';
+    
+    const calendarWrapper = document.createElement('div');
+    calendarWrapper.id = 'calendar';
+    
+    let openedCount = 0;
+    
+    // Текущая дата
     const today = new Date();
     const currentDay = today.getDate();
-    const currentMonth = today.getMonth(); // 0 - январь, 11 - декабрь
+    const currentMonth = today.getMonth();
     const currentYear = today.getFullYear();
-    
-    // Проверяем, декабрь ли сейчас 2025 года
     const isDecember2025 = currentMonth === 11 && currentYear === 2025;
     
-    // Обновляем информацию о текущей дате
-    const currentDateElement = document.getElementById('current-date');
+    // В Telegram Web App открываем все карточки для демонстрации
+    const isTelegram = isTelegramWebApp();
+    const forceOpen = isTelegram; // В Telegram всегда открываем все карточки
+    
+    // Загружаем состояние открытых окошек из localStorage
+    const openedDays = JSON.parse(localStorage.getItem('adventOpenedDays2025')) || [];
+    
+    // Обновляем текущую дату на странице
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
-    currentDateElement.textContent = today.toLocaleDateString('ru-RU', options);
+    document.getElementById('current-date').textContent = today.toLocaleDateString('ru-RU', options);
     
-    // Загружаем данные промокодов из JSON файла
-    let promoData = {};
-    
-    // Элементы модального окна
-    const promoModal = new bootstrap.Modal(document.getElementById('promoModal'));
-    const modalDayElement = document.getElementById('modal-day');
-    const promoImageElement = document.getElementById('promo-image');
-    const promoDescriptionElement = document.getElementById('promo-description');
-    const promoCodeElement = document.getElementById('promo-code-text');
-    const promoCodeContainer = document.getElementById('promo-code-container');
-    const copyAlert = document.getElementById('copy-alert');
-    const productBtn = document.getElementById('product-btn');
-    
-    // Функция загрузки данных промокодов
-    async function loadPromoCodes() {
-        try {
-            const response = await fetch('promocodes.json');
-            if (!response.ok) {
-                throw new Error('Не удалось загрузить данные промокодов');
-            }
-            const data = await response.json();
-            
-            // Преобразуем массив в объект для быстрого доступа по дню
-            data.promocodes.forEach(promo => {
-                promoData[promo.day] = {
-                    code: promo.code,
-                    description: promo.description,
-                    image: promo.image,
-                    productUrl: promo.productUrl
-                };
-            });
-            
-            // После загрузки данных создаем календарь
-            createCalendar();
-            
-        } catch (error) {
-            console.error('Ошибка загрузки промокодов:', error);
-            showErrorNotification('Не удалось загрузить промокоды. Используются демо-данные.');
-            loadDemoData();
-            createCalendar();
+    // Создаем карточки для каждого дня декабря
+    for (let day = 1; day <= 31; day++) {
+        const dayCol = document.createElement('div');
+        dayCol.className = 'calendar-col';
+        
+        const dayCard = document.createElement('div');
+        dayCard.className = 'day-card';
+        dayCard.dataset.day = day;
+        
+        // Определяем статус дня
+        let status = '';
+        let statusText = '';
+        
+        if (forceOpen || day < currentDay && isDecember2025) {
+            // В Telegram открываем все, или прошедшие дни
+            status = 'open';
+            statusText = 'Открыто';
+            if (openedDays.includes(day)) openedCount++;
+        } else if (day === currentDay && isDecember2025) {
+            // Сегодняшний день
+            status = 'today';
+            statusText = 'Сегодня';
+            if (openedDays.includes(day)) openedCount++;
+        } else {
+            // Будущие дни
+            status = 'closed';
+            statusText = 'Закрыто';
         }
-    }
-    
-    // Демо-данные на случай ошибки загрузки JSON
-    function loadDemoData() {
-        for (let day = 1; day <= 31; day++) {
-            promoData[day] = {
-                code: `NEWYEAR2025-DAY${day}`,
-                description: `Эксклюзивный промокод на день ${day} декабря. Скидка на праздничные товары!`,
-                image: `images/gift${day}.jpg`,
-                productUrl: `https://example.com/products/december-${day}`
-            };
+        
+        dayCard.classList.add(status);
+        
+        // Добавляем эффект снежинки для новогодних дней
+        let snowflake = '';
+        if (day === 24 || day === 25 || day === 31) {
+            snowflake = '<i class="fas fa-snowflake position-absolute top-0 start-0 m-1 text-primary" style="font-size: 0.7rem;"></i>';
         }
-    }
-    
-    // Функция для показа уведомления об ошибке
-    function showErrorNotification(message) {
-        const notification = document.createElement('div');
-        notification.className = 'alert alert-warning alert-dismissible fade show position-fixed top-0 end-0 m-3';
-        notification.style.zIndex = '1100';
-        notification.style.maxWidth = '300px';
-        notification.innerHTML = `
-            <i class="fas fa-exclamation-triangle me-2"></i>
-            <strong>Внимание!</strong> ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        
+        dayCard.innerHTML = `
+            ${snowflake}
+            <div class="day-number">${day}</div>
+            <div class="day-status">${statusText}</div>
         `;
-        document.body.appendChild(notification);
         
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.remove();
-            }
-        }, 5000);
-    }
-    
-    // Функция создания календаря
-    function createCalendar() {
-        const calendarContainer = document.getElementById('calendar-container');
-        calendarContainer.innerHTML = '';
-        
-        const calendarWrapper = document.createElement('div');
-        calendarWrapper.className = 'row';
-        calendarWrapper.id = 'calendar';
-        
-        let openedCount = 0;
-        
-        // Загружаем состояние открытых окошек из localStorage
-        const openedDays = JSON.parse(localStorage.getItem('adventOpenedDays2025')) || [];
-        
-        // Создаем карточки для каждого дня декабря
-        for (let day = 1; day <= 31; day++) {
-            const dayCol = document.createElement('div');
-            dayCol.className = 'calendar-col';
-            
-            const dayCard = document.createElement('div');
-            dayCard.className = 'day-card';
-            dayCard.dataset.day = day;
-            
-            // Определяем статус дня
-            let status = '';
-            let statusText = '';
-            
-            if (day < currentDay && isDecember2025) {
-                // Прошедшие дни декабря 2025
-                status = 'open';
-                statusText = 'Открыто';
-                if (openedDays.includes(day)) openedCount++;
-            } else if (day === currentDay && isDecember2025) {
-                // Сегодняшний день декабря 2025
-                status = 'today';
-                statusText = 'Сегодня';
-                if (openedDays.includes(day)) openedCount++;
-            } else {
-                // Будущие дни или не декабрь 2025
-                status = 'closed';
-                statusText = 'Закрыто';
-            }
-            
-            dayCard.classList.add(status);
-            
-            // Добавляем эффект снежинки для новогодних дней
-            let snowflake = '';
-            if (day === 24 || day === 25 || day === 31) {
-                snowflake = '<i class="fas fa-snowflake position-absolute top-0 start-0 m-1 text-primary" style="font-size: 0.7rem;"></i>';
-            }
-            
-            dayCard.innerHTML = `
-                ${snowflake}
-                <div class="day-number">${day}</div>
-                <div class="day-status">${statusText}</div>
-            `;
-            
-            // Добавляем обработчик клика для открытых и сегодняшних карточек
-            if (status !== 'closed') {
-                dayCard.addEventListener('click', function() {
-                    openPromoCard(day);
-                });
-                
-                // Для демонстрации (если не декабрь 2025) также добавляем обработчик
-                if (!isDecember2025) {
-                    dayCard.addEventListener('click', function() {
-                        openPromoCard(day);
-                    });
-                }
-            }
-            
-            dayCol.appendChild(dayCard);
-            calendarWrapper.appendChild(dayCol);
-        }
-        
-        calendarContainer.appendChild(calendarWrapper);
-        
-        // Обновляем счетчик открытых окошек
-        document.getElementById('opened-count').textContent = openedCount;
-        document.getElementById('total-count').textContent = '31';
-        
-        // Если сейчас не декабрь 2025, показываем все карточки как открытые для демонстрации
-        if (!isDecember2025) {
-            document.querySelectorAll('.day-card.closed').forEach(card => {
-                card.classList.remove('closed');
-                card.classList.add('open');
-                const statusElement = card.querySelector('.day-status');
-                statusElement.textContent = 'Открыто';
-                
-                const day = parseInt(card.dataset.day);
-                card.addEventListener('click', function() {
-                    openPromoCard(day);
-                });
+        // Добавляем обработчик клика
+        if (forceOpen || status !== 'closed') {
+            dayCard.addEventListener('click', function() {
+                openPromoCard(day);
             });
-            
-            // Обновляем счетчик
-            openedCount = 31;
-            document.getElementById('opened-count').textContent = openedCount;
-            
-            // Показываем сообщение
+        } else {
+            dayCard.style.cursor = 'not-allowed';
+        }
+        
+        dayCol.appendChild(dayCard);
+        calendarWrapper.appendChild(dayCol);
+    }
+    
+    calendarContainer.appendChild(calendarWrapper);
+    
+    // Обновляем счетчик
+    const finalOpenedCount = forceOpen ? 31 : openedCount;
+    document.getElementById('opened-count').textContent = finalOpenedCount;
+    document.getElementById('total-count').textContent = '31';
+    
+    // Для Telegram показываем инструкцию
+    if (isTelegram) {
+        const instruction = document.getElementById('telegram-instruction');
+        if (instruction) {
+            instruction.classList.remove('d-none');
+        }
+        
+        if (!isDecember2025) {
             const subtitle = document.querySelector('.lead');
-            subtitle.innerHTML += '<br><small class="text-light">Так как сейчас не декабрь 2025 года, все окошки открыты для демонстрации.</small>';
+            if (subtitle) {
+                subtitle.innerHTML += '<br><small class="text-light">В Telegram Web App все окошки открыты для демонстрации.</small>';
+            }
         }
     }
     
-    // Функция открытия карточки с промокодом
-    function openPromoCard(day) {
-        const dayCard = document.querySelector(`.day-card[data-day="${day}"]`);
-        
-        // Добавляем анимацию открытия
+    console.log('Календарь создан:', {
+        дней: 31,
+        открыто: finalOpenedCount,
+        telegram: isTelegram,
+        декабрь2025: isDecember2025
+    });
+}
+
+// Функция открытия карточки с промокодом
+function openPromoCard(day) {
+    const dayCard = document.querySelector(`.day-card[data-day="${day}"]`);
+    
+    // Добавляем анимацию открытия
+    if (dayCard) {
         dayCard.classList.add('card-opening');
         setTimeout(() => {
             dayCard.classList.remove('card-opening');
         }, 800);
+    }
+    
+    // Получаем данные промокода
+    const promo = promoData[day];
+    if (!promo) {
+        showError('Промокод для этого дня не найден');
+        return;
+    }
+    
+    // Заполняем модальное окно данными
+    document.getElementById('modal-day').textContent = day;
+    document.getElementById('promo-description').textContent = promo.description;
+    document.getElementById('promo-code-text').textContent = promo.code;
+    
+    // Устанавливаем ссылку на товар
+    const productBtn = document.getElementById('product-btn');
+    if (promo.productUrl) {
+        productBtn.href = promo.productUrl;
+        productBtn.style.display = 'block';
+    } else {
+        productBtn.style.display = 'none';
+    }
+    
+    // Устанавливаем изображение
+    const promoImageElement = document.getElementById('promo-image');
+    const img = new Image();
+    img.onload = function() {
+        promoImageElement.innerHTML = '';
+        promoImageElement.appendChild(img);
+        img.className = 'img-fluid rounded';
+        img.style.maxHeight = '180px';
+        img.style.objectFit = 'contain';
+    };
+    img.onerror = function() {
+        promoImageElement.innerHTML = `
+            <div class="text-center">
+                <i class="fas fa-gift fa-5x text-primary mb-3"></i>
+                <p class="text-muted small">Подарок дня ${day}</p>
+            </div>
+        `;
+    };
+    img.src = promo.image;
+    img.alt = `Промокод для дня ${day} декабря`;
+    
+    // Загружаем состояние открытых окошек
+    const openedDays = JSON.parse(localStorage.getItem('adventOpenedDays2025')) || [];
+    
+    // Если карточка еще не была открыта, добавляем в localStorage
+    if (!openedDays.includes(day)) {
+        openedDays.push(day);
+        localStorage.setItem('adventOpenedDays2025', JSON.stringify(openedDays));
         
-        // Получаем данные промокода
-        const promo = promoData[day];
+        // Обновляем счетчик
+        const openedCount = openedDays.length;
+        document.getElementById('opened-count').textContent = openedCount;
         
-        // Заполняем модальное окно данными
-        modalDayElement.textContent = day;
-        promoDescriptionElement.textContent = promo.description;
-        promoCodeElement.textContent = promo.code;
-        
-        // Устанавливаем ссылку на товар
-        if (promo.productUrl) {
-            productBtn.href = promo.productUrl;
-            productBtn.style.display = 'block';
-        } else {
-            productBtn.style.display = 'none';
-        }
-        
-        // Устанавливаем изображение
-        const img = new Image();
-        img.onload = function() {
-            promoImageElement.innerHTML = '';
-            promoImageElement.appendChild(img);
-            img.className = 'img-fluid rounded';
-            img.style.maxHeight = '180px';
-        };
-        img.onerror = function() {
-            promoImageElement.innerHTML = `
-                <div class="text-center">
-                    <i class="fas fa-gift fa-5x text-primary mb-3"></i>
-                    <p class="text-muted small">Подарок дня ${day}</p>
-                </div>
-            `;
-        };
-        img.src = promo.image;
-        img.alt = `Промокод для дня ${day} декабря`;
-        
-        // Загружаем состояние открытых окошек
-        const openedDays = JSON.parse(localStorage.getItem('adventOpenedDays2025')) || [];
-        
-        // Если карточка еще не была открыта, добавляем в localStorage
-        if (!openedDays.includes(day)) {
-            openedDays.push(day);
-            localStorage.setItem('adventOpenedDays2025', JSON.stringify(openedDays));
-            
-            // Обновляем счетчик
-            const openedCount = openedDays.length;
-            document.getElementById('opened-count').textContent = openedCount;
-            
-            // Обновляем статус карточки, если она была "сегодня"
-            if (dayCard.classList.contains('today')) {
-                dayCard.classList.remove('today');
-                dayCard.classList.add('open');
-                const statusElement = dayCard.querySelector('.day-status');
+        // Обновляем статус карточки, если она была "сегодня"
+        if (dayCard && dayCard.classList.contains('today')) {
+            dayCard.classList.remove('today');
+            dayCard.classList.add('open');
+            const statusElement = dayCard.querySelector('.day-status');
+            if (statusElement) {
                 statusElement.textContent = 'Открыто';
             }
         }
-        
-        // Показываем модальное окно
+    }
+    
+    // Показываем модальное окно
+    if (promoModal) {
         promoModal.show();
     }
+}
+
+// Основная функция инициализации
+async function initApp() {
+    console.log('Инициализация приложения...');
     
-    // Улучшенная функция копирования для всех браузеров
-    function copyToClipboard(text) {
-        // Метод для современных браузеров
-        if (navigator.clipboard && window.isSecureContext) {
-            return navigator.clipboard.writeText(text);
-        } else {
-            // Старый метод для Safari и других браузеров
-            return new Promise(function(resolve, reject) {
-                const textArea = document.createElement('textarea');
-                textArea.value = text;
-                textArea.style.position = 'fixed';
-                textArea.style.left = '-999999px';
-                textArea.style.top = '-999999px';
-                document.body.appendChild(textArea);
-                
-                textArea.focus();
-                textArea.select();
-                
-                try {
-                    document.execCommand('copy');
-                    resolve();
-                } catch (err) {
-                    reject(err);
-                } finally {
-                    textArea.remove();
-                }
-            });
-        }
+    // Инициализируем Telegram Web App
+    const isTelegram = initTelegramWebApp();
+    
+    // Инициализируем модальное окно Bootstrap
+    const modalElement = document.getElementById('promoModal');
+    if (modalElement) {
+        promoModal = new bootstrap.Modal(modalElement);
     }
     
+    // Загружаем промокоды
+    await loadPromoCodes();
+    
+    // Создаем календарь
+    createCalendar();
+    
+    // Настраиваем обработчики событий
+    setupEventListeners();
+    
+    // Сообщаем Telegram о готовности
+    if (isTelegram && tg) {
+        tg.ready();
+        console.log('Приложение готово для Telegram Web App');
+    }
+    
+    console.log('Приложение инициализировано');
+}
+
+// Настройка обработчиков событий
+function setupEventListeners() {
     // Обработчик клика для копирования промокода
-    promoCodeContainer.addEventListener('click', function() {
-        const promoCode = promoCodeElement.textContent;
-        
-        copyToClipboard(promoCode).then(function() {
-            // Показываем уведомление об успешном копировании
-            copyAlert.classList.remove('d-none');
+    const promoCodeContainer = document.getElementById('promo-code-container');
+    const copyAlert = document.getElementById('copy-alert');
+    
+    if (promoCodeContainer && copyAlert) {
+        promoCodeContainer.addEventListener('click', async function() {
+            const promoCode = document.getElementById('promo-code-text').textContent;
             
-            // Скрываем уведомление через 3 секунды
-            setTimeout(() => {
-                copyAlert.classList.add('d-none');
-            }, 3000);
-            
-            // Добавляем анимацию на промокод
-            promoCodeContainer.style.transform = 'scale(0.95)';
-            promoCodeContainer.style.backgroundColor = '#d4edda';
-            promoCodeContainer.style.borderColor = '#28a745';
-            
-            setTimeout(() => {
-                promoCodeContainer.style.transform = 'scale(1)';
-                promoCodeContainer.style.backgroundColor = '';
-                promoCodeContainer.style.borderColor = '';
-            }, 300);
-            
-        }).catch(function(err) {
-            console.error('Ошибка при копировании: ', err);
-            
-            // Показываем уведомление даже при ошибке
-            copyAlert.classList.remove('d-none');
-            copyAlert.classList.add('alert-success');
-            
-            setTimeout(() => {
-                copyAlert.classList.add('d-none');
-                copyAlert.classList.remove('alert-success');
-            }, 3000);
+            try {
+                await copyToClipboard(promoCode);
+                
+                // Показываем уведомление
+                copyAlert.classList.remove('d-none');
+                
+                // Добавляем анимацию на промокод
+                promoCodeContainer.style.transform = 'scale(0.95)';
+                promoCodeContainer.style.backgroundColor = '#d4edda';
+                promoCodeContainer.style.borderColor = '#28a745';
+                
+                setTimeout(() => {
+                    copyAlert.classList.add('d-none');
+                    promoCodeContainer.style.transform = 'scale(1)';
+                    promoCodeContainer.style.backgroundColor = '';
+                    promoCodeContainer.style.borderColor = '';
+                }, 3000);
+                
+                // В Telegram показываем всплывающее уведомление
+                if (tg) {
+                    tg.showAlert('Промокод скопирован!');
+                }
+                
+            } catch (err) {
+                console.error('Ошибка копирования:', err);
+                showError('Не удалось скопировать промокод');
+            }
         });
-    });
+    }
     
     // Обработчик для кнопки перехода к товару
-    productBtn.addEventListener('click', function(e) {
-        const day = modalDayElement.textContent;
-        console.log(`Пользователь перешел по промокоду дня ${day} декабря`);
-        
-        // Можно добавить отправку аналитики здесь
-        const openedDays = JSON.parse(localStorage.getItem('adventOpenedDays2025')) || [];
-        if (!openedDays.includes(parseInt(day))) {
-            openedDays.push(parseInt(day));
-            localStorage.setItem('adventOpenedDays2025', JSON.stringify(openedDays));
-        }
-    });
+    const productBtn = document.getElementById('product-btn');
+    if (productBtn) {
+        productBtn.addEventListener('click', function(e) {
+            const day = document.getElementById('modal-day').textContent;
+            console.log(`Переход по промокоду дня ${day}`);
+            
+            // Можно добавить аналитику здесь
+            if (tg) {
+                tg.sendData(JSON.stringify({
+                    action: 'product_click',
+                    day: day
+                }));
+            }
+        });
+    }
     
-    // Загружаем данные промокодов при загрузке страницы
-    loadPromoCodes();
+    // Обработчик для закрытия модального окна
+    const closeButtons = document.querySelectorAll('[data-bs-dismiss="modal"]');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            if (promoModal) {
+                promoModal.hide();
+            }
+        });
+    });
+}
+
+// Запуск приложения при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    // Небольшая задержка для стабилизации
+    setTimeout(() => {
+        initApp().catch(error => {
+            console.error('Ошибка инициализации приложения:', error);
+            showError('Произошла ошибка при загрузке приложения');
+        });
+    }, 100);
 });
+
+// Обработка изменения размера окна (важно для Telegram)
+window.addEventListener('resize', function() {
+    if (tg) {
+        // Обновляем высоту в Telegram
+        tg.viewportHeight = window.innerHeight;
+    }
+});
+
+// Экспортируем функции для отладки
+window.app = {
+    openPromoCard,
+    copyToClipboard,
+    isTelegramWebApp: () => !!tg
+};
