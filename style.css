@@ -1,4 +1,4 @@
-/* Основные стили для кросс-браузерной совместимости */
+/* Основные стили */
 :root {
     --primary-color: #4a6fa5;
     --secondary-color: #ff9e6d;
@@ -12,20 +12,6 @@
     --holiday-green: #388e3c;
 }
 
-/* Темная тема для Telegram */
-:root[data-theme="dark"] {
-    --primary-color: #5d8cc9;
-    --secondary-color: #ffb085;
-    --success-color: #9ccc65;
-    --warning-color: #ffcc80;
-    --danger-color: #ef9a9a;
-    --light-color: #2d3748;
-    --dark-color: #1a202c;
-    --snow-color: #1e293b;
-    --holiday-red: #f56565;
-    --holiday-green: #48bb78;
-}
-
 * {
     -webkit-tap-highlight-color: transparent;
     tap-highlight-color: transparent;
@@ -34,43 +20,23 @@
 html, body {
     height: 100%;
     min-height: 100vh;
-    min-height: -webkit-fill-available;
     overflow-x: hidden;
     position: relative;
 }
 
 body {
     font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background-color: var(--snow-color);
+    background-color: #f0f8ff;
     color: #333;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    transition: background-color 0.3s ease;
-}
-
-/* Темная тема для Telegram */
-:root[data-theme="dark"] body {
-    background-color: var(--dark-color);
-    color: #e2e8f0;
-    background-image: none;
 }
 
 .container-fluid {
     min-height: 100vh;
 }
 
-/* Фикс для Safari в Telegram iOS */
-@supports (-webkit-touch-callout: none) {
-    .container-fluid {
-        min-height: -webkit-fill-available;
-    }
-    
-    body {
-        min-height: -webkit-fill-available;
-    }
-}
-
-/* Декоративные снежинки на фоне */
+/* Фон с мягким градиентом и снежинками */
 body::before {
     content: "";
     position: fixed;
@@ -78,29 +44,20 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='20' cy='20' r='2' fill='%23ffffff' fill-opacity='0.05'/%3E%3Ccircle cx='50' cy='50' r='1.5' fill='%23ffffff' fill-opacity='0.05'/%3E%3Ccircle cx='80' cy='80' r='2' fill='%23ffffff' fill-opacity='0.05'/%3E%3Ccircle cx='30' cy='70' r='1.5' fill='%23ffffff' fill-opacity='0.05'/%3E%3Ccircle cx='70' cy='30' r='2' fill='%23ffffff' fill-opacity='0.05'/%3E%3C/svg%3E");
+    background-image: 
+        radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.9) 0%, transparent 25%),
+        radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.7) 0%, transparent 25%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='20' cy='20' r='1' fill='%234a6fa5' fill-opacity='0.1'/%3E%3Ccircle cx='50' cy='50' r='0.8' fill='%234a6fa5' fill-opacity='0.1'/%3E%3Ccircle cx='80' cy='80' r='1' fill='%234a6fa5' fill-opacity='0.1'/%3E%3C/svg%3E");
     z-index: -1;
     pointer-events: none;
 }
 
-:root[data-theme="dark"] body::before {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='20' cy='20' r='2' fill='%234a5568' fill-opacity='0.1'/%3E%3Ccircle cx='50' cy='50' r='1.5' fill='%234a5568' fill-opacity='0.1'/%3E%3Ccircle cx='80' cy='80' r='2' fill='%234a5568' fill-opacity='0.1'/%3E%3Ccircle cx='30' cy='70' r='1.5' fill='%234a5568' fill-opacity='0.1'/%3E%3Ccircle cx='70' cy='30' r='2' fill='%234a5568' fill-opacity='0.1'/%3E%3C/svg%3E");
-}
-
 /* Шапка */
 .header-bg {
-    background: #1a2980;
     background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
     background: -webkit-linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
     position: relative;
     overflow: hidden;
-    transition: background 0.3s ease;
-}
-
-:root[data-theme="dark"] .header-bg {
-    background: #2d3748;
-    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
-    background: -webkit-linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
 }
 
 .header-bg::before {
@@ -115,10 +72,6 @@ body::before {
     opacity: 0.5;
 }
 
-:root[data-theme="dark"] .header-bg::before {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cpath d='M100 0L130 60L200 70L130 80L100 140L70 80L0 70L70 60L100 0Z' fill='%23e2e8f0' fill-opacity='0.05'/%3E%3C/svg%3E");
-}
-
 .header-bg .container {
     position: relative;
     z-index: 1;
@@ -126,73 +79,55 @@ body::before {
 
 /* Футер */
 .footer-bg {
-    background: #2c3e50;
     background: linear-gradient(135deg, #2c3e50 0%, #4a6fa5 100%);
     background: -webkit-linear-gradient(135deg, #2c3e50 0%, #4a6fa5 100%);
-    transition: background 0.3s ease;
 }
 
-:root[data-theme="dark"] .footer-bg {
-    background: #2d3748;
-    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
-    background: -webkit-linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+/* Календарь - ГРИД СИСТЕМА (3 карточки в ряд на мобильных) */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 карточки в ряд */
+    gap: 10px;
+    padding: 5px;
 }
 
-/* Контейнер календаря */
-.calendar-container {
-    margin: -6px;
-}
-
-#calendar {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.calendar-col {
-    padding: 6px;
-    width: 33.333%;
-    max-width: 33.333%;
-    flex: 0 0 33.333%;
-}
-
-@media (min-width: 400px) {
-    .calendar-col {
-        width: 25%;
-        max-width: 25%;
-        flex: 0 0 25%;
-    }
-}
-
+/* Планшеты и большие телефоны (576px+) - 4 карточки */
 @media (min-width: 576px) {
-    .calendar-col {
-        width: 20%;
-        max-width: 20%;
-        flex: 0 0 20%;
+    .calendar-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
     }
 }
 
+/* Планшеты (768px+) - 5 карточек */
 @media (min-width: 768px) {
-    .calendar-col {
-        width: 16.666%;
-        max-width: 16.666%;
-        flex: 0 0 16.666%;
+    .calendar-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 14px;
     }
 }
 
+/* Ноутбуки (992px+) - 6 карточек */
 @media (min-width: 992px) {
-    .calendar-col {
-        width: 14.285%;
-        max-width: 14.285%;
-        flex: 0 0 14.285%;
+    .calendar-grid {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 16px;
     }
 }
 
+/* Большие экраны (1200px+) - 7 карточек */
 @media (min-width: 1200px) {
-    .calendar-col {
-        width: 12.5%;
-        max-width: 12.5%;
-        flex: 0 0 12.5%;
+    .calendar-grid {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 18px;
+    }
+}
+
+/* Для очень маленьких экранов (меньше 360px) - 2 карточки */
+@media (max-width: 360px) {
+    .calendar-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
     }
 }
 
@@ -212,12 +147,10 @@ body::before {
     border: 2px solid transparent;
     width: 100%;
     -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
-    touch-action: manipulation;
 }
 
+/* Размеры карточек для разных устройств */
 @media (min-width: 576px) {
     .day-card {
         height: 110px;
@@ -227,6 +160,12 @@ body::before {
 @media (min-width: 768px) {
     .day-card {
         height: 120px;
+    }
+}
+
+@media (min-width: 992px) {
+    .day-card {
+        height: 130px;
     }
 }
 
@@ -240,31 +179,17 @@ body::before {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Градиенты для карточек */
+/* Стили для разных статусов карточек */
 .day-card.open {
-    background: #e8f5e9;
     background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-    background: -webkit-linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
     border-color: var(--success-color);
 }
 
-:root[data-theme="dark"] .day-card.open {
-    background: linear-gradient(135deg, #2d4a2d 0%, #1e3a1e 100%);
-    border-color: var(--holiday-green);
-}
-
 .day-card.today {
-    background: #fff3e0;
     background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
-    background: -webkit-linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
     border-color: var(--warning-color);
     animation: pulse 2s infinite;
     -webkit-animation: pulse 2s infinite;
-}
-
-:root[data-theme="dark"] .day-card.today {
-    background: linear-gradient(135deg, #4a3a2d 0%, #3a2a1e 100%);
-    border-color: var(--warning-color);
 }
 
 @keyframes pulse {
@@ -280,16 +205,9 @@ body::before {
 }
 
 .day-card.closed {
-    background: #f5f5f5;
     background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
-    background: -webkit-linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
     border-color: #ddd;
     cursor: not-allowed;
-}
-
-:root[data-theme="dark"] .day-card.closed {
-    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
-    border-color: #4b5563;
 }
 
 .day-card.closed:hover {
@@ -297,12 +215,12 @@ body::before {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
+/* Номер дня */
 .day-number {
     font-size: 1.8rem;
     font-weight: 700;
     margin-bottom: 5px;
     line-height: 1;
-    transition: color 0.3s ease;
 }
 
 @media (min-width: 576px) {
@@ -329,17 +247,13 @@ body::before {
     color: #aaa;
 }
 
-:root[data-theme="dark"] .day-card.closed .day-number {
-    color: #94a3b8;
-}
-
+/* Статус дня */
 .day-status {
     font-size: 0.75rem;
     font-weight: 600;
     padding: 3px 10px;
     border-radius: 20px;
     white-space: nowrap;
-    transition: all 0.3s ease;
 }
 
 @media (min-width: 576px) {
@@ -363,22 +277,11 @@ body::before {
     color: #888;
 }
 
-:root[data-theme="dark"] .closed .day-status {
-    background-color: rgba(148, 163, 184, 0.2);
-    color: #94a3b8;
-}
-
 /* Легенда */
 .legend-box {
     background-color: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-}
-
-:root[data-theme="dark"] .legend-box {
-    background-color: rgba(45, 55, 72, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .legend-dot {
@@ -400,33 +303,17 @@ body::before {
     background-color: #aaa;
 }
 
-:root[data-theme="dark"] .legend-closed {
-    background-color: #94a3b8;
-}
-
 /* Модальное окно */
 .modal-content {
     border-radius: 20px;
     overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-:root[data-theme="dark"] .modal-content {
-    background: #2d3748;
-    color: #e2e8f0;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
 .bg-gradient-promo {
-    background: #1a2980;
     background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
     background: -webkit-linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
     padding: 1.5rem;
-}
-
-:root[data-theme="dark"] .bg-gradient-promo {
-    background: #2d3748;
-    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
-    background: -webkit-linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
 }
 
 .snowflakes {
@@ -470,16 +357,7 @@ body::before {
     cursor: pointer;
     transition: all 0.3s ease;
     -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
     user-select: text;
-    touch-action: manipulation;
-}
-
-:root[data-theme="dark"] .promo-code-box {
-    background-color: #374151;
-    border-color: var(--primary-color);
-    color: #e2e8f0;
 }
 
 .promo-code-box:active {
@@ -519,28 +397,16 @@ body::before {
     align-items: center;
     justify-content: center;
     border-radius: 10px;
-    background: #f8f9fa;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    background: -webkit-linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border: 2px solid #dee2e6;
-    transition: all 0.3s ease;
-}
-
-:root[data-theme="dark"] .promo-image-container {
-    background: #374151;
-    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
-    border-color: #4b5563;
 }
 
 /* Кнопки */
 .btn-warning {
-    background: #ff9e6d;
     background: linear-gradient(135deg, #ff9e6d 0%, #ff7e47 100%);
-    background: -webkit-linear-gradient(135deg, #ff9e6d 0%, #ff7e47 100%);
     border: none;
     color: white;
     transition: all 0.3s ease;
-    touch-action: manipulation;
 }
 
 .btn-warning:active {
@@ -548,11 +414,8 @@ body::before {
 }
 
 .btn-warning:hover {
-    background: #ff8e5c;
     background: linear-gradient(135deg, #ff8e5c 0%, #ff6e37 100%);
-    background: -webkit-linear-gradient(135deg, #ff8e5c 0%, #ff6e37 100%);
     transform: translateY(-2px);
-    -webkit-transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255, 126, 71, 0.4);
     color: white;
 }
@@ -587,7 +450,10 @@ body::before {
 /* Улучшение отображения текста */
 h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
-    letter-spacing: -0.5px;
+}
+
+.text-primary {
+    color: #4a6fa5 !important;
 }
 
 /* Адаптивность для мобильных */
@@ -619,13 +485,12 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .day-number {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
     }
     
-    .calendar-col {
-        width: 50%;
-        max-width: 50%;
-        flex: 0 0 50%;
+    .day-status {
+        font-size: 0.7rem;
+        padding: 2px 8px;
     }
 }
 
@@ -636,16 +501,16 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .day-number {
-        font-size: 1.3rem;
+        font-size: 1.4rem;
     }
     
-    .day-status {
-        font-size: 0.7rem;
-        padding: 2px 8px;
+    .container, .container-fluid {
+        padding-left: 8px;
+        padding-right: 8px;
     }
 }
 
-/* Фикс для flexbox в старых версиях Safari */
+/* Фиксы для flexbox в Safari */
 .d-flex {
     display: -webkit-box !important;
     display: -ms-flexbox !important;
@@ -677,19 +542,8 @@ h1, h2, h3, h4, h5, h6 {
     flex-direction: column !important;
 }
 
-/* Специфичные фиксы для Telegram */
-@media (max-width: 767px) {
-    .container-fluid {
-        padding-left: 0;
-        padding-right: 0;
-    }
-    
-    .container {
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-    
-    .day-card {
-        border-radius: 10px;
-    }
+/* Снежинка на карточках для особых дней */
+.fa-snowflake.position-absolute {
+    color: #4a6fa5;
+    opacity: 0.7;
 }
