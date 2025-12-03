@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новогодний Advent календарь с промокодами</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-gift"></i> Новогодний Advent календарь</h1>
+            <p class="subtitle">Открывайте окошки каждый день декабря, чтобы получить промокоды на подарки!</p>
+            <div class="date-info">
+                <p>Сегодня: <span id="current-date"></span></p>
+                <p>Открыто окошек: <span id="opened-count">0</span> из <span id="total-count">31</span></p>
+            </div>
+        </header>
+        
+        <main>
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <h2>Декабрь 2023</h2>
+                    <div class="legend">
+                        <div class="legend-item"><span class="legend-open"></span> Открыто</div>
+                        <div class="legend-item"><span class="legend-today"></span> Сегодня</div>
+                        <div class="legend-item"><span class="legend-closed"></span> Закрыто</div>
+                    </div>
+                </div>
+                
+                <div class="calendar" id="calendar">
+                    <!-- Календарь будет создан JavaScript -->
+                </div>
+            </div>
+            
+            <div class="promo-modal" id="promo-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="modal-day">День 1</h3>
+                        <button class="close-modal" id="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="promo-image" id="promo-image">
+                            <!-- Изображение будет загружено через JS -->
+                        </div>
+                        <div class="promo-code-container">
+                            <p class="promo-description" id="promo-description">Описание промокода</p>
+                            <div class="promo-code">
+                                <span id="promo-code-text">PROMO-CODE</span>
+                                <button class="copy-btn" id="copy-btn">
+                                    <i class="far fa-copy"></i> Копировать
+                                </button>
+                            </div>
+                            <div class="promo-actions">
+                                <a href="#" class="product-btn" id="product-btn" target="_blank">
+                                    <i class="fas fa-shopping-cart"></i> Перейти к товару
+                                </a>
+                            </div>
+                            <p class="promo-info"><i class="fas fa-info-circle"></i> Промокод действителен до 31.01.2024</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>С наступающим Новым 2024 годом! <i class="fas fa-tree"></i></p>
+            <p class="instruction">Нажмите на открытые окошки, чтобы увидеть промокод. Закрытые окошки откроются в соответствующий день декабря.</p>
+        </footer>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
