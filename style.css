@@ -41,15 +41,14 @@ body::before {
 
 /* Шапка - упрощенные градиенты для Safari */
 .header-bg {
-    background: #1a2980; /* Для старых браузеров */
+    background: #1a2980;
     background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
-    background: -webkit-linear-gradient(135deg, #1a2980 0%, #26d0ce 100%); /* Для Safari */
-    background: -moz-linear-gradient(135deg, #1a2980 0%, #26d0ce 100%); /* Для Firefox */
+    background: -webkit-linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+    background: -moz-linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
     position: relative;
     overflow: hidden;
 }
 
-/* Упрощенный паттерн для Safari */
 .header-bg::before {
     content: "";
     position: absolute;
@@ -69,57 +68,89 @@ body::before {
 
 /* Футер */
 .footer-bg {
-    background: #2c3e50; /* Для старых браузеров */
+    background: #2c3e50;
     background: linear-gradient(135deg, #2c3e50 0%, #4a6fa5 100%);
     background: -webkit-linear-gradient(135deg, #2c3e50 0%, #4a6fa5 100%);
     background: -moz-linear-gradient(135deg, #2c3e50 0%, #4a6fa5 100%);
 }
 
-/* Календарь */
+/* Контейнер календаря */
+.calendar-container {
+    margin: -6px;
+}
+
 #calendar {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.calendar-col {
+    padding: 6px;
+    width: 50%;
+}
+
+@media (min-width: 400px) {
+    .calendar-col {
+        width: 33.333%;
+    }
 }
 
 @media (min-width: 576px) {
-    #calendar {
-        grid-template-columns: repeat(3, 1fr);
+    .calendar-col {
+        width: 25%;
     }
 }
 
 @media (min-width: 768px) {
-    #calendar {
-        grid-template-columns: repeat(4, 1fr);
+    .calendar-col {
+        width: 20%;
     }
 }
 
 @media (min-width: 992px) {
-    #calendar {
-        grid-template-columns: repeat(6, 1fr);
+    .calendar-col {
+        width: 16.666%;
     }
 }
 
 @media (min-width: 1200px) {
-    #calendar {
-        grid-template-columns: repeat(7, 1fr);
+    .calendar-col {
+        width: 14.285%;
     }
 }
 
+/* Карточка дня */
 .day-card {
-    border-radius: 15px;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
-    height: 120px;
+    height: 100px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     border: 2px solid transparent;
-    -webkit-tap-highlight-color: transparent; /* Убираем синий highlight на мобильных */
+    width: 100%;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+@media (min-width: 576px) {
+    .day-card {
+        height: 110px;
+    }
+}
+
+@media (min-width: 768px) {
+    .day-card {
+        height: 120px;
+    }
 }
 
 .day-card:hover {
@@ -141,7 +172,7 @@ body::before {
     background: -webkit-linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
     border-color: var(--warning-color);
     animation: pulse 2s infinite;
-    -webkit-animation: pulse 2s infinite; /* Для Safari */
+    -webkit-animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
@@ -166,17 +197,26 @@ body::before {
 
 .day-card.closed:hover {
     transform: none;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 .day-number {
-    font-size: 2.2rem;
+    font-size: 1.8rem;
     font-weight: 700;
     margin-bottom: 5px;
-    -webkit-user-select: none; /* Запрещаем выделение текста */
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    line-height: 1;
+}
+
+@media (min-width: 576px) {
+    .day-number {
+        font-size: 2rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .day-number {
+        font-size: 2.2rem;
+    }
 }
 
 .day-card.open .day-number {
@@ -192,14 +232,17 @@ body::before {
 }
 
 .day-status {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    padding: 3px 12px;
+    padding: 3px 10px;
     border-radius: 20px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    white-space: nowrap;
+}
+
+@media (min-width: 576px) {
+    .day-status {
+        font-size: 0.85rem;
+    }
 }
 
 .open .day-status {
@@ -221,8 +264,6 @@ body::before {
 .legend-box {
     background-color: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(0, 0, 0, 0.1);
-    -webkit-backdrop-filter: none; /* Убираем для Safari */
-    backdrop-filter: none;
 }
 
 .legend-dot {
@@ -269,7 +310,7 @@ body::before {
     opacity: 0.7;
     margin-left: 5px;
     animation: snowflake-spin 5s infinite linear;
-    -webkit-animation: snowflake-spin 5s infinite linear; /* Для Safari */
+    -webkit-animation: snowflake-spin 5s infinite linear;
 }
 
 .snowflake-2 {
@@ -299,10 +340,6 @@ body::before {
     cursor: pointer;
     transition: all 0.3s ease;
     -webkit-tap-highlight-color: transparent;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
 }
 
 .promo-code-box:hover {
@@ -364,60 +401,6 @@ body::before {
     color: white;
 }
 
-/* Адаптивность */
-@media (max-width: 768px) {
-    .day-card {
-        height: 100px;
-    }
-    
-    .day-number {
-        font-size: 1.8rem;
-    }
-    
-    .promo-code-box {
-        padding: 1rem;
-    }
-    
-    #promo-code-text {
-        font-size: 1.5rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .day-card {
-        height: 90px;
-    }
-    
-    .day-number {
-        font-size: 1.5rem;
-    }
-    
-    .modal-dialog {
-        margin: 0.5rem;
-    }
-    
-    /* Исправление для модального окна в Safari на iOS */
-    .modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 1050;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        outline: 0;
-    }
-    
-    .modal-open {
-        overflow: hidden;
-    }
-    
-    .modal-open .modal {
-        overflow-x: hidden;
-        overflow-y: auto;
-    }
-}
-
 /* Анимация открытия карточки */
 @keyframes cardOpen {
     0% { transform: rotateY(0) scale(1); }
@@ -438,7 +421,7 @@ body::before {
 
 /* Фикс для копирования текста в Safari */
 .promo-code-box {
-    -webkit-user-select: text; /* Разрешаем выделение текста */
+    -webkit-user-select: text;
     -moz-user-select: text;
     -ms-user-select: text;
     user-select: text;
@@ -451,49 +434,18 @@ body::before {
     user-select: text;
 }
 
-/* Фикс для скрытия модального окна в Safari */
+/* Гарантия, что модальное окно отображается поверх всего */
+.modal {
+    z-index: 1060 !important;
+}
+
 .modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1040;
-    width: 100vw;
-    height: 100vh;
-    background-color: #000;
+    z-index: 1050 !important;
 }
 
-/* Фикс для фиксированного позиционирования в Safari */
-.header-bg, .footer-bg {
-    position: relative;
-    z-index: 1;
-}
-
-/* Улучшение отображения текста в Safari */
-h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
-    letter-spacing: -0.5px;
-}
-
-/* Фикс для градиентов в старых версиях Safari */
-@media not all and (min-resolution:.001dpcm) {
-    @supports (-webkit-appearance:none) {
-        /* Специфичные стили для Safari */
-        .header-bg {
-            background: -webkit-gradient(linear, left top, right bottom, from(#1a2980), to(#26d0ce));
-        }
-        
-        .footer-bg {
-            background: -webkit-gradient(linear, left top, right bottom, from(#2c3e50), to(#4a6fa5));
-        }
-        
-        .day-card.open {
-            background: -webkit-gradient(linear, left top, right bottom, from(#e8f5e9), to(#c8e6c9));
-        }
-        
-        .day-card.today {
-            background: -webkit-gradient(linear, left top, right bottom, from(#fff3e0), to(#ffe0b2));
-        }
-    }
+/* Улучшение touch-событий для мобильных Safari */
+.day-card:active, .promo-code-box:active, .btn:active {
+    opacity: 0.8;
 }
 
 /* Фикс для flexbox в старых версиях Safari */
@@ -528,42 +480,37 @@ h1, h2, h3, h4, h5, h6 {
     flex-direction: column !important;
 }
 
-/* Фикс для grid в Safari */
-#calendar {
-    display: -ms-grid;
-    display: grid;
-    -ms-grid-columns: 1fr 15px 1fr;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 15px;
-    gap: 15px;
+/* Улучшение отображения текста в Safari */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    letter-spacing: -0.5px;
 }
 
-@media (min-width: 576px) {
-    #calendar {
-        -ms-grid-columns: (1fr)[3];
-        grid-template-columns: repeat(3, 1fr);
+/* Адаптивность */
+@media (max-width: 768px) {
+    .promo-code-box {
+        padding: 1rem;
+    }
+    
+    #promo-code-text {
+        font-size: 1.5rem;
     }
 }
 
-/* Гарантия, что модальное окно отображается поверх всего */
-.modal {
-    z-index: 1060 !important;
-}
-
-.modal-backdrop {
-    z-index: 1050 !important;
-}
-
-/* Улучшение touch-событий для мобильных Safari */
-.day-card, .promo-code-box, .btn {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-.day-card:active, .promo-code-box:active, .btn:active {
-    opacity: 0.8;
+@media (max-width: 576px) {
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+    
+    h1.display-5 {
+        font-size: 2rem;
+    }
+    
+    .day-card {
+        height: 90px;
+    }
+    
+    .day-number {
+        font-size: 1.5rem;
+    }
 }
