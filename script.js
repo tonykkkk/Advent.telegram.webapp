@@ -1,4 +1,4 @@
-// Добавьте в начало script.js полифиллы для Safari
+// Полифиллы для старых браузеров
 if (!NodeList.prototype.forEach) {
     NodeList.prototype.forEach = Array.prototype.forEach;
 }
@@ -19,82 +19,6 @@ if (!Element.prototype.closest) {
         return null;
     };
 }
-
-// Остальной код остается без изменений, но добавьте fallback для копирования:
-promoCodeContainer.addEventListener('click', function() {
-    const promoCode = promoCodeElement.textContent;
-    
-    // Улучшенная функция копирования для Safari
-    function copyToClipboard(text) {
-        // Метод для современных браузеров
-        if (navigator.clipboard && window.isSecureContext) {
-            return navigator.clipboard.writeText(text);
-        } else {
-            // Старый метод для Safari и других браузеров
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            
-            // Сделаем textArea невидимым
-            textArea.style.position = 'fixed';
-            textArea.style.left = '-999999px';
-            textArea.style.top = '-999999px';
-            document.body.appendChild(textArea);
-            
-            textArea.focus();
-            textArea.select();
-            
-            try {
-                document.execCommand('copy');
-                return Promise.resolve();
-            } catch (err) {
-                return Promise.reject(err);
-            } finally {
-                textArea.remove();
-            }
-        }
-    }
-    
-    copyToClipboard(promoCode).then(function() {
-        // Показываем уведомление об успешном копировании
-        copyAlert.classList.remove('d-none');
-        
-        // Скрываем уведомление через 3 секунды
-        setTimeout(() => {
-            copyAlert.classList.add('d-none');
-        }, 3000);
-        
-        // Добавляем анимацию на промокод
-        promoCodeContainer.style.transform = 'scale(0.95)';
-        promoCodeContainer.style.backgroundColor = '#d4edda';
-        promoCodeContainer.style.borderColor = '#28a745';
-        
-        setTimeout(() => {
-            promoCodeContainer.style.transform = 'scale(1)';
-            promoCodeContainer.style.backgroundColor = '';
-            promoCodeContainer.style.borderColor = '';
-        }, 300);
-        
-    }).catch(function(err) {
-        console.error('Ошибка при копировании: ', err);
-        
-        // Альтернативный метод для Safari
-        const tempInput = document.createElement('input');
-        tempInput.value = promoCode;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-        document.execCommand('copy');
-        document.body.removeChild(tempInput);
-        
-        // Показываем уведомление
-        copyAlert.classList.remove('d-none');
-        copyAlert.classList.add('alert-success');
-        
-        setTimeout(() => {
-            copyAlert.classList.add('d-none');
-            copyAlert.classList.remove('alert-success');
-        }, 3000);
-    });
-});
 
 document.addEventListener('DOMContentLoaded', function() {
     // Текущая дата - декабрь 2025
@@ -168,10 +92,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Функция для показа уведомления об ошибке
     function showErrorNotification(message) {
-        // Создаем уведомление в стиле Bootstrap
         const notification = document.createElement('div');
         notification.className = 'alert alert-warning alert-dismissible fade show position-fixed top-0 end-0 m-3';
         notification.style.zIndex = '1100';
+        notification.style.maxWidth = '300px';
         notification.innerHTML = `
             <i class="fas fa-exclamation-triangle me-2"></i>
             <strong>Внимание!</strong> ${message}
@@ -179,7 +103,6 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.body.appendChild(notification);
         
-        // Автоматически закрываем уведомление через 5 секунд
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.remove();
@@ -189,7 +112,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Функция создания календаря
     function createCalendar() {
-        const calendarElement = document.getElementById('calendar');
+        const calendarContainer = document.getElementById('calendar-container');
+        calendarContainer.innerHTML = '';
+        
+        const calendarWrapper = document.createElement('div');
+        calendarWrapper.className = 'row';
+        calendarWrapper.id = 'calendar';
+        
         let openedCount = 0;
         
         // Загружаем состояние открытых окошек из localStorage
@@ -197,8 +126,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Создаем карточки для каждого дня декабря
         for (let day = 1; day <= 31; day++) {
-            const col = document.createElement('div');
-            col.className = 'col-6 col-sm-4 col-md-3 col-lg-2';
+            const dayCol = document.createElement('div');
+            dayCol.className = 'calendar-col';
             
             const dayCard = document.createElement('div');
             dayCard.className = 'day-card';
@@ -229,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Добавляем эффект снежинки для новогодних дней
             let snowflake = '';
             if (day === 24 || day === 25 || day === 31) {
-                snowflake = '<i class="fas fa-snowflake position-absolute top-0 start-0 m-2 text-primary" style="font-size: 0.8rem;"></i>';
+                snowflake = '<i class="fas fa-snowflake position-absolute top-0 start-0 m-1 text-primary" style="font-size: 0.7rem;"></i>';
             }
             
             dayCard.innerHTML = `
@@ -243,11 +172,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 dayCard.addEventListener('click', function() {
                     openPromoCard(day);
                 });
+                
+                // Для демонстрации (если не декабрь 2025) также добавляем обработчик
+                if (!isDecember2025) {
+                    dayCard.addEventListener('click', function() {
+                        openPromoCard(day);
+                    });
+                }
             }
             
-            col.appendChild(dayCard);
-            calendarElement.appendChild(col);
+            dayCol.appendChild(dayCard);
+            calendarWrapper.appendChild(dayCol);
         }
+        
+        calendarContainer.appendChild(calendarWrapper);
         
         // Обновляем счетчик открытых окошек
         document.getElementById('opened-count').textContent = openedCount;
@@ -304,7 +242,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Устанавливаем изображение
-        // Создаем объект Image для предзагрузки
         const img = new Image();
         img.onload = function() {
             promoImageElement.innerHTML = '';
@@ -313,7 +250,6 @@ document.addEventListener('DOMContentLoaded', function() {
             img.style.maxHeight = '180px';
         };
         img.onerror = function() {
-            // Если изображение не загрузилось, показываем иконку подарка
             promoImageElement.innerHTML = `
                 <div class="text-center">
                     <i class="fas fa-gift fa-5x text-primary mb-3"></i>
@@ -349,12 +285,41 @@ document.addEventListener('DOMContentLoaded', function() {
         promoModal.show();
     }
     
+    // Улучшенная функция копирования для всех браузеров
+    function copyToClipboard(text) {
+        // Метод для современных браузеров
+        if (navigator.clipboard && window.isSecureContext) {
+            return navigator.clipboard.writeText(text);
+        } else {
+            // Старый метод для Safari и других браузеров
+            return new Promise(function(resolve, reject) {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                textArea.style.top = '-999999px';
+                document.body.appendChild(textArea);
+                
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    resolve();
+                } catch (err) {
+                    reject(err);
+                } finally {
+                    textArea.remove();
+                }
+            });
+        }
+    }
+    
     // Обработчик клика для копирования промокода
     promoCodeContainer.addEventListener('click', function() {
         const promoCode = promoCodeElement.textContent;
         
-        // Используем Clipboard API для копирования
-        navigator.clipboard.writeText(promoCode).then(function() {
+        copyToClipboard(promoCode).then(function() {
             // Показываем уведомление об успешном копировании
             copyAlert.classList.remove('d-none');
             
@@ -377,15 +342,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }).catch(function(err) {
             console.error('Ошибка при копировании: ', err);
             
-            // Fallback для старых браузеров
-            const textArea = document.createElement('textarea');
-            textArea.value = promoCode;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            
-            // Показываем уведомление
+            // Показываем уведомление даже при ошибке
             copyAlert.classList.remove('d-none');
             copyAlert.classList.add('alert-success');
             
