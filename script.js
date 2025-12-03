@@ -1,3 +1,101 @@
+// Добавьте в начало script.js полифиллы для Safari
+if (!NodeList.prototype.forEach) {
+    NodeList.prototype.forEach = Array.prototype.forEach;
+}
+
+if (!Element.prototype.matches) {
+    Element.prototype.matches = Element.prototype.msMatchesSelector || 
+                                Element.prototype.webkitMatchesSelector;
+}
+
+if (!Element.prototype.closest) {
+    Element.prototype.closest = function(s) {
+        var el = this;
+        if (!document.documentElement.contains(el)) return null;
+        do {
+            if (el.matches(s)) return el;
+            el = el.parentElement || el.parentNode;
+        } while (el !== null && el.nodeType === 1);
+        return null;
+    };
+}
+
+// Остальной код остается без изменений, но добавьте fallback для копирования:
+promoCodeContainer.addEventListener('click', function() {
+    const promoCode = promoCodeElement.textContent;
+    
+    // Улучшенная функция копирования для Safari
+    function copyToClipboard(text) {
+        // Метод для современных браузеров
+        if (navigator.clipboard && window.isSecureContext) {
+            return navigator.clipboard.writeText(text);
+        } else {
+            // Старый метод для Safari и других браузеров
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            
+            // Сделаем textArea невидимым
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                return Promise.resolve();
+            } catch (err) {
+                return Promise.reject(err);
+            } finally {
+                textArea.remove();
+            }
+        }
+    }
+    
+    copyToClipboard(promoCode).then(function() {
+        // Показываем уведомление об успешном копировании
+        copyAlert.classList.remove('d-none');
+        
+        // Скрываем уведомление через 3 секунды
+        setTimeout(() => {
+            copyAlert.classList.add('d-none');
+        }, 3000);
+        
+        // Добавляем анимацию на промокод
+        promoCodeContainer.style.transform = 'scale(0.95)';
+        promoCodeContainer.style.backgroundColor = '#d4edda';
+        promoCodeContainer.style.borderColor = '#28a745';
+        
+        setTimeout(() => {
+            promoCodeContainer.style.transform = 'scale(1)';
+            promoCodeContainer.style.backgroundColor = '';
+            promoCodeContainer.style.borderColor = '';
+        }, 300);
+        
+    }).catch(function(err) {
+        console.error('Ошибка при копировании: ', err);
+        
+        // Альтернативный метод для Safari
+        const tempInput = document.createElement('input');
+        tempInput.value = promoCode;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        
+        // Показываем уведомление
+        copyAlert.classList.remove('d-none');
+        copyAlert.classList.add('alert-success');
+        
+        setTimeout(() => {
+            copyAlert.classList.add('d-none');
+            copyAlert.classList.remove('alert-success');
+        }, 3000);
+    });
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     // Текущая дата - декабрь 2025
     const today = new Date();
