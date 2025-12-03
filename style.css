@@ -12,21 +12,65 @@
     --holiday-green: #388e3c;
 }
 
-body {
-    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background-color: #f0f8ff;
-    background-image: 
-        radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.9) 0%, transparent 20%),
-        radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.7) 0%, transparent 20%);
-    color: #333;
-    min-height: 100vh;
-    position: relative;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+/* Темная тема для Telegram */
+:root[data-theme="dark"] {
+    --primary-color: #5d8cc9;
+    --secondary-color: #ffb085;
+    --success-color: #9ccc65;
+    --warning-color: #ffcc80;
+    --danger-color: #ef9a9a;
+    --light-color: #2d3748;
+    --dark-color: #1a202c;
+    --snow-color: #1e293b;
+    --holiday-red: #f56565;
+    --holiday-green: #48bb78;
 }
 
-/* Декоративные снежинки на фоне - упрощенная версия для Safari */
+* {
+    -webkit-tap-highlight-color: transparent;
+    tap-highlight-color: transparent;
+}
+
+html, body {
+    height: 100%;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    overflow-x: hidden;
+    position: relative;
+}
+
+body {
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: var(--snow-color);
+    color: #333;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease;
+}
+
+/* Темная тема для Telegram */
+:root[data-theme="dark"] body {
+    background-color: var(--dark-color);
+    color: #e2e8f0;
+    background-image: none;
+}
+
+.container-fluid {
+    min-height: 100vh;
+}
+
+/* Фикс для Safari в Telegram iOS */
+@supports (-webkit-touch-callout: none) {
+    .container-fluid {
+        min-height: -webkit-fill-available;
+    }
+    
+    body {
+        min-height: -webkit-fill-available;
+    }
+}
+
+/* Декоративные снежинки на фоне */
 body::before {
     content: "";
     position: fixed;
@@ -34,19 +78,29 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='20' cy='20' r='2' fill='%23ffffff' fill-opacity='0.1'/%3E%3Ccircle cx='50' cy='50' r='1.5' fill='%23ffffff' fill-opacity='0.1'/%3E%3Ccircle cx='80' cy='80' r='2' fill='%23ffffff' fill-opacity='0.1'/%3E%3Ccircle cx='30' cy='70' r='1.5' fill='%23ffffff' fill-opacity='0.1'/%3E%3Ccircle cx='70' cy='30' r='2' fill='%23ffffff' fill-opacity='0.1'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='20' cy='20' r='2' fill='%23ffffff' fill-opacity='0.05'/%3E%3Ccircle cx='50' cy='50' r='1.5' fill='%23ffffff' fill-opacity='0.05'/%3E%3Ccircle cx='80' cy='80' r='2' fill='%23ffffff' fill-opacity='0.05'/%3E%3Ccircle cx='30' cy='70' r='1.5' fill='%23ffffff' fill-opacity='0.05'/%3E%3Ccircle cx='70' cy='30' r='2' fill='%23ffffff' fill-opacity='0.05'/%3E%3C/svg%3E");
     z-index: -1;
     pointer-events: none;
 }
 
-/* Шапка - упрощенные градиенты для Safari */
+:root[data-theme="dark"] body::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='20' cy='20' r='2' fill='%234a5568' fill-opacity='0.1'/%3E%3Ccircle cx='50' cy='50' r='1.5' fill='%234a5568' fill-opacity='0.1'/%3E%3Ccircle cx='80' cy='80' r='2' fill='%234a5568' fill-opacity='0.1'/%3E%3Ccircle cx='30' cy='70' r='1.5' fill='%234a5568' fill-opacity='0.1'/%3E%3Ccircle cx='70' cy='30' r='2' fill='%234a5568' fill-opacity='0.1'/%3E%3C/svg%3E");
+}
+
+/* Шапка */
 .header-bg {
     background: #1a2980;
     background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
     background: -webkit-linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
-    background: -moz-linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
     position: relative;
     overflow: hidden;
+    transition: background 0.3s ease;
+}
+
+:root[data-theme="dark"] .header-bg {
+    background: #2d3748;
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+    background: -webkit-linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
 }
 
 .header-bg::before {
@@ -61,6 +115,10 @@ body::before {
     opacity: 0.5;
 }
 
+:root[data-theme="dark"] .header-bg::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cpath d='M100 0L130 60L200 70L130 80L100 140L70 80L0 70L70 60L100 0Z' fill='%23e2e8f0' fill-opacity='0.05'/%3E%3C/svg%3E");
+}
+
 .header-bg .container {
     position: relative;
     z-index: 1;
@@ -71,7 +129,13 @@ body::before {
     background: #2c3e50;
     background: linear-gradient(135deg, #2c3e50 0%, #4a6fa5 100%);
     background: -webkit-linear-gradient(135deg, #2c3e50 0%, #4a6fa5 100%);
-    background: -moz-linear-gradient(135deg, #2c3e50 0%, #4a6fa5 100%);
+    transition: background 0.3s ease;
+}
+
+:root[data-theme="dark"] .footer-bg {
+    background: #2d3748;
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+    background: -webkit-linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
 }
 
 /* Контейнер календаря */
@@ -82,40 +146,53 @@ body::before {
 #calendar {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .calendar-col {
     padding: 6px;
-    width: 50%;
+    width: 33.333%;
+    max-width: 33.333%;
+    flex: 0 0 33.333%;
 }
 
 @media (min-width: 400px) {
     .calendar-col {
-        width: 33.333%;
+        width: 25%;
+        max-width: 25%;
+        flex: 0 0 25%;
     }
 }
 
 @media (min-width: 576px) {
     .calendar-col {
-        width: 25%;
+        width: 20%;
+        max-width: 20%;
+        flex: 0 0 20%;
     }
 }
 
 @media (min-width: 768px) {
     .calendar-col {
-        width: 20%;
+        width: 16.666%;
+        max-width: 16.666%;
+        flex: 0 0 16.666%;
     }
 }
 
 @media (min-width: 992px) {
     .calendar-col {
-        width: 16.666%;
+        width: 14.285%;
+        max-width: 14.285%;
+        flex: 0 0 14.285%;
     }
 }
 
 @media (min-width: 1200px) {
     .calendar-col {
-        width: 14.285%;
+        width: 12.5%;
+        max-width: 12.5%;
+        flex: 0 0 12.5%;
     }
 }
 
@@ -134,11 +211,11 @@ body::before {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     border: 2px solid transparent;
     width: 100%;
-    -webkit-tap-highlight-color: transparent;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    touch-action: manipulation;
 }
 
 @media (min-width: 576px) {
@@ -153,17 +230,27 @@ body::before {
     }
 }
 
+.day-card:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+}
+
 .day-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Упрощенные градиенты для карточек */
+/* Градиенты для карточек */
 .day-card.open {
     background: #e8f5e9;
     background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
     background: -webkit-linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
     border-color: var(--success-color);
+}
+
+:root[data-theme="dark"] .day-card.open {
+    background: linear-gradient(135deg, #2d4a2d 0%, #1e3a1e 100%);
+    border-color: var(--holiday-green);
 }
 
 .day-card.today {
@@ -173,6 +260,11 @@ body::before {
     border-color: var(--warning-color);
     animation: pulse 2s infinite;
     -webkit-animation: pulse 2s infinite;
+}
+
+:root[data-theme="dark"] .day-card.today {
+    background: linear-gradient(135deg, #4a3a2d 0%, #3a2a1e 100%);
+    border-color: var(--warning-color);
 }
 
 @keyframes pulse {
@@ -195,6 +287,11 @@ body::before {
     cursor: not-allowed;
 }
 
+:root[data-theme="dark"] .day-card.closed {
+    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+    border-color: #4b5563;
+}
+
 .day-card.closed:hover {
     transform: none;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
@@ -205,6 +302,7 @@ body::before {
     font-weight: 700;
     margin-bottom: 5px;
     line-height: 1;
+    transition: color 0.3s ease;
 }
 
 @media (min-width: 576px) {
@@ -231,12 +329,17 @@ body::before {
     color: #aaa;
 }
 
+:root[data-theme="dark"] .day-card.closed .day-number {
+    color: #94a3b8;
+}
+
 .day-status {
     font-size: 0.75rem;
     font-weight: 600;
     padding: 3px 10px;
     border-radius: 20px;
     white-space: nowrap;
+    transition: all 0.3s ease;
 }
 
 @media (min-width: 576px) {
@@ -260,10 +363,22 @@ body::before {
     color: #888;
 }
 
+:root[data-theme="dark"] .closed .day-status {
+    background-color: rgba(148, 163, 184, 0.2);
+    color: #94a3b8;
+}
+
 /* Легенда */
 .legend-box {
     background-color: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+:root[data-theme="dark"] .legend-box {
+    background-color: rgba(45, 55, 72, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
 }
 
 .legend-dot {
@@ -285,18 +400,33 @@ body::before {
     background-color: #aaa;
 }
 
+:root[data-theme="dark"] .legend-closed {
+    background-color: #94a3b8;
+}
+
 /* Модальное окно */
 .modal-content {
     border-radius: 20px;
     overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+:root[data-theme="dark"] .modal-content {
+    background: #2d3748;
+    color: #e2e8f0;
 }
 
 .bg-gradient-promo {
     background: #1a2980;
     background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
     background: -webkit-linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
-    background: -moz-linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
     padding: 1.5rem;
+}
+
+:root[data-theme="dark"] .bg-gradient-promo {
+    background: #2d3748;
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+    background: -webkit-linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
 }
 
 .snowflakes {
@@ -339,7 +469,21 @@ body::before {
     border: 2px dashed #4a6fa5;
     cursor: pointer;
     transition: all 0.3s ease;
-    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+    touch-action: manipulation;
+}
+
+:root[data-theme="dark"] .promo-code-box {
+    background-color: #374151;
+    border-color: var(--primary-color);
+    color: #e2e8f0;
+}
+
+.promo-code-box:active {
+    transform: scale(0.98);
 }
 
 .promo-code-box:hover {
@@ -379,6 +523,13 @@ body::before {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     background: -webkit-linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border: 2px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+:root[data-theme="dark"] .promo-image-container {
+    background: #374151;
+    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+    border-color: #4b5563;
 }
 
 /* Кнопки */
@@ -389,6 +540,11 @@ body::before {
     border: none;
     color: white;
     transition: all 0.3s ease;
+    touch-action: manipulation;
+}
+
+.btn-warning:active {
+    transform: scale(0.98);
 }
 
 .btn-warning:hover {
@@ -419,21 +575,6 @@ body::before {
     -webkit-animation: cardOpen 0.8s ease;
 }
 
-/* Фикс для копирования текста в Safari */
-.promo-code-box {
-    -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
-    user-select: text;
-}
-
-#promo-code-text {
-    -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
-    user-select: text;
-}
-
 /* Гарантия, что модальное окно отображается поверх всего */
 .modal {
     z-index: 1060 !important;
@@ -443,9 +584,65 @@ body::before {
     z-index: 1050 !important;
 }
 
-/* Улучшение touch-событий для мобильных Safari */
-.day-card:active, .promo-code-box:active, .btn:active {
-    opacity: 0.8;
+/* Улучшение отображения текста */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 768px) {
+    .promo-code-box {
+        padding: 1rem;
+    }
+    
+    #promo-code-text {
+        font-size: 1.5rem;
+    }
+    
+    h1.display-6 {
+        font-size: 1.8rem;
+    }
+    
+    .lead {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+    
+    .day-card {
+        height: 90px;
+    }
+    
+    .day-number {
+        font-size: 1.5rem;
+    }
+    
+    .calendar-col {
+        width: 50%;
+        max-width: 50%;
+        flex: 0 0 50%;
+    }
+}
+
+/* Улучшение для очень маленьких экранов */
+@media (max-width: 360px) {
+    .day-card {
+        height: 85px;
+    }
+    
+    .day-number {
+        font-size: 1.3rem;
+    }
+    
+    .day-status {
+        font-size: 0.7rem;
+        padding: 2px 8px;
+    }
 }
 
 /* Фикс для flexbox в старых версиях Safari */
@@ -480,37 +677,19 @@ body::before {
     flex-direction: column !important;
 }
 
-/* Улучшение отображения текста в Safari */
-h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
-    letter-spacing: -0.5px;
-}
-
-/* Адаптивность */
-@media (max-width: 768px) {
-    .promo-code-box {
-        padding: 1rem;
+/* Специфичные фиксы для Telegram */
+@media (max-width: 767px) {
+    .container-fluid {
+        padding-left: 0;
+        padding-right: 0;
     }
     
-    #promo-code-text {
-        font-size: 1.5rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .modal-dialog {
-        margin: 0.5rem;
-    }
-    
-    h1.display-5 {
-        font-size: 2rem;
+    .container {
+        padding-left: 10px;
+        padding-right: 10px;
     }
     
     .day-card {
-        height: 90px;
-    }
-    
-    .day-number {
-        font-size: 1.5rem;
+        border-radius: 10px;
     }
 }
