@@ -23,8 +23,63 @@ if (!Element.prototype.closest) {
 // Глобальные переменные
 let promoModal = null;
 let promoData = {};
+let telegramWebApp = null;
 
-// Улучшенная функция копирования для всех браузеров
+// Инициализация Telegram WebApp
+function initTelegramWebApp() {
+    if (typeof window.Telegram !== 'undefined' && window.Telegram.WebApp) {
+        telegramWebApp = window.Telegram.WebApp;
+        
+        // Расширяем на весь экран
+        telegramWebApp.expand();
+        
+        // Устанавливаем тему приложения
+        telegramWebApp.setHeaderColor('#1a2980');
+        telegramWebApp.setBackgroundColor('#f0f8ff');
+        
+        // Скрываем кнопку "Назад"
+        telegramWebApp.BackButton.hide();
+        
+        // Включаем кнопки подтверждения
+        telegramWebApp.MainButton.setText("Открыть сегодняшний промокод");
+        telegramWebApp.MainButton.hide();
+        
+        console.log('Telegram WebApp инициализирован:', {
+            платформа: telegramWebApp.platform,
+            версия: telegramWebApp.version,
+            язык: telegramWebApp.initDataUnsafe.user?.language_code || 'ru'
+        });
+        
+        return true;
+    }
+    return false;
+}
+
+// Функция для показа уведомления в Telegram
+function showTelegramAlert(message, type = 'info') {
+    if (telegramWebApp) {
+        if (type === 'success') {
+            telegramWebApp.showPopup({
+                title: '🎉 Успех!',
+                message: message,
+                buttons: [{ type: 'ok' }]
+            });
+        } else if (type === 'error') {
+            telegramWebApp.showPopup({
+                title: '⚠️ Ошибка',
+                message: message,
+                buttons: [{ type: 'ok' }]
+            });
+        } else {
+            telegramWebApp.showAlert(message);
+        }
+    } else {
+        // Fallback для браузера
+        alert(message);
+    }
+}
+
+// Улучшенная функция копирования с Telegram интеграцией
 function copyToClipboard(text) {
     return new Promise(function(resolve, reject) {
         if (navigator.clipboard && window.isSecureContext) {
@@ -77,7 +132,7 @@ async function loadPromoCodes() {
         
     } catch (error) {
         console.error('Ошибка загрузки промокодов:', error);
-        showError('Не удалось загрузить промокоды. Используются демо-данные.');
+        showTelegramAlert('Не удалось загрузить промокоды. Используются демо-данные.', 'error');
         loadDemoData();
         return false;
     }
@@ -95,26 +150,6 @@ function loadDemoData() {
     }
 }
 
-// Функция для показа ошибки
-function showError(message) {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = 'alert alert-warning alert-dismissible fade show position-fixed top-0 start-0 m-3';
-    alertDiv.style.zIndex = '1100';
-    alertDiv.style.maxWidth = '300px';
-    alertDiv.innerHTML = `
-        <i class="fas fa-exclamation-triangle me-2"></i>
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    document.body.appendChild(alertDiv);
-    
-    setTimeout(() => {
-        if (alertDiv.parentNode) {
-            alertDiv.remove();
-        }
-    }, 5000);
-}
-
 // Функция создания календаря
 function createCalendar() {
     const calendarContainer = document.getElementById('calendar-container');
@@ -123,7 +158,7 @@ function createCalendar() {
     // Текущая дата
     const today = new Date();
     const currentDay = today.getDate();
-    const currentMonth = today.getMonth(); // 0-январь, 11-декабрь
+    const currentMonth = today.getMonth();
     const currentYear = today.getFullYear();
     
     // Проверяем, декабрь ли сейчас 2025 года
@@ -144,22 +179,19 @@ function createCalendar() {
         let statusText = '';
         
         if (isDecember2025) {
-            // Если СЕЙЧАС ДЕКАБРЬ 2025
             if (day === currentDay) {
-                // Сегодняшний день
                 status = 'today';
                 statusText = 'Сегодня';
             } else if (day < currentDay) {
-                // Прошедшие дни - ПРОПУЩЕНЫ
                 status = 'missed';
                 statusText = 'Пропущено';
             } else {
-                // Будущие дни - БУДУЩЕЕ
+                // Будущие дни стилизуем как открытые (с зеленым фоном)
                 status = 'future';
                 statusText = 'Будущее';
             }
         } else {
-            // Если НЕ ДЕКАБРЬ 2025 - ВСЕ ДНИ БУДУЩИЕ
+            // Если не декабрь 2025 - все дни будущие (с зеленым фоном)
             status = 'future';
             statusText = 'Будущее';
         }
@@ -181,13 +213,11 @@ function createCalendar() {
         
         // Добавляем обработчик клика
         if (status === 'today') {
-            // Кликабелен только сегодняшний день
             dayCard.addEventListener('click', function() {
                 openPromoCard(day);
             });
             dayCard.style.cursor = 'pointer';
         } else {
-            // Не кликабельны: пропущенные и будущие дни
             dayCard.style.cursor = 'not-allowed';
             dayCard.style.opacity = '0.7';
         }
@@ -195,13 +225,21 @@ function createCalendar() {
         calendarContainer.appendChild(dayCard);
     }
     
-    console.log('Календарь создан:', {
-        дней: 31,
-        сегодня: currentDay,
-        месяц: currentMonth + 1,
-        год: currentYear,
-        декабрь2025: isDecember2025
-    });
+    // Показываем кнопку Telegram для сегодняшнего дня
+    if (isDecember2025) {
+        showTodayButton(currentDay);
+    }
+}
+
+// Функция показа кнопки для сегодняшнего дня
+function showTodayButton(day) {
+    if (telegramWebApp) {
+        telegramWebApp.MainButton.setText(`🎁 Открыть промокод дня ${day}`);
+        telegramWebApp.MainButton.onClick(function() {
+            openPromoCard(day);
+        });
+        telegramWebApp.MainButton.show();
+    }
 }
 
 // Функция открытия карточки с промокодом
@@ -216,12 +254,10 @@ function openPromoCard(day) {
     const isDecember2025 = currentMonth === 11 && currentYear === 2025;
     
     // Проверяем, можно ли открыть этот день
-    // Можно открыть только сегодняшний день
     const isToday = (day === currentDay && isDecember2025);
     
     if (!isToday) {
-        // Нельзя открыть пропущенные или будущие дни
-        showError('Этот день еще не наступил или уже прошел');
+        showTelegramAlert('Этот день еще не наступил или уже прошел', 'error');
         return;
     }
     
@@ -236,7 +272,7 @@ function openPromoCard(day) {
     // Получаем данные промокода
     const promo = promoData[day];
     if (!promo) {
-        showError('Промокод для этого дня не найден');
+        showTelegramAlert('Промокод для этого дня не найден', 'error');
         return;
     }
     
@@ -245,7 +281,7 @@ function openPromoCard(day) {
     document.getElementById('promo-description').textContent = promo.description;
     document.getElementById('promo-code-text').textContent = promo.code;
     
-    // Устанавливаем ссылку на товару
+    // Устанавливаем ссылку на товар
     const productBtn = document.getElementById('product-btn');
     if (promo.productUrl) {
         productBtn.href = promo.productUrl;
@@ -279,6 +315,15 @@ function openPromoCard(day) {
     if (promoModal) {
         promoModal.show();
     }
+    
+    // Отправляем событие в Telegram
+    if (telegramWebApp) {
+        telegramWebApp.sendData(JSON.stringify({
+            action: 'promo_opened',
+            day: day,
+            timestamp: new Date().toISOString()
+        }));
+    }
 }
 
 // Настройка обработчиков событий
@@ -290,11 +335,15 @@ function setupEventListeners() {
     if (promoCodeContainer && copyAlert) {
         promoCodeContainer.addEventListener('click', async function() {
             const promoCode = document.getElementById('promo-code-text').textContent;
+            const day = document.getElementById('modal-day').textContent;
             
             try {
                 await copyToClipboard(promoCode);
                 
-                // Показываем уведомление
+                // Показываем уведомление в Telegram
+                showTelegramAlert(`✅ Промокод дня ${day} скопирован!\n\n${promoCode}`, 'success');
+                
+                // Показываем уведомление на странице
                 copyAlert.classList.remove('d-none');
                 
                 // Добавляем анимацию на промокод
@@ -309,9 +358,19 @@ function setupEventListeners() {
                     promoCodeContainer.style.borderColor = '';
                 }, 3000);
                 
+                // Отправляем событие копирования в Telegram
+                if (telegramWebApp) {
+                    telegramWebApp.sendData(JSON.stringify({
+                        action: 'promo_copied',
+                        day: day,
+                        code: promoCode,
+                        timestamp: new Date().toISOString()
+                    }));
+                }
+                
             } catch (err) {
                 console.error('Ошибка копирования:', err);
-                showError('Не удалось скопировать промокод');
+                showTelegramAlert('Не удалось скопировать промокод', 'error');
             }
         });
     }
@@ -322,6 +381,27 @@ function setupEventListeners() {
         productBtn.addEventListener('click', function(e) {
             const day = document.getElementById('modal-day').textContent;
             console.log(`Переход по промокоду дня ${day}`);
+            
+            // Отправляем событие перехода в Telegram
+            if (telegramWebApp) {
+                telegramWebApp.sendData(JSON.stringify({
+                    action: 'product_clicked',
+                    day: day,
+                    url: this.href,
+                    timestamp: new Date().toISOString()
+                }));
+            }
+        });
+    }
+    
+    // Обработчик закрытия модального окна
+    const modalElement = document.getElementById('promoModal');
+    if (modalElement) {
+        modalElement.addEventListener('hidden.bs.modal', function () {
+            // Скрываем кнопку Telegram если нужно
+            if (telegramWebApp) {
+                telegramWebApp.MainButton.hide();
+            }
         });
     }
 }
@@ -329,6 +409,9 @@ function setupEventListeners() {
 // Основная функция инициализации
 async function initApp() {
     console.log('Инициализация приложения...');
+    
+    // Инициализируем Telegram WebApp
+    initTelegramWebApp();
     
     // Инициализируем модальное окно Bootstrap
     const modalElement = document.getElementById('promoModal');
@@ -355,6 +438,16 @@ async function initApp() {
         год: today.getFullYear(),
         декабрь2025: (today.getMonth() === 11 && today.getFullYear() === 2025)
     });
+    
+    // Отправляем событие загрузки приложения в Telegram
+    if (telegramWebApp) {
+        telegramWebApp.sendData(JSON.stringify({
+            action: 'app_loaded',
+            timestamp: new Date().toISOString(),
+            platform: telegramWebApp.platform,
+            version: telegramWebApp.version
+        }));
+    }
 }
 
 // Запуск приложения при загрузке страницы
@@ -362,7 +455,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         initApp().catch(error => {
             console.error('Ошибка инициализации приложения:', error);
-            showError('Произошла ошибка при загрузке приложения');
+            showTelegramAlert('Произошла ошибка при загрузке приложения', 'error');
         });
     }, 100);
 });
