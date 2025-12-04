@@ -2,7 +2,7 @@
 :root {
     --primary-color: #4CAF50; /* Основной зеленый из ecoplace */
     --primary-dark: #3d8b40; /* Темно-зеленый для hover */
-    --secondary-color: #ff9e6d; /* Оранжевый оставляем для акцентов */
+    --secondary-color: #f44336; /* Оранжевый оставляем для акцентов */
     --success-color: #2e7d32; /* Зеленый для успеха из ecoplace */
     --warning-color: #ffb74d; /* Оставляем для сегодняшнего дня */
     --danger-color: #f44336; /* Красный из ecoplace */
