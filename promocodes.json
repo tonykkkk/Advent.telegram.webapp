@@ -25,21 +25,21 @@
       "day": 4,
       "code": "XMASGIFT-25",
       "description": "25% скидка на игрушки и подарки",
-      "image": "images/gift4.jpg",
+      "image": "images/gift.png",
       "productUrl": "https://example.com/products/toys-gifts"
     },
     {
       "day": 5,
       "code": "HOLIDAY-30",
       "description": "30% скидка на зимнюю одежду",
-      "image": "images/gift5.jpg",
+      "image": "images/gift.png",
       "productUrl": "https://example.com/products/winter-clothing"
     },
     {
       "day": 6,
       "code": "FESTIVE-12",
       "description": "Скидка 12% на косметику и парфюмерию",
-      "image": "images/gift6.jpg",
+      "image": "images/gift.png",
       "productUrl": "https://example.com/products/cosmetics-perfume"
     },
     {
