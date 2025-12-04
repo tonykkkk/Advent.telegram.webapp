@@ -120,6 +120,33 @@ body::before {
     z-index: 1;
 }
 
+/* Логотип над заголовком календаря */
+.calendar-logo {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.calendar-logo img {
+    max-width: 200px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+    .calendar-logo img {
+        max-width: 150px;
+    }
+}
+
+@media (max-width: 576px) {
+    .calendar-logo img {
+        max-width: 120px;
+    }
+}
+
 /* Заголовки с новым шрифтом */
 h1, h2, h3, h4, h5, h6,
 .calendar-title,
@@ -245,6 +272,26 @@ h2 {
     -webkit-user-select: none;
     user-select: none;
     padding: 10px;
+}
+
+/* Фоновое изображение для карточки дня - ИСПРАВЛЕНО */
+.day-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.15;
+    z-index: 0;
+    transition: opacity 0.3s ease;
+}
+
+.day-card:hover::before {
+    opacity: 0.25;
 }
 
 /* Карточка акции (специальная карточка) - ТОЛЬКО КАРТИНКА */
@@ -379,7 +426,7 @@ h2 {
     line-height: 1;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     position: relative;
-    z-index: 2;
+    z-index: 1; /* Изменено с 2 на 1 для корректного отображения поверх фона */
 }
 
 @media (min-width: 576px) {
@@ -416,7 +463,7 @@ h2 {
     text-transform: uppercase;
     letter-spacing: 1px;
     position: relative;
-    z-index: 2;
+    z-index: 1; /* Изменено с 2 на 1 для корректного отображения поверх фона */
     text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
 }
 
@@ -447,7 +494,7 @@ h2 {
     white-space: nowrap;
     font-family: 'Esqadero FF CY 4F', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     position: relative;
-    z-index: 2;
+    z-index: 1; /* Изменено с 2 на 1 для корректного отображения поверх фона */
     backdrop-filter: blur(5px);
     background-color: rgba(255, 255, 255, 0.8);
 }
