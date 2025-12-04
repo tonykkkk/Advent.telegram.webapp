@@ -26,6 +26,16 @@ let promoData = {};
 let specialCardsData = {};
 let telegramWebApp = null;
 
+// Карта расположения специальных карточек между днями
+// Формат: {position: 'after', day: X} - означает карточка идет ПОСЛЕ дня X
+const specialCardsPositions = [
+    { day: 3, position: 'after', specialData: { day: 's3.1' } }, // После 3 дня
+    { day: 8, position: 'after', specialData: { day: 's8.1' } }, // После 8 дня
+    { day: 15, position: 'after', specialData: { day: 's15.1' } }, // После 15 дня
+    { day: 22, position: 'after', specialData: { day: 's22.1' } }, // После 22 дня
+    { day: 28, position: 'after', specialData: { day: 's28.1' } }  // После 28 дня
+];
+
 // Инициализация Telegram WebApp
 function initTelegramWebApp() {
     if (typeof window.Telegram !== 'undefined' && window.Telegram.WebApp) {
@@ -123,12 +133,27 @@ function sendPromoCodeToBot(promoCode, description, day) {
             return true;
         }
         
+        // Метод 2: Используем открытие ссылки с deep linking
+        // Создаем ссылку для открытия диалога с ботом
+        const botUsername = 'ecoplace_bot'; // Замените на имя вашего бота
+        const encodedMessage = encodeURIComponent(message);
+        const shareUrl = `https://t.me/${botUsername}?start=promo_${day}&text=${encodedMessage}`;
         
+        // Открываем ссылку в WebView
+        telegramWebApp.openTelegramLink(shareUrl);
+        console.log('Открыта ссылка для отправки:', shareUrl);
+        return true;
         
     } catch (error) {
         console.error('Ошибка отправки промокода:', error);
         
-        
+        // Метод 3: Fallback - показываем инструкцию
+        showAlert(
+            `Скопируйте промокод и отправьте его в диалог с нашим ботом:\n\n` +
+            `Промокод: ${promoCode}\n\n` +
+            `Для быстрого перехода к боту используйте: @ecoplace_bot`,
+            'info'
+        );
         return false;
     }
 }
@@ -187,7 +212,9 @@ async function loadPromoCodes() {
         specialCardsData = {};
         if (data.specialCards) {
             data.specialCards.forEach(card => {
-                specialCardsData[card.day] = {
+                // Используем специальный ключ для специальных карточек
+                const specialKey = card.day;
+                specialCardsData[specialKey] = {
                     type: card.type,
                     image: card.image,
                     backgroundImage: card.backgroundImage,
@@ -195,10 +222,21 @@ async function loadPromoCodes() {
                     actionUrl: card.actionUrl
                 };
             });
+            
+            // Обновляем позиции специальных карточек из JSON
+            if (data.specialCardsPositions) {
+                data.specialCardsPositions.forEach(pos => {
+                    const index = specialCardsPositions.findIndex(p => p.specialData.day === pos.specialData.day);
+                    if (index !== -1) {
+                        specialCardsPositions[index] = pos;
+                    }
+                });
+            }
         }
         
         console.log('Промокоды загружены:', Object.keys(promoData).length, 'дней');
         console.log('Специальные карточки:', Object.keys(specialCardsData).length, 'карточек');
+        console.log('Позиции специальных карточек:', specialCardsPositions);
         return true;
         
     } catch (error) {
@@ -223,24 +261,45 @@ function loadDemoData() {
     
     // Демо данные для специальных карточек
     specialCardsData = {
-        8: {
-            type: "Акция",
+        's3.1': {
+            type: "Флеш-акция",
             image: "images/special1.jpg",
             backgroundImage: "images/special-bg1.png",
-            description: "Специальное предложение",
+            description: "Специальное предложение недели - скидка 40% на новогодние украшения!",
             actionUrl: "https://ecoplace.ru/special-offer"
         },
-        22: {
+        's8.1': {
             type: "Сюрприз",
             image: "images/special2.jpg",
             backgroundImage: "images/special-bg2.png",
-            description: "Новогодний сюрприз",
+            description: "Новогодний сюрприз от Деда Мороза - получите бесплатную доставку!",
             actionUrl: "https://ecoplace.ru/surprise"
+        },
+        's15.1': {
+            type: "Розыгрыш",
+            image: "images/special3.jpg",
+            backgroundImage: "images/special-bg3.png",
+            description: "Участвуйте в розыгрыше новогодних подарков!",
+            actionUrl: "https://ecoplace.ru/contest"
+        },
+        's22.1': {
+            type: "Подарок",
+            image: "images/special4.jpg",
+            backgroundImage: "images/special-bg4.png",
+            description: "Каждому покупателю - новогодний подарок!",
+            actionUrl: "https://ecoplace.ru/gift"
+        },
+        's28.1': {
+            type: "Супер-акция",
+            image: "images/special5.jpg",
+            backgroundImage: "images/special-bg5.png",
+            description: "Супер-акция перед Новым годом - скидки до 70%!",
+            actionUrl: "https://ecoplace.ru/super-sale"
         }
     };
 }
 
-// Функция создания календаря с фоновыми изображениями и специальными карточками
+// Функция создания календаря с фоновыми изображениями и специальными карточками МЕЖДУ днями
 function createCalendar() {
     const calendarContainer = document.getElementById('calendar-container');
     calendarContainer.innerHTML = '';
@@ -258,186 +317,172 @@ function createCalendar() {
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
     document.getElementById('current-date').textContent = today.toLocaleDateString('ru-RU', options);
     
-    // Создаем карточки для каждого дня декабря и добавляем специальные карточки
+    // Создаем массив всех карточек (дни + специальные карточки между ними)
+    const allCards = [];
+    
+    // Проходим по всем дням декабря и добавляем специальные карточки между ними
     for (let day = 1; day <= 31; day++) {
-        // Проверяем, есть ли специальная карточка на этот день
-        if (specialCardsData[day]) {
-            // Создаем специальную карточку
-            const specialCard = document.createElement('div');
-            specialCard.className = 'special-card';
-            specialCard.dataset.day = day;
-            specialCard.dataset.type = 'special';
+        // Сначала добавляем карточку дня
+        allCards.push({
+            type: 'day',
+            day: day,
+            data: promoData[day]
+        });
+        
+        // Проверяем, нужно ли добавить специальную карточку ПОСЛЕ этого дня
+        const specialCardPosition = specialCardsPositions.find(pos => pos.day === day && pos.position === 'after');
+        if (specialCardPosition) {
+            const specialKey = specialCardPosition.specialData.day;
+            const specialData = specialCardsData[specialKey];
             
-            // Получаем данные специальной карточки
-            const specialData = specialCardsData[day];
-            
-            // Устанавливаем фоновое изображение
-            let backgroundImageStyle = '';
-            if (specialData.backgroundImage) {
-                backgroundImageStyle = `background-image: url('${specialData.backgroundImage}');`;
-            }
-            
-            // Определяем статус карточки (активная/неактивная)
-            let isActive = false;
-            let statusClass = '';
-            
-            if (isDecember2025) {
-                if (day <= currentDay) {
-                    isActive = true;
-                    statusClass = '';
-                    specialCard.style.cursor = 'pointer';
-                } else {
-                    isActive = false;
-                    statusClass = 'disabled';
-                    specialCard.style.cursor = 'not-allowed';
-                    specialCard.style.opacity = '0.7';
-                }
-            } else {
-                // Если не декабрь 2025 - карточка неактивна
-                isActive = false;
-                statusClass = 'disabled';
-                specialCard.style.cursor = 'not-allowed';
-                specialCard.style.opacity = '0.7';
-            }
-            
-            if (statusClass) {
-                specialCard.classList.add(statusClass);
-            }
-            
-            specialCard.innerHTML = `
-                <style>
-                    .special-card[data-day="${day}"]::before {
-                        ${backgroundImageStyle}
-                    }
-                </style>
-                <img src="${specialData.image}" alt="${specialData.type}" class="special-card-image">
-                <div class="special-card-type">${specialData.type}</div>
-            `;
-            
-            // Добавляем обработчик клика для активных карточек
-            if (isActive) {
-                specialCard.addEventListener('click', function() {
-                    openSpecialCard(day);
+            if (specialData) {
+                allCards.push({
+                    type: 'special',
+                    specialKey: specialKey,
+                    data: specialData,
+                    position: specialCardPosition
                 });
             }
-            
-            calendarContainer.appendChild(specialCard);
-        } else {
-            // Создаем обычную карточку дня
-            const dayCard = document.createElement('div');
-            dayCard.className = 'day-card';
-            dayCard.dataset.day = day;
-            
-            // Определяем статус дня
-            let status = '';
-            let statusText = '';
-            
-            if (isDecember2025) {
-                if (day === currentDay) {
-                    status = 'today';
-                    statusText = 'Сегодня';
-                } else if (day < currentDay) {
-                    status = 'missed';
-                    statusText = 'Пропущено';
-                } else {
-                    // Будущие дни стилизуем как открытые (с зеленым фоном)
-                    status = 'future';
-                    statusText = 'Будущее';
-                }
-            } else {
-                // Если не декабрь 2025 - все дни будущие (с зеленым фоном)
-                status = 'future';
-                statusText = 'Будущее';
-            }
-            
-            dayCard.classList.add(status);
-            
-            // Добавляем эффект снежинки для новогодних дней
-            let snowflake = '';
-            if (day === 24 || day === 25 || day === 31) {
-                snowflake = '<i class="fas fa-snowflake position-absolute top-0 start-0 m-1 text-primary" style="font-size: 0.7rem;"></i>';
-            }
-            
-            // Получаем данные промокода для фонового изображения
-            const promo = promoData[day];
-            let backgroundImageStyle = '';
-            
-            if (promo && promo.backgroundImage) {
-                // Устанавливаем фоновое изображение
-                backgroundImageStyle = `background-image: url('${promo.backgroundImage}');`;
-            }
-            
-            dayCard.innerHTML = `
-                <style>
-                    .day-card[data-day="${day}"]::before {
-                        ${backgroundImageStyle}
-                    }
-                </style>
-                ${snowflake}
-                <div class="day-number">${day}</div>
-                <div class="day-month">Декабрь</div>
-                <div class="day-status">${statusText}</div>
-            `;
-            
-            // Добавляем обработчик клика
-            if (status === 'today') {
-                dayCard.addEventListener('click', function() {
-                    openPromoCard(day);
-                });
-                dayCard.style.cursor = 'pointer';
-            } else {
-                dayCard.style.cursor = 'not-allowed';
-                dayCard.style.opacity = '0.7';
-            }
-            
-            calendarContainer.appendChild(dayCard);
         }
     }
+    
+    // Теперь создаем DOM-элементы для всех карточек
+    allCards.forEach(card => {
+        if (card.type === 'day') {
+            // Создаем обычную карточку дня
+            const dayCard = createDayCard(card.day, isDecember2025, currentDay);
+            calendarContainer.appendChild(dayCard);
+        } else if (card.type === 'special') {
+            // Создаем специальную карточку
+            const specialCard = createSpecialCard(card.specialKey, card.data);
+            calendarContainer.appendChild(specialCard);
+        }
+    });
+}
+
+// Функция создания карточки дня
+function createDayCard(day, isDecember2025, currentDay) {
+    const dayCard = document.createElement('div');
+    dayCard.className = 'day-card';
+    dayCard.dataset.day = day;
+    dayCard.dataset.type = 'day';
+    
+    // Определяем статус дня
+    let status = '';
+    let statusText = '';
+    
+    if (isDecember2025) {
+        if (day === currentDay) {
+            status = 'today';
+            statusText = 'Сегодня';
+        } else if (day < currentDay) {
+            status = 'missed';
+            statusText = 'Пропущено';
+        } else {
+            // Будущие дни стилизуем как открытые (с зеленым фоном)
+            status = 'future';
+            statusText = 'Будущее';
+        }
+    } else {
+        // Если не декабрь 2025 - все дни будущие (с зеленым фоном)
+        status = 'future';
+        statusText = 'Будущее';
+    }
+    
+    dayCard.classList.add(status);
+    
+    // Добавляем эффект снежинки для новогодних дней
+    let snowflake = '';
+    if (day === 24 || day === 25 || day === 31) {
+        snowflake = '<i class="fas fa-snowflake position-absolute top-0 start-0 m-1 text-primary" style="font-size: 0.7rem;"></i>';
+    }
+    
+    // Получаем данные промокода для фонового изображения
+    const promo = promoData[day];
+    let backgroundImageStyle = '';
+    
+    if (promo && promo.backgroundImage) {
+        // Устанавливаем фоновое изображение
+        backgroundImageStyle = `background-image: url('${promo.backgroundImage}');`;
+    }
+    
+    dayCard.innerHTML = `
+        <style>
+            .day-card[data-day="${day}"]::before {
+                ${backgroundImageStyle}
+            }
+        </style>
+        ${snowflake}
+        <div class="day-number">${day}</div>
+        <div class="day-month">Декабрь</div>
+        <div class="day-status">${statusText}</div>
+    `;
+    
+    // Добавляем обработчик клика
+    if (status === 'today') {
+        dayCard.addEventListener('click', function() {
+            openPromoCard(day);
+        });
+        dayCard.style.cursor = 'pointer';
+    } else {
+        dayCard.style.cursor = 'not-allowed';
+        dayCard.style.opacity = '0.7';
+    }
+    
+    return dayCard;
+}
+
+// Функция создания специальной карточки
+function createSpecialCard(specialKey, specialData) {
+    const specialCard = document.createElement('div');
+    specialCard.className = 'special-card';
+    specialCard.dataset.specialKey = specialKey;
+    specialCard.dataset.type = 'special';
+    
+    // Устанавливаем фоновое изображение
+    let backgroundImageStyle = '';
+    if (specialData.backgroundImage) {
+        backgroundImageStyle = `background-image: url('${specialData.backgroundImage}');`;
+    }
+    
+    specialCard.innerHTML = `
+        <style>
+            .special-card[data-special-key="${specialKey}"]::before {
+                ${backgroundImageStyle}
+            }
+        </style>
+        <div class="special-card-badge">АКЦИЯ</div>
+        <img src="${specialData.image}" alt="${specialData.type}" class="special-card-image">
+        <div class="special-card-type">${specialData.type}</div>
+    `;
+    
+    // Добавляем обработчик клика для перехода по URL
+    specialCard.addEventListener('click', function() {
+        openSpecialCard(specialData);
+    });
+    specialCard.style.cursor = 'pointer';
+    
+    return specialCard;
 }
 
 // Функция открытия специальной карточки
-function openSpecialCard(day) {
-    const specialCard = document.querySelector(`.special-card[data-day="${day}"]`);
-    
-    // Текущая дата для проверки
-    const today = new Date();
-    const currentDay = today.getDate();
-    const currentMonth = today.getMonth();
-    const currentYear = today.getFullYear();
-    const isDecember2025 = currentMonth === 11 && currentYear === 2025;
-    
-    // Проверяем, можно ли открыть эту карточку
-    const isAvailable = (day <= currentDay && isDecember2025);
-    
-    if (!isAvailable) {
-        showAlert('Эта карточка еще не доступна', 'error');
-        return;
-    }
-    
-    // Добавляем анимацию открытия
-    if (specialCard) {
-        specialCard.classList.add('card-opening');
-        setTimeout(() => {
-            specialCard.classList.remove('card-opening');
-        }, 800);
-    }
-    
-    // Получаем данные специальной карточки
-    const specialData = specialCardsData[day];
+function openSpecialCard(specialData) {
     if (!specialData) {
         showAlert('Данные карточки не найдены', 'error');
         return;
     }
     
-    // Показываем информацию о специальной карточке
-    showAlert(`🎁 ${specialData.type}\n\n${specialData.description}\n\nНажмите ОК, чтобы перейти к предложению.`, 'success');
+    // Проверяем, есть ли URL для перехода
+    if (!specialData.actionUrl || specialData.actionUrl.trim() === '') {
+        showAlert('Ссылка для перехода не указана', 'error');
+        return;
+    }
     
-    // Через 2 секунды переходим по ссылке
-    setTimeout(() => {
-        if (specialData.actionUrl) {
-            window.open(specialData.actionUrl, '_blank');
-        }
-    }, 2000);
+    // Сразу переходим по ссылке
+    window.open(specialData.actionUrl, '_blank');
+    
+    // Показываем краткое уведомление
+    showAlert(`Вы переходите по специальному предложению: ${specialData.type}`, 'info');
 }
 
 // Функция открытия карточки с промокодом
