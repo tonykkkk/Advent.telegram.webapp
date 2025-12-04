@@ -5,7 +5,7 @@
       "code": "NEWYEAR2024-15",
       "description": "Скидка 15% на все новогодние украшения",
       "image": "images/gift1.jpg",
-      "backgroundImage": "images/day1-bg.jpg",
+      "backgroundImage": "images/placeholder1.png",
       "productUrl": "https://example.com/products/christmas-decorations"
     },
     {
@@ -13,7 +13,7 @@
       "code": "SANTA-10OFF",
       "description": "10% скидка на электронику",
       "image": "images/gift2.jpg",
-      "backgroundImage": "images/day2-bg.jpg",
+      "backgroundImage": "images/placeholder2.png",
       "productUrl": "https://example.com/products/electronics"
     },
     {
@@ -21,7 +21,7 @@
       "code": "SNOWFLAKE-20",
       "description": "Скидка 20% на книги и канцтовары",
       "image": "images/gift3.jpg",
-      "backgroundImage": "images/day3-bg.jpg",
+      "backgroundImage": "images/placeholder3.png",
       "productUrl": "https://example.com/products/books-stationery"
     },
     {
@@ -37,7 +37,7 @@
       "code": "HOLIDAY-30",
       "description": "25% скидка на косметическое средство",
       "image": "images/gift.png",
-      "backgroundImage": "images/placeholder1.png",
+      "backgroundImage": "images/placeholder3.png",
       "productUrl": "https://ecoplace.ru"
     },
     {
@@ -45,7 +45,7 @@
       "code": "FESTIVE-12",
       "description": "25% скидка на косметическое средство",
       "image": "images/gift.png",
-      "backgroundImage": "images/placeholder1.png",
+      "backgroundImage": "images/placeholder2.png",
       "productUrl": "https://ecoplace.ru"
     },
     {
@@ -53,7 +53,7 @@
       "code": "WINTER-18",
       "description": "18% скидка на спортивные товары",
       "image": "images/gift7.jpg",
-      "backgroundImage": "images/day7-bg.jpg",
+      "backgroundImage": "images/placeholder1.png",
       "productUrl": "https://example.com/products/sports-goods"
     },
     {
@@ -61,7 +61,7 @@
       "code": "JOY2024-22",
       "description": "22% скидка на товары для дома",
       "image": "images/gift8.jpg",
-      "backgroundImage": "images/day8-bg.jpg",
+      "backgroundImage": "images/placeholder3.png",
       "productUrl": "https://example.com/products/home-goods"
     },
     {
@@ -69,7 +69,7 @@
       "code": "MIRACLE-14",
       "description": "14% скидка на бытовую технику",
       "image": "images/gift9.jpg",
-      "backgroundImage": "images/day9-bg.jpg",
+      "backgroundImage": "images/placeholder2.png",
       "productUrl": "https://example.com/products/home-appliances"
     },
     {
@@ -77,7 +77,7 @@
       "code": "MAGIC-35",
       "description": "35% скидка на украшения и бижутерию",
       "image": "images/gift10.jpg",
-      "backgroundImage": "images/day10-bg.jpg",
+      "backgroundImage": "images/placeholder1.png",
       "productUrl": "https://example.com/products/jewelry-accessories"
     },
     {
@@ -85,7 +85,7 @@
       "code": "CELEBRATE-17",
       "description": "17% скидка на товары для творчества",
       "image": "images/gift11.jpg",
-      "backgroundImage": "images/day11-bg.jpg",
+      "backgroundImage": "images/placeholder2.png",
       "productUrl": "https://example.com/products/creative-goods"
     },
     {
@@ -93,7 +93,7 @@
       "code": "SEASON-19",
       "description": "19% скидка на кухонные принадлежности",
       "image": "images/gift12.jpg",
-      "backgroundImage": "images/day12-bg.jpg",
+      "backgroundImage": "images/placeholder3.png",
       "productUrl": "https://example.com/products/kitchenware"
     },
     {
