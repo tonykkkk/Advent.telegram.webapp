@@ -22,19 +22,8 @@ if (!Element.prototype.closest) {
 
 // Глобальные переменные
 let promoModal = null;
-let promoData = {};
-let specialCardsData = {};
+let calendarItems = [];
 let telegramWebApp = null;
-
-// Карта расположения специальных карточек между днями
-// Формат: {position: 'after', day: X} - означает карточка идет ПОСЛЕ дня X
-const specialCardsPositions = [
-    { day: 3, position: 'after', specialData: { day: 's3.1' } }, // После 3 дня
-    { day: 8, position: 'after', specialData: { day: 's8.1' } }, // После 8 дня
-    { day: 15, position: 'after', specialData: { day: 's15.1' } }, // После 15 дня
-    { day: 22, position: 'after', specialData: { day: 's22.1' } }, // После 22 дня
-    { day: 28, position: 'after', specialData: { day: 's28.1' } }  // После 28 дня
-];
 
 // Инициализация Telegram WebApp
 function initTelegramWebApp() {
@@ -188,118 +177,65 @@ function copyToClipboard(text) {
     });
 }
 
-// Функция загрузки данных промокодов
-async function loadPromoCodes() {
+// Функция загрузки данных календаря
+async function loadCalendarData() {
     try {
         const response = await fetch('promocodes.json');
         if (!response.ok) {
-            throw new Error('Не удалось загрузить данные промокодов');
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
         
-        // Загружаем данные о промокодах
-        data.promocodes.forEach(promo => {
-            promoData[promo.day] = {
-                code: promo.code,
-                description: promo.description,
-                image: promo.image,
-                backgroundImage: promo.backgroundImage,
-                productUrl: promo.productUrl
-            };
-        });
-        
-        // Загружаем данные о специальных карточках
-        specialCardsData = {};
-        if (data.specialCards) {
-            data.specialCards.forEach(card => {
-                // Используем специальный ключ для специальных карточек
-                const specialKey = card.day;
-                specialCardsData[specialKey] = {
-                    type: card.type,
-                    image: card.image,
-                    backgroundImage: card.backgroundImage,
-                    description: card.description,
-                    actionUrl: card.actionUrl
-                };
-            });
-            
-            // Обновляем позиции специальных карточек из JSON
-            if (data.specialCardsPositions) {
-                data.specialCardsPositions.forEach(pos => {
-                    const index = specialCardsPositions.findIndex(p => p.specialData.day === pos.specialData.day);
-                    if (index !== -1) {
-                        specialCardsPositions[index] = pos;
-                    }
-                });
-            }
+        if (!data.calendarItems || !Array.isArray(data.calendarItems)) {
+            throw new Error('Неверный формат данных: calendarItems не найден или не является массивом');
         }
         
-        console.log('Промокоды загружены:', Object.keys(promoData).length, 'дней');
-        console.log('Специальные карточки:', Object.keys(specialCardsData).length, 'карточек');
-        console.log('Позиции специальных карточек:', specialCardsPositions);
+        calendarItems = data.calendarItems;
+        console.log('Данные календаря загружены:', calendarItems.length, 'элементов');
         return true;
         
     } catch (error) {
-        console.error('Ошибка загрузки промокодов:', error);
-        showAlert('Не удалось загрузить промокоды. Используются демо-данные.', 'error');
+        console.error('Ошибка загрузки данных календаря:', error);
+        console.log('Используются демо-данные');
         loadDemoData();
-        return false;
+        return true; // Возвращаем true, чтобы приложение продолжило работу с демо-данными
     }
 }
 
 // Демо-данные на случай ошибки загрузки JSON
 function loadDemoData() {
-    for (let day = 1; day <= 31; day++) {
-        promoData[day] = {
-            code: `NY2025-DAY${day}`,
-            description: `Эксклюзивный промокод на день ${day} декабря 2025 года. Скидка на праздничные товары!`,
-            image: `images/gift${day}.jpg`,
-            backgroundImage: `images/day${day}-bg.jpg`,
-            productUrl: `https://example.com/products/december-${day}`
-        };
+    calendarItems = [];
+    
+    // Создаем демо-данные: 31 день + 5 специальных карточек
+    for (let i = 1; i <= 31; i++) {
+        calendarItems.push({
+            type: "day",
+            day: i,
+            code: `NY2025-DAY${i}`,
+            description: `Эксклюзивный промокод на день ${i} декабря 2025 года. Скидка на праздничные товары!`,
+            image: `images/gift${Math.min(i, 31)}.jpg`,
+            backgroundImage: `images/day${Math.min(i, 31)}-bg.jpg`,
+            productUrl: `https://ecoplace.ru/products/december-${i}`
+        });
+        
+        // Добавляем специальные карточки после определенных дней
+        if (i === 3 || i === 8 || i === 15 || i === 22 || i === 28) {
+            const specialIndex = i === 3 ? 1 : i === 8 ? 2 : i === 15 ? 3 : i === 22 ? 4 : 5;
+            calendarItems.push({
+                type: "special",
+                title: ["Флеш-акция", "Сюрприз", "Розыгрыш", "Подарок", "Супер-акция"][specialIndex - 1],
+                image: `images/special${specialIndex}.jpg`,
+                backgroundImage: `images/special-bg${specialIndex}.png`,
+                description: ["Специальное предложение недели!", "Новогодний сюрприз!", "Участвуйте в розыгрыше!", "Каждому покупателю подарок!", "Супер-акция перед Новым годом!"][specialIndex - 1],
+                actionUrl: `https://ecoplace.ru/special-${specialIndex}`
+            });
+        }
     }
     
-    // Демо данные для специальных карточек
-    specialCardsData = {
-        's3.1': {
-            type: "Флеш-акция",
-            image: "images/special1.jpg",
-            backgroundImage: "images/special-bg1.png",
-            description: "Специальное предложение недели - скидка 40% на новогодние украшения!",
-            actionUrl: "https://ecoplace.ru/special-offer"
-        },
-        's8.1': {
-            type: "Сюрприз",
-            image: "images/special2.jpg",
-            backgroundImage: "images/special-bg2.png",
-            description: "Новогодний сюрприз от Деда Мороза - получите бесплатную доставку!",
-            actionUrl: "https://ecoplace.ru/surprise"
-        },
-        's15.1': {
-            type: "Розыгрыш",
-            image: "images/special3.jpg",
-            backgroundImage: "images/special-bg3.png",
-            description: "Участвуйте в розыгрыше новогодних подарков!",
-            actionUrl: "https://ecoplace.ru/contest"
-        },
-        's22.1': {
-            type: "Подарок",
-            image: "images/special4.jpg",
-            backgroundImage: "images/special-bg4.png",
-            description: "Каждому покупателю - новогодний подарок!",
-            actionUrl: "https://ecoplace.ru/gift"
-        },
-        's28.1': {
-            type: "Супер-акция",
-            image: "images/special5.jpg",
-            backgroundImage: "images/special-bg5.png",
-            description: "Супер-акция перед Новым годом - скидки до 70%!",
-            actionUrl: "https://ecoplace.ru/super-sale"
-        }
-    };
+    console.log('Демо-данные загружены:', calendarItems.length, 'элементов');
 }
 
-// Функция создания календаря с фоновыми изображениями и специальными карточками МЕЖДУ днями
+// Функция создания календаря
 function createCalendar() {
     const calendarContainer = document.getElementById('calendar-container');
     calendarContainer.innerHTML = '';
@@ -317,65 +253,36 @@ function createCalendar() {
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
     document.getElementById('current-date').textContent = today.toLocaleDateString('ru-RU', options);
     
-    // Создаем массив всех карточек (дни + специальные карточки между ними)
-    const allCards = [];
-    
-    // Проходим по всем дням декабря и добавляем специальные карточки между ними
-    for (let day = 1; day <= 31; day++) {
-        // Сначала добавляем карточку дня
-        allCards.push({
-            type: 'day',
-            day: day,
-            data: promoData[day]
-        });
-        
-        // Проверяем, нужно ли добавить специальную карточку ПОСЛЕ этого дня
-        const specialCardPosition = specialCardsPositions.find(pos => pos.day === day && pos.position === 'after');
-        if (specialCardPosition) {
-            const specialKey = specialCardPosition.specialData.day;
-            const specialData = specialCardsData[specialKey];
-            
-            if (specialData) {
-                allCards.push({
-                    type: 'special',
-                    specialKey: specialKey,
-                    data: specialData,
-                    position: specialCardPosition
-                });
-            }
-        }
-    }
-    
-    // Теперь создаем DOM-элементы для всех карточек
-    allCards.forEach(card => {
-        if (card.type === 'day') {
-            // Создаем обычную карточку дня
-            const dayCard = createDayCard(card.day, isDecember2025, currentDay);
+    // Создаем карточки для всех элементов календаря в порядке их следования в массиве
+    calendarItems.forEach((item, index) => {
+        if (item.type === 'day') {
+            // Создаем карточку дня
+            const dayCard = createDayCard(item, isDecember2025, currentDay);
             calendarContainer.appendChild(dayCard);
-        } else if (card.type === 'special') {
+        } else if (item.type === 'special') {
             // Создаем специальную карточку
-            const specialCard = createSpecialCard(card.specialKey, card.data);
+            const specialCard = createSpecialCard(item, index);
             calendarContainer.appendChild(specialCard);
         }
     });
 }
 
 // Функция создания карточки дня
-function createDayCard(day, isDecember2025, currentDay) {
+function createDayCard(item, isDecember2025, currentDay) {
     const dayCard = document.createElement('div');
     dayCard.className = 'day-card';
-    dayCard.dataset.day = day;
     dayCard.dataset.type = 'day';
+    dayCard.dataset.day = item.day;
     
     // Определяем статус дня
     let status = '';
     let statusText = '';
     
     if (isDecember2025) {
-        if (day === currentDay) {
+        if (item.day === currentDay) {
             status = 'today';
             statusText = 'Сегодня';
-        } else if (day < currentDay) {
+        } else if (item.day < currentDay) {
             status = 'missed';
             statusText = 'Пропущено';
         } else {
@@ -393,27 +300,24 @@ function createDayCard(day, isDecember2025, currentDay) {
     
     // Добавляем эффект снежинки для новогодних дней
     let snowflake = '';
-    if (day === 24 || day === 25 || day === 31) {
+    if (item.day === 24 || item.day === 25 || item.day === 31) {
         snowflake = '<i class="fas fa-snowflake position-absolute top-0 start-0 m-1 text-primary" style="font-size: 0.7rem;"></i>';
     }
     
-    // Получаем данные промокода для фонового изображения
-    const promo = promoData[day];
+    // Устанавливаем фоновое изображение
     let backgroundImageStyle = '';
-    
-    if (promo && promo.backgroundImage) {
-        // Устанавливаем фоновое изображение
-        backgroundImageStyle = `background-image: url('${promo.backgroundImage}');`;
+    if (item.backgroundImage) {
+        backgroundImageStyle = `background-image: url('${item.backgroundImage}');`;
     }
     
     dayCard.innerHTML = `
         <style>
-            .day-card[data-day="${day}"]::before {
+            .day-card[data-day="${item.day}"]::before {
                 ${backgroundImageStyle}
             }
         </style>
         ${snowflake}
-        <div class="day-number">${day}</div>
+        <div class="day-number">${item.day}</div>
         <div class="day-month">Декабрь</div>
         <div class="day-status">${statusText}</div>
     `;
@@ -421,7 +325,7 @@ function createDayCard(day, isDecember2025, currentDay) {
     // Добавляем обработчик клика
     if (status === 'today') {
         dayCard.addEventListener('click', function() {
-            openPromoCard(day);
+            openPromoCard(item);
         });
         dayCard.style.cursor = 'pointer';
     } else {
@@ -433,32 +337,32 @@ function createDayCard(day, isDecember2025, currentDay) {
 }
 
 // Функция создания специальной карточки
-function createSpecialCard(specialKey, specialData) {
+function createSpecialCard(item, index) {
     const specialCard = document.createElement('div');
     specialCard.className = 'special-card';
-    specialCard.dataset.specialKey = specialKey;
     specialCard.dataset.type = 'special';
+    specialCard.dataset.index = index;
     
     // Устанавливаем фоновое изображение
     let backgroundImageStyle = '';
-    if (specialData.backgroundImage) {
-        backgroundImageStyle = `background-image: url('${specialData.backgroundImage}');`;
+    if (item.backgroundImage) {
+        backgroundImageStyle = `background-image: url('${item.backgroundImage}');`;
     }
     
     specialCard.innerHTML = `
         <style>
-            .special-card[data-special-key="${specialKey}"]::before {
+            .special-card[data-index="${index}"]::before {
                 ${backgroundImageStyle}
             }
         </style>
         <div class="special-card-badge">АКЦИЯ</div>
-        <img src="${specialData.image}" alt="${specialData.type}" class="special-card-image">
-        <div class="special-card-type">${specialData.type}</div>
+        <img src="${item.image}" alt="${item.title}" class="special-card-image">
+        <div class="special-card-type">${item.title}</div>
     `;
     
     // Добавляем обработчик клика для перехода по URL
     specialCard.addEventListener('click', function() {
-        openSpecialCard(specialData);
+        openSpecialCard(item);
     });
     specialCard.style.cursor = 'pointer';
     
@@ -466,28 +370,25 @@ function createSpecialCard(specialKey, specialData) {
 }
 
 // Функция открытия специальной карточки
-function openSpecialCard(specialData) {
-    if (!specialData) {
+function openSpecialCard(item) {
+    if (!item) {
         showAlert('Данные карточки не найдены', 'error');
         return;
     }
     
     // Проверяем, есть ли URL для перехода
-    if (!specialData.actionUrl || specialData.actionUrl.trim() === '') {
+    if (!item.actionUrl || item.actionUrl.trim() === '') {
         showAlert('Ссылка для перехода не указана', 'error');
         return;
     }
     
     // Сразу переходим по ссылке
-    window.open(specialData.actionUrl, '_blank');
-    
-    // Показываем краткое уведомление
-    showAlert(`Вы переходите по специальному предложению: ${specialData.type}`, 'info');
+    window.open(item.actionUrl, '_blank');
 }
 
 // Функция открытия карточки с промокодом
-function openPromoCard(day) {
-    const dayCard = document.querySelector(`.day-card[data-day="${day}"]`);
+function openPromoCard(item) {
+    const dayCard = document.querySelector(`.day-card[data-day="${item.day}"]`);
     
     // Текущая дата для проверки
     const today = new Date();
@@ -497,7 +398,7 @@ function openPromoCard(day) {
     const isDecember2025 = currentMonth === 11 && currentYear === 2025;
     
     // Проверяем, можно ли открыть этот день
-    const isToday = (day === currentDay && isDecember2025);
+    const isToday = (item.day === currentDay && isDecember2025);
     
     if (!isToday) {
         showAlert('Этот день еще не наступил или уже прошел', 'error');
@@ -512,32 +413,31 @@ function openPromoCard(day) {
         }, 800);
     }
     
-    // Получаем данные промокода
-    const promo = promoData[day];
-    if (!promo) {
+    if (!item) {
         showAlert('Промокод для этого дня не найден', 'error');
         return;
     }
     
     // Сохраняем текущий промокод для отправки боту
-    window.currentPromoCode = promo.code;
-    window.currentPromoDescription = promo.description;
-    window.currentPromoDay = day;
+    window.currentPromoCode = item.code;
+    window.currentPromoDescription = item.description;
+    window.currentPromoDay = item.day;
     
     // Заполняем модальное окно данными
-    document.getElementById('modal-day').textContent = day;
-    document.getElementById('promo-code-text').textContent = promo.code;
+    document.getElementById('modal-day').textContent = item.day;
+    document.getElementById('promo-code-text').textContent = item.code;
     
     // Обновляем описание промокода (переносим под картинку)
     const descriptionElement = document.getElementById('promo-description');
     if (descriptionElement) {
-        descriptionElement.textContent = promo.description;
+        descriptionElement.textContent = item.description;
     }
     
     // Устанавливаем ссылку на товар
     const productBtn = document.getElementById('product-btn');
-    if (promo.productUrl) {
-        productBtn.href = promo.productUrl;
+    if (item.productUrl) {
+        productBtn.href = item.productUrl;
+        productBtn.textContent = 'Купить на ecoplace.ru';
         productBtn.style.display = 'block';
     } else {
         productBtn.style.display = 'none';
@@ -555,14 +455,14 @@ function openPromoCard(day) {
         img.className = 'img-fluid rounded';
         img.style.maxHeight = '180px';
         img.style.objectFit = 'contain';
-        img.alt = `Промокод для дня ${day} декабря`;
+        img.alt = `Промокод для дня ${item.day} декабря`;
         imgContainer.appendChild(img);
         
         // Добавляем описание под картинкой
         const descriptionDiv = document.createElement('div');
         descriptionDiv.className = 'promo-description-block';
         descriptionDiv.innerHTML = `
-            <p class="promo-description-text">${promo.description}</p>
+            <p class="promo-description-text">${item.description}</p>
         `;
         
         promoImageElement.innerHTML = '';
@@ -573,14 +473,14 @@ function openPromoCard(day) {
         promoImageElement.innerHTML = `
             <div class="text-center">
                 <i class="fas fa-gift fa-5x text-primary mb-3"></i>
-                <p class="text-muted small mb-3">Подарок дня ${day}</p>
+                <p class="text-muted small mb-3">Подарок дня ${item.day}</p>
                 <div class="promo-description-block">
-                    <p class="promo-description-text">${promo.description}</p>
+                    <p class="promo-description-text">${item.description}</p>
                 </div>
             </div>
         `;
     };
-    img.src = promo.image;
+    img.src = item.image;
     
     // Обновляем текст о действии промокода (действует только сегодня)
     const promoValidElement = document.querySelector('.modal-footer .text-muted');
@@ -716,8 +616,8 @@ async function initApp() {
         promoModal = new bootstrap.Modal(modalElement);
     }
     
-    // Загружаем промокоды
-    await loadPromoCodes();
+    // Загружаем данные календаря
+    await loadCalendarData();
     
     // Создаем календарь
     createCalendar();
