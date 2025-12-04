@@ -24,6 +24,7 @@ if (!Element.prototype.closest) {
 let promoModal = null;
 let calendarItems = [];
 let telegramWebApp = null;
+let currentPromoItem = null;
 
 // Инициализация Telegram WebApp
 function initTelegramWebApp() {
@@ -35,9 +36,6 @@ function initTelegramWebApp() {
         
         // Скрываем кнопку "Назад"
         telegramWebApp.BackButton.hide();
-        
-        // Инициализируем кнопку для отправки промокода
-        initShareButton();
         
         console.log('Telegram WebApp инициализирован:', {
             платформа: telegramWebApp.platform,
@@ -74,80 +72,97 @@ function showAlert(message, type = 'info') {
     }
 }
 
-// Инициализация кнопки для отправки промокода
-function initShareButton() {
-    // Добавляем кнопку "Отправить боту" в модальное окно
-    const modalFooter = document.querySelector('.modal-footer');
-    if (modalFooter) {
-        const shareButton = document.createElement('button');
-        shareButton.className = 'btn btn-primary btn-sm d-none';
-        shareButton.id = 'share-to-bot-btn';
-        shareButton.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Отправить промокод боту';
-        
-        const buttonContainer = document.createElement('div');
-        buttonContainer.className = 'text-center mt-2';
-        buttonContainer.appendChild(shareButton);
-        
-        modalFooter.appendChild(buttonContainer);
-    }
-}
-
-// Функция отправки промокода в диалог с ботом
-function sendPromoCodeToBot(promoCode, description, day) {
+// Функция отправки промокода через WebApp в диалог с ботом
+function sendPromoCodeToUser() {
     if (!telegramWebApp) {
-        showAlert('Функция отправки доступна только в Telegram Mini App', 'error');
+        console.log('Telegram WebApp не инициализирован');
+        return false;
+    }
+    
+    if (!currentPromoItem || !currentPromoItem.code) {
+        console.error('Нет данных промокода для отправки');
         return false;
     }
     
     // Формируем сообщение с промокодом
-    const message = `🎁 *Промокод дня ${day} декабря* 🎁\n\n` +
-                   `📝 *Описание:* ${description}\n\n` +
-                   `🎫 *Промокод:* \`${promoCode}\`\n\n` +
+    const message = `🎁 *Промокод дня ${currentPromoItem.day} декабря* 🎁\n\n` +
+                   `📝 *Описание:* ${currentPromoItem.description}\n\n` +
+                   `🎫 *Промокод:* \`${currentPromoItem.code}\`\n\n` +
                    `✨ *Скопируйте и используйте на сайте!*`;
     
-    // Пытаемся отправить сообщение через WebApp
+    console.log('Отправляем промокод:', currentPromoItem.code);
+    
     try {
-        // Метод 1: Используем telegram.sendData (для передачи данных родительскому приложению)
+        // Метод 1: Отправка через WebApp API (основной метод)
         if (telegramWebApp.sendData) {
             const data = {
-                action: 'share_promo',
-                promoCode: promoCode,
-                description: description,
-                day: day,
+                action: 'send_promo_to_chat',
+                promoCode: currentPromoItem.code,
+                description: currentPromoItem.description,
+                day: currentPromoItem.day,
                 message: message
             };
             
             telegramWebApp.sendData(JSON.stringify(data));
-            console.log('Данные отправлены через sendData:', data);
+            console.log('Промокод отправлен через sendData:', data);
+            
+            // Показываем уведомление об успешной отправке
+            setTimeout(() => {
+                showAlert(`✅ Промокод дня ${currentPromoItem.day} отправлен вам в диалог с ботом!`, 'success');
+            }, 500);
+            
             return true;
         }
         
-        // Метод 2: Используем открытие ссылки с deep linking
-        // Создаем ссылку для открытия диалога с ботом
-        const botUsername = 'ecoplace_bot'; // Замените на имя вашего бота
-        const encodedMessage = encodeURIComponent(message);
-        const shareUrl = `https://t.me/${botUsername}?start=promo_${day}&text=${encodedMessage}`;
+        // Метод 2: Если sendData не работает, пробуем другие методы
+        console.warn('Метод sendData не доступен, пробуем альтернативные методы');
         
-        // Открываем ссылку в WebView
-        telegramWebApp.openTelegramLink(shareUrl);
-        console.log('Открыта ссылка для отправки:', shareUrl);
-        return true;
+        // Метод 2.1: Попробуем открыть диалог с ботом через deep link
+        try {
+            // Получаем текст для кнопки "Поделиться"
+            const shareText = `🎁 Промокод дня ${currentPromoItem.day} декабря: ${currentPromoItem.code}\n${currentPromoItem.description}`;
+            
+            // Пытаемся использовать WebApp функцию для отправки сообщения
+            if (telegramWebApp.shareMessage) {
+                telegramWebApp.shareMessage(shareText);
+                return true;
+            }
+        } catch (e) {
+            console.log('Метод shareMessage не доступен:', e);
+        }
         
-    } catch (error) {
-        console.error('Ошибка отправки промокода:', error);
+        // Метод 2.2: Используем openTelegramLink для открытия диалога с ботом
+        try {
+            const encodedMessage = encodeURIComponent(message);
+            const botUsername = 'ecoplace_bot'; // Имя бота должно быть здесь
+            const shareUrl = `https://t.me/${botUsername}?start=promo_${currentPromoItem.day}&text=${encodedMessage}`;
+            
+            telegramWebApp.openTelegramLink(shareUrl);
+            console.log('Открыта ссылка для отправки:', shareUrl);
+            return true;
+        } catch (e) {
+            console.log('Метод openTelegramLink не доступен:', e);
+        }
         
         // Метод 3: Fallback - показываем инструкцию
         showAlert(
-            `Скопируйте промокод и отправьте его в диалог с нашим ботом:\n\n` +
-            `Промокод: ${promoCode}\n\n` +
-            `Для быстрого перехода к боту используйте: @ecoplace_bot`,
+            `Промокод скопирован в буфер обмена!\n\n` +
+            `Для отправки боту:\n` +
+            `1. Вернитесь в диалог с ботом\n` +
+            `2. Вставьте промокод: ${currentPromoItem.code}\n` +
+            `3. Отправьте сообщение`,
             'info'
         );
+        return false;
+        
+    } catch (error) {
+        console.error('Ошибка отправки промокода:', error);
+        showAlert('Произошла ошибка при отправке промокода', 'error');
         return false;
     }
 }
 
-// Улучшенная функция копирования с опцией отправки боту
+// Улучшенная функция копирования с отправкой боту
 function copyToClipboard(text) {
     return new Promise(function(resolve, reject) {
         if (navigator.clipboard && window.isSecureContext) {
@@ -418,10 +433,8 @@ function openPromoCard(item) {
         return;
     }
     
-    // Сохраняем текущий промокод для отправки боту
-    window.currentPromoCode = item.code;
-    window.currentPromoDescription = item.description;
-    window.currentPromoDay = item.day;
+    // Сохраняем текущий промокод
+    currentPromoItem = item;
     
     // Заполняем модальное окно данными
     document.getElementById('modal-day').textContent = item.day;
@@ -493,20 +506,15 @@ function openPromoCard(item) {
         `;
     }
     
-    // Показываем кнопку "Отправить боту" только в Telegram Mini App
-    const shareButton = document.getElementById('share-to-bot-btn');
-    if (shareButton) {
-        if (telegramWebApp) {
-            shareButton.classList.remove('d-none');
-        } else {
-            shareButton.classList.add('d-none');
-        }
-    }
-    
     // Показываем модальное окно
     if (promoModal) {
         promoModal.show();
     }
+    
+    // Автоматически отправляем промокод пользователю через 1 секунду
+    setTimeout(() => {
+        sendPromoCodeToUser();
+    }, 1000);
 }
 
 // Настройка обработчиков событий
@@ -518,14 +526,12 @@ function setupEventListeners() {
     if (promoCodeContainer && copyAlert) {
         promoCodeContainer.addEventListener('click', async function() {
             const promoCode = document.getElementById('promo-code-text').textContent;
-            const day = document.getElementById('modal-day').textContent;
-            const description = window.currentPromoDescription || 'Промокод дня';
             
             try {
                 await copyToClipboard(promoCode);
                 
                 // Показываем уведомление
-                showAlert(`✅ Промокод дня ${day} скопирован!\n\n${promoCode}`, 'success');
+                showAlert(`✅ Промокод скопирован в буфер обмена!\n\n${promoCode}`, 'success');
                 
                 // Показываем уведомление на странице
                 copyAlert.classList.remove('d-none');
@@ -558,47 +564,12 @@ function setupEventListeners() {
         });
     }
     
-    // Обработчик для кнопки отправки промокода боту
-    const shareButton = document.getElementById('share-to-bot-btn');
-    if (shareButton) {
-        shareButton.addEventListener('click', function() {
-            const promoCode = document.getElementById('promo-code-text').textContent;
-            const day = document.getElementById('modal-day').textContent;
-            const description = window.currentPromoDescription || 'Промокод дня';
-            
-            // Отправляем промокод боту
-            const success = sendPromoCodeToBot(promoCode, description, day);
-            
-            if (success) {
-                // Меняем внешний вид кнопки при успешной отправке
-                shareButton.innerHTML = '<i class="fas fa-check me-2"></i>Отправлено!';
-                shareButton.classList.remove('btn-primary');
-                shareButton.classList.add('btn-success');
-                shareButton.disabled = true;
-                
-                // Восстанавливаем кнопку через 3 секунды
-                setTimeout(() => {
-                    shareButton.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Отправить промокод боту';
-                    shareButton.classList.remove('btn-success');
-                    shareButton.classList.add('btn-primary');
-                    shareButton.disabled = false;
-                }, 3000);
-            }
-        });
-    }
-    
     // Обработчик закрытия модального окна
     const modalElement = document.getElementById('promoModal');
     if (modalElement) {
         modalElement.addEventListener('hidden.bs.modal', function() {
-            // Сбрасываем состояние кнопки отправки при закрытии модального окна
-            const shareButton = document.getElementById('share-to-bot-btn');
-            if (shareButton) {
-                shareButton.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Отправить промокод боту';
-                shareButton.classList.remove('btn-success');
-                shareButton.classList.add('btn-primary');
-                shareButton.disabled = false;
-            }
+            // Сбрасываем состояние
+            currentPromoItem = null;
         });
     }
 }
