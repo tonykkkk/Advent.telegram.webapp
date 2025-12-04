@@ -5,6 +5,7 @@
       "code": "NEWYEAR2024-15",
       "description": "Скидка 15% на все новогодние украшения",
       "image": "images/gift1.jpg",
+      "backgroundImage": "images/day1-bg.jpg",
       "productUrl": "https://example.com/products/christmas-decorations"
     },
     {
@@ -12,6 +13,7 @@
       "code": "SANTA-10OFF",
       "description": "10% скидка на электронику",
       "image": "images/gift2.jpg",
+      "backgroundImage": "images/day2-bg.jpg",
       "productUrl": "https://example.com/products/electronics"
     },
     {
@@ -19,27 +21,31 @@
       "code": "SNOWFLAKE-20",
       "description": "Скидка 20% на книги и канцтовары",
       "image": "images/gift3.jpg",
+      "backgroundImage": "images/day3-bg.jpg",
       "productUrl": "https://example.com/products/books-stationery"
     },
     {
       "day": 4,
       "code": "XMASGIFT-25",
       "description": "25% скидка на игрушки и подарки",
-      "image": "images/gift.png",
+      "image": "images/gift4.jpg",
+      "backgroundImage": "images/day4-bg.jpg",
       "productUrl": "https://example.com/products/toys-gifts"
     },
     {
       "day": 5,
       "code": "HOLIDAY-30",
       "description": "30% скидка на зимнюю одежду",
-      "image": "images/gift.png",
+      "image": "images/gift5.jpg",
+      "backgroundImage": "images/day5-bg.jpg",
       "productUrl": "https://example.com/products/winter-clothing"
     },
     {
       "day": 6,
       "code": "FESTIVE-12",
       "description": "Скидка 12% на косметику и парфюмерию",
-      "image": "images/gift.png",
+      "image": "images/gift6.jpg",
+      "backgroundImage": "images/day6-bg.jpg",
       "productUrl": "https://example.com/products/cosmetics-perfume"
     },
     {
@@ -47,6 +53,7 @@
       "code": "WINTER-18",
       "description": "18% скидка на спортивные товары",
       "image": "images/gift7.jpg",
+      "backgroundImage": "images/day7-bg.jpg",
       "productUrl": "https://example.com/products/sports-goods"
     },
     {
@@ -54,6 +61,7 @@
       "code": "JOY2024-22",
       "description": "22% скидка на товары для дома",
       "image": "images/gift8.jpg",
+      "backgroundImage": "images/day8-bg.jpg",
       "productUrl": "https://example.com/products/home-goods"
     },
     {
@@ -61,6 +69,7 @@
       "code": "MIRACLE-14",
       "description": "14% скидка на бытовую технику",
       "image": "images/gift9.jpg",
+      "backgroundImage": "images/day9-bg.jpg",
       "productUrl": "https://example.com/products/home-appliances"
     },
     {
@@ -68,6 +77,7 @@
       "code": "MAGIC-35",
       "description": "35% скидка на украшения и бижутерию",
       "image": "images/gift10.jpg",
+      "backgroundImage": "images/day10-bg.jpg",
       "productUrl": "https://example.com/products/jewelry-accessories"
     },
     {
@@ -75,6 +85,7 @@
       "code": "CELEBRATE-17",
       "description": "17% скидка на товары для творчества",
       "image": "images/gift11.jpg",
+      "backgroundImage": "images/day11-bg.jpg",
       "productUrl": "https://example.com/products/creative-goods"
     },
     {
@@ -82,6 +93,7 @@
       "code": "SEASON-19",
       "description": "19% скидка на кухонные принадлежности",
       "image": "images/gift12.jpg",
+      "backgroundImage": "images/day12-bg.jpg",
       "productUrl": "https://example.com/products/kitchenware"
     },
     {
@@ -89,6 +101,7 @@
       "code": "CHEER-23",
       "description": "23% скидка на товары для сада",
       "image": "images/gift13.jpg",
+      "backgroundImage": "images/day13-bg.jpg",
       "productUrl": "https://example.com/products/garden-goods"
     },
     {
@@ -96,6 +109,7 @@
       "code": "TWINKLE-27",
       "description": "27% скидка на автомобильные аксессуары",
       "image": "images/gift14.jpg",
+      "backgroundImage": "images/day14-bg.jpg",
       "productUrl": "https://example.com/products/car-accessories"
     },
     {
@@ -103,6 +117,7 @@
       "code": "FROSTY-13",
       "description": "13% скидка на музыкальные инструменты",
       "image": "images/gift15.jpg",
+      "backgroundImage": "images/day15-bg.jpg",
       "productUrl": "https://example.com/products/musical-instruments"
     },
     {
@@ -110,6 +125,7 @@
       "code": "REINDEER-16",
       "description": "16% скидка на товары для животных",
       "image": "images/gift16.jpg",
+      "backgroundImage": "images/day16-bg.jpg",
       "productUrl": "https://example.com/products/pet-supplies"
     },
     {
@@ -117,6 +133,7 @@
       "code": "SLEIGH-21",
       "description": "21% скидка на путешествия и туры",
       "image": "images/gift17.jpg",
+      "backgroundImage": "images/day17-bg.jpg",
       "productUrl": "https://example.com/products/travel-tours"
     },
     {
@@ -124,6 +141,7 @@
       "code": "CANDLE-24",
       "description": "24% скидка на товары для праздника",
       "image": "images/gift18.jpg",
+      "backgroundImage": "images/day18-bg.jpg",
       "productUrl": "https://example.com/products/party-supplies"
     },
     {
@@ -131,6 +149,7 @@
       "code": "GINGERBREAD-26",
       "description": "26% скидка на продукты питания",
       "image": "images/gift19.jpg",
+      "backgroundImage": "images/day19-bg.jpg",
       "productUrl": "https://example.com/products/food-products"
     },
     {
@@ -138,6 +157,7 @@
       "code": "NORTHPOLE-28",
       "description": "28% скидка на гаджеты и аксессуары",
       "image": "images/gift20.jpg",
+      "backgroundImage": "images/day20-bg.jpg",
       "productUrl": "https://example.com/products/gadgets-accessories"
     },
     {
@@ -145,6 +165,7 @@
       "code": "STARLIGHT-29",
       "description": "29% скидка на товары для здоровья",
       "image": "images/gift21.jpg",
+      "backgroundImage": "images/day21-bg.jpg",
       "productUrl": "https://example.com/products/health-goods"
     },
     {
@@ -152,6 +173,7 @@
       "code": "ICICLE-31",
       "description": "31% скидка на ювелирные изделия",
       "image": "images/gift22.jpg",
+      "backgroundImage": "images/day22-bg.jpg",
       "productUrl": "https://example.com/products/jewelry"
     },
     {
@@ -159,6 +181,7 @@
       "code": "MISTLETOE-32",
       "description": "32% скидка на цветы и букеты",
       "image": "images/gift23.jpg",
+      "backgroundImage": "images/day23-bg.jpg",
       "productUrl": "https://example.com/products/flowers-bouquets"
     },
     {
@@ -166,6 +189,7 @@
       "code": "EVERGREEN-33",
       "description": "33% скидка на мебель и интерьер",
       "image": "images/gift24.jpg",
+      "backgroundImage": "images/day24-bg.jpg",
       "productUrl": "https://example.com/products/furniture-interior"
     },
     {
@@ -173,6 +197,7 @@
       "code": "CHIMNEY-34",
       "description": "34% скидка на товары для детей",
       "image": "images/gift25.jpg",
+      "backgroundImage": "images/day25-bg.jpg",
       "productUrl": "https://example.com/products/kids-goods"
     },
     {
@@ -180,6 +205,7 @@
       "code": "FIREPLACE-36",
       "description": "36% скидка на товары для активного отдыха",
       "image": "images/gift26.jpg",
+      "backgroundImage": "images/day26-bg.jpg",
       "productUrl": "https://example.com/products/outdoor-activities"
     },
     {
@@ -187,6 +213,7 @@
       "code": "COCOA-37",
       "description": "37% скидка на кофе и чай",
       "image": "images/gift27.jpg",
+      "backgroundImage": "images/day27-bg.jpg",
       "productUrl": "https://example.com/products/coffee-tea"
     },
     {
@@ -194,6 +221,7 @@
       "code": "CAROL-38",
       "description": "38% скидка на развлекательные услуги",
       "image": "images/gift28.jpg",
+      "backgroundImage": "images/day28-bg.jpg",
       "productUrl": "https://example.com/products/entertainment-services"
     },
     {
@@ -201,6 +229,7 @@
       "code": "BELLS-39",
       "description": "39% скидка на товары для офиса",
       "image": "images/gift29.jpg",
+      "backgroundImage": "images/day29-bg.jpg",
       "productUrl": "https://example.com/products/office-supplies"
     },
     {
@@ -208,6 +237,7 @@
       "code": "COUNTDOWN-40",
       "description": "40% скидка на коллекционные товары",
       "image": "images/gift30.jpg",
+      "backgroundImage": "images/day30-bg.jpg",
       "productUrl": "https://example.com/products/collectibles"
     },
     {
@@ -215,6 +245,7 @@
       "code": "FIREWORKS-50",
       "description": "СУПЕР-ПРОМОКОД: 50% скидка на любой товар!",
       "image": "images/gift31.jpg",
+      "backgroundImage": "images/day31-bg.jpg",
       "productUrl": "https://example.com/products/super-sale"
     }
   ]
