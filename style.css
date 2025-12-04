@@ -752,7 +752,9 @@ h1, h2, h3, h4, h5, h6 {
 .text-white {
     color: white !important;
 }
-
+.text-dark {
+    color: #310005 !important;
+}
 .border-light {
     border-color: rgba(255, 255, 255, 0.2) !important;
 }
