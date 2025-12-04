@@ -247,99 +247,80 @@ h2 {
     padding: 10px;
 }
 
-/* Карточка акции (специальная карточка без номера) */
+/* Карточка акции (специальная карточка) - ТОЛЬКО КАРТИНКА */
 .special-card {
-    border: 2px solid #FFD700;
+    border: none !important;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
     height: 120px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
     width: 100%;
     -webkit-user-select: none;
     user-select: none;
-    padding: 10px;
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+    padding: 0;
+    margin: 0;
+    background: none;
+    box-shadow: none !important;
+    outline: none;
 }
 
-/* Анимация пульсации для специальных карточек */
-@keyframes special-pulse {
-    0% { box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2); }
-    50% { box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4); }
-    100% { box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2); }
+/* Убираем все эффекты при наведении */
+.special-card:hover {
+    transform: none;
+    box-shadow: none;
 }
 
-@-webkit-keyframes special-pulse {
-    0% { box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2); }
-    50% { box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4); }
-    100% { box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2); }
-}
-
-.special-card {
-    animation: special-pulse 3s infinite;
-    -webkit-animation: special-pulse 3s infinite;
-}
-
-/* Фоновое изображение для карточки */
-.day-card::before,
-.special-card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
+/* Картинка на всю область специальной карточки */
+.special-card-image {
     width: 100%;
     height: 100%;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 0.15;
-    z-index: -1;
-    transition: opacity 0.3s ease;
-}
-
-.day-card:hover::before,
-.special-card:hover::before {
-    opacity: 0.25;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-shadow: none;
 }
 
 /* Размеры карточек для разных устройств */
 @media (min-width: 576px) {
-    .day-card,
+    .day-card {
+        height: 130px;
+    }
     .special-card {
         height: 130px;
     }
 }
 
 @media (min-width: 768px) {
-    .day-card,
+    .day-card {
+        height: 140px;
+    }
     .special-card {
         height: 140px;
     }
 }
 
 @media (min-width: 992px) {
-    .day-card,
+    .day-card {
+        height: 150px;
+    }
     .special-card {
         height: 150px;
     }
 }
 
-.day-card:active,
-.special-card:active {
+.day-card:active {
     transform: scale(0.98);
     opacity: 0.9;
 }
 
-.day-card:hover,
-.special-card:hover {
+.day-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* Стили для разных статусов карточек в стиле ecoplace */
@@ -401,49 +382,15 @@ h2 {
     z-index: 2;
 }
 
-/* Изображение в специальной карточке */
-.special-card-image {
-    max-width: 80%;
-    max-height: 60px;
-    object-fit: contain;
-    margin-bottom: 8px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Лейбл для специальной карточки */
-.special-card-badge {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: var(--primary-color);
-    color: white;
-    font-size: 0.6rem;
-    padding: 2px 6px;
-    border-radius: 10px;
-    font-family: 'Esqadero FF CY 4F', sans-serif;
-    z-index: 3;
-}
-
 @media (min-width: 576px) {
     .day-number {
         font-size: 2.2rem;
-    }
-    .special-card-image {
-        max-height: 70px;
-    }
-    .special-card-badge {
-        font-size: 0.7rem;
-        padding: 3px 8px;
     }
 }
 
 @media (min-width: 768px) {
     .day-number {
         font-size: 2.4rem;
-    }
-    .special-card-image {
-        max-height: 80px;
     }
 }
 
@@ -473,24 +420,8 @@ h2 {
     text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
 }
 
-/* Тип специальной карточки */
-.special-card-type {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--primary-color);
-    margin-top: 5px;
-    font-family: 'Esqadero FF CY 4F', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    position: relative;
-    z-index: 2;
-    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
-}
-
 @media (min-width: 576px) {
-    .day-month,
-    .special-card-type {
+    .day-month {
         font-size: 1rem;
     }
 }
@@ -746,6 +677,9 @@ h1, h2, h3, h4, h5, h6 {
     .day-card,
     .special-card {
         height: 110px;
+    }
+    
+    .day-card {
         padding: 0.75rem;
     }
     
@@ -753,12 +687,7 @@ h1, h2, h3, h4, h5, h6 {
         font-size: 1.8rem;
     }
     
-    .special-card-image {
-        max-height: 50px;
-    }
-    
-    .day-month,
-    .special-card-type {
+    .day-month {
         font-size: 0.8rem;
     }
     
@@ -786,10 +715,6 @@ h1, h2, h3, h4, h5, h6 {
     
     .day-number {
         font-size: 1.6rem;
-    }
-    
-    .special-card-image {
-        max-height: 45px;
     }
     
     .container, .container-fluid {
@@ -919,68 +844,23 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
-/* Стили для кнопки отправки промокода боту */
-.btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    color: white;
+/* Стили для информационного alert */
+.alert-info {
+    background-color: #e3f2fd;
+    color: #0d47a1;
+    border: 1px solid #bbdefb;
+    animation: fadeIn 0.5s ease;
 }
 
-.btn-primary:hover {
-    background-color: var(--primary-dark);
-    border-color: var(--primary-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-.btn-primary:active {
-    transform: scale(0.98);
-}
-
-.btn-success {
-    background-color: #2e7d32;
-    border-color: #2e7d32;
-    color: white;
-}
-
-.btn-sm {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-}
-
-/* Анимация для кнопки отправки */
-@keyframes sendPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-#share-to-bot-btn:not(:disabled) {
-    animation: sendPulse 2s infinite;
-}
-
-#share-to-bot-btn:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-}
-// Обработчик данных от WebApp
-bot.on('message', async (msg) => {
-    if (msg.web_app_data) {
-        try {
-            const data = JSON.parse(msg.web_app_data.data);
-            
-            if (data.action === 'send_promo_to_chat') {
-                // Отправляем промокод пользователю
-                await bot.sendMessage(
-                    msg.chat.id,
-                    data.message,
-                    { parse_mode: 'Markdown' }
-                );
-                
-                console.log(`Промокод отправлен пользователю ${msg.chat.id}: ${data.promoCode}`);
-            }
-        } catch (error) {
-            console.error('Ошибка обработки WebApp данных:', error);
-        }
+/* Для мобильных */
+@media screen and (max-width: 768px) {
+    .alert {
+        padding: 0.75rem;
+        font-size: 0.9rem;
     }
-});
+}
