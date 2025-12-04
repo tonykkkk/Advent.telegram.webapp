@@ -240,7 +240,6 @@ function loadDemoData() {
                 type: "special",
                 title: ["Флеш-акция", "Сюрприз", "Розыгрыш", "Подарок", "Супер-акция"][specialIndex - 1],
                 image: `images/special${specialIndex}.jpg`,
-                backgroundImage: `images/special-bg${specialIndex}.png`,
                 description: ["Специальное предложение недели!", "Новогодний сюрприз!", "Участвуйте в розыгрыше!", "Каждому покупателю подарок!", "Супер-акция перед Новым годом!"][specialIndex - 1],
                 actionUrl: `https://ecoplace.ru/special-${specialIndex}`
             });
@@ -351,29 +350,27 @@ function createDayCard(item, isDecember2025, currentDay) {
     return dayCard;
 }
 
-// Функция создания специальной карточки
+// Функция создания специальной карточки (ТОЛЬКО КАРТИНКА)
 function createSpecialCard(item, index) {
     const specialCard = document.createElement('div');
     specialCard.className = 'special-card';
     specialCard.dataset.type = 'special';
     specialCard.dataset.index = index;
     
-    // Устанавливаем фоновое изображение
-    let backgroundImageStyle = '';
-    if (item.backgroundImage) {
-        backgroundImageStyle = `background-image: url('${item.backgroundImage}');`;
-    }
+    // Создаем элемент img для картинки
+    const img = document.createElement('img');
+    img.src = item.image;
+    img.alt = item.title || 'Специальное предложение';
+    img.className = 'special-card-image';
     
-    specialCard.innerHTML = `
-        <style>
-            .special-card[data-index="${index}"]::before {
-                ${backgroundImageStyle}
-            }
-        </style>
-        <div class="special-card-badge">АКЦИЯ</div>
-        <img src="${item.image}" alt="${item.title}" class="special-card-image">
-        <div class="special-card-type">${item.title}</div>
-    `;
+    // Добавляем обработчик ошибки загрузки изображения
+    img.onerror = function() {
+        // Если изображение не загрузилось, показываем placeholder
+        this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2Y1ZjVmNSIvPjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOTk5Ij5BQ0NJT048L3RleHQ+PC9zdmc+';
+    };
+    
+    // Добавляем картинку в карточку
+    specialCard.appendChild(img);
     
     // Добавляем обработчик клика для перехода по URL
     specialCard.addEventListener('click', function() {
