@@ -115,6 +115,7 @@ async function loadPromoCodes() {
                 code: promo.code,
                 description: promo.description,
                 image: promo.image,
+                backgroundImage: promo.backgroundImage, // Новое поле для фонового изображения
                 productUrl: promo.productUrl
             };
         });
@@ -137,12 +138,13 @@ function loadDemoData() {
             code: `NY2025-DAY${day}`,
             description: `Эксклюзивный промокод на день ${day} декабря 2025 года. Скидка на праздничные товары!`,
             image: `images/gift${day}.jpg`,
+            backgroundImage: `images/day${day}-bg.jpg`, // Демо фоновые изображения
             productUrl: `https://example.com/products/december-${day}`
         };
     }
 }
 
-// Функция создания календаря
+// Функция создания календаря с фоновыми изображениями
 function createCalendar() {
     const calendarContainer = document.getElementById('calendar-container');
     calendarContainer.innerHTML = '';
@@ -196,7 +198,21 @@ function createCalendar() {
             snowflake = '<i class="fas fa-snowflake position-absolute top-0 start-0 m-1 text-primary" style="font-size: 0.7rem;"></i>';
         }
         
+        // Получаем данные промокода для фонового изображения
+        const promo = promoData[day];
+        let backgroundImageStyle = '';
+        
+        if (promo && promo.backgroundImage) {
+            // Устанавливаем фоновое изображение
+            backgroundImageStyle = `background-image: url('${promo.backgroundImage}');`;
+        }
+        
         dayCard.innerHTML = `
+            <style>
+                .day-card[data-day="${day}"]::before {
+                    ${backgroundImageStyle}
+                }
+            </style>
             ${snowflake}
             <div class="day-number">${day}</div>
             <div class="day-month">Декабрь</div>
