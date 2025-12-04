@@ -21,24 +21,8 @@ if (!Element.prototype.closest) {
 }
 
 // Глобальные переменные
-let tg = null;
 let promoModal = null;
 let promoData = {};
-
-// Проверяем, запущено ли в Telegram Web App
-function isTelegramWebApp() {
-    return window.Telegram && window.Telegram.WebApp;
-}
-
-// Инициализация Telegram Web App
-function initTelegramWebApp() {
-    if (isTelegramWebApp()) {
-        tg = window.Telegram.WebApp;
-        console.log('Telegram Web App обнаружен');
-        return true;
-    }
-    return false;
-}
 
 // Улучшенная функция копирования для всех браузеров
 function copyToClipboard(text) {
@@ -139,16 +123,15 @@ function createCalendar() {
     // Текущая дата
     const today = new Date();
     const currentDay = today.getDate();
-    const currentMonth = today.getMonth();
+    const currentMonth = today.getMonth(); // 0-январь, 11-декабрь
     const currentYear = today.getFullYear();
+    
+    // Проверяем, декабрь ли сейчас 2025 года
     const isDecember2025 = currentMonth === 11 && currentYear === 2025;
     
     // Обновляем текущую дату на странице
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
     document.getElementById('current-date').textContent = today.toLocaleDateString('ru-RU', options);
-    
-    // Загружаем состояние открытых окошек из localStorage
-    const openedDays = JSON.parse(localStorage.getItem('adventOpenedDays2025')) || [];
     
     // Создаем карточки для каждого дня декабря
     for (let day = 1; day <= 31; day++) {
@@ -160,28 +143,25 @@ function createCalendar() {
         let status = '';
         let statusText = '';
         
-        if (day === currentDay && isDecember2025) {
-            // Сегодняшний день декабря 2025
-            status = 'today';
-            statusText = 'Сегодня';
-        } else if (day < currentDay && isDecember2025) {
-            // Прошедшие дни декабря 2025 - ПРОПУЩЕНЫ
-            status = 'missed';
-            statusText = 'Пропущено';
-        } else if (day > currentDay && isDecember2025) {
-            // Будущие дни декабря 2025
-            status = 'future';
-            statusText = 'Будущее';
+        if (isDecember2025) {
+            // Если СЕЙЧАС ДЕКАБРЬ 2025
+            if (day === currentDay) {
+                // Сегодняшний день
+                status = 'today';
+                statusText = 'Сегодня';
+            } else if (day < currentDay) {
+                // Прошедшие дни - ПРОПУЩЕНЫ
+                status = 'missed';
+                statusText = 'Пропущено';
+            } else {
+                // Будущие дни - БУДУЩЕЕ
+                status = 'future';
+                statusText = 'Будущее';
+            }
         } else {
-            // Не декабрь 2025 года - все дни будущие
+            // Если НЕ ДЕКАБРЬ 2025 - ВСЕ ДНИ БУДУЩИЕ
             status = 'future';
             statusText = 'Будущее';
-        }
-        
-        // Если день был открыт ранее (сохранен в localStorage), он становится "открытым"
-        if (openedDays.includes(day)) {
-            status = 'open';
-            statusText = 'Открыто';
         }
         
         dayCard.classList.add(status);
@@ -199,13 +179,17 @@ function createCalendar() {
             <div class="day-status">${statusText}</div>
         `;
         
-        // Добавляем обработчик клика только для открытых и сегодняшних карточек
-        if (status === 'open' || status === 'today') {
+        // Добавляем обработчик клика
+        if (status === 'today') {
+            // Кликабелен только сегодняшний день
             dayCard.addEventListener('click', function() {
                 openPromoCard(day);
             });
+            dayCard.style.cursor = 'pointer';
         } else {
+            // Не кликабельны: пропущенные и будущие дни
             dayCard.style.cursor = 'not-allowed';
+            dayCard.style.opacity = '0.7';
         }
         
         calendarContainer.appendChild(dayCard);
@@ -214,6 +198,8 @@ function createCalendar() {
     console.log('Календарь создан:', {
         дней: 31,
         сегодня: currentDay,
+        месяц: currentMonth + 1,
+        год: currentYear,
         декабрь2025: isDecember2025
     });
 }
@@ -221,6 +207,23 @@ function createCalendar() {
 // Функция открытия карточки с промокодом
 function openPromoCard(day) {
     const dayCard = document.querySelector(`.day-card[data-day="${day}"]`);
+    
+    // Текущая дата для проверки
+    const today = new Date();
+    const currentDay = today.getDate();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+    const isDecember2025 = currentMonth === 11 && currentYear === 2025;
+    
+    // Проверяем, можно ли открыть этот день
+    // Можно открыть только сегодняшний день
+    const isToday = (day === currentDay && isDecember2025);
+    
+    if (!isToday) {
+        // Нельзя открыть пропущенные или будущие дни
+        showError('Этот день еще не наступил или уже прошел');
+        return;
+    }
     
     // Добавляем анимацию открытия
     if (dayCard) {
@@ -272,30 +275,12 @@ function openPromoCard(day) {
     img.src = promo.image;
     img.alt = `Промокод для дня ${day} декабря`;
     
-    // Загружаем состояние открытых окошек
-    const openedDays = JSON.parse(localStorage.getItem('adventOpenedDays2025')) || [];
-    
-    // Если карточка еще не была открыта, добавляем в localStorage
-    if (!openedDays.includes(day)) {
-        openedDays.push(day);
-        localStorage.setItem('adventOpenedDays2025', JSON.stringify(openedDays));
-        
-        // Обновляем статус карточки, если она была "сегодня"
-        if (dayCard && dayCard.classList.contains('today')) {
-            dayCard.classList.remove('today');
-            dayCard.classList.add('open');
-            
-            // Обновляем текст на карточке
-            const dayNumberElement = dayCard.querySelector('.day-number');
-            const dayStatusElement = dayCard.querySelector('.day-status');
-            
-            if (dayStatusElement) {
-                dayStatusElement.textContent = 'Открыто';
-                dayStatusElement.style.backgroundColor = 'rgba(139, 195, 74, 0.2)';
-                dayStatusElement.style.color = '#8bc34a';
-            }
-        }
-    }
+    // После открытия сегодняшнего дня обновляем страницу через 2 секунды
+    // чтобы показать, что день стал "пропущен"
+    setTimeout(() => {
+        // После показа промокода перезагружаем страницу
+        location.reload();
+    }, 2000);
     
     // Показываем модальное окно
     if (promoModal) {
@@ -368,6 +353,15 @@ async function initApp() {
     setupEventListeners();
     
     console.log('Приложение инициализировано');
+    
+    // Для отладки - выводим информацию о текущей дате
+    const today = new Date();
+    console.log('Текущая дата:', {
+        день: today.getDate(),
+        месяц: today.getMonth() + 1,
+        год: today.getFullYear(),
+        декабрь2025: (today.getMonth() === 11 && today.getFullYear() === 2025)
+    });
 }
 
 // Запуск приложения при загрузке страницы
