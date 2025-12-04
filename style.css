@@ -90,7 +90,7 @@ body::before {
     pointer-events: none;
 }
 
-/* Шапка с изображением */
+/* Шапка с изображением без градиента */
 .header-bg {
     background-image: url('header-bg.jpg');
     background-size: cover;
@@ -98,17 +98,6 @@ body::before {
     background-repeat: no-repeat;
     position: relative;
     overflow: hidden;
-}
-
-.header-bg::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(26, 41, 128, 0.85) 0%, rgba(76, 175, 80, 0.85) 100%);
-    z-index: 0;
 }
 
 .header-bg .container {
@@ -482,6 +471,7 @@ h2 {
     border-radius: 8px;
     background: var(--light-color);
     border: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
 }
 
 /* Кнопки в стиле ecoplace */
@@ -605,17 +595,6 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
-@media screen and (min-width: 769px) {
-    .modal-body .row {
-        display: flex;
-        gap: 2rem;
-    }
-
-    .modal-body .col-md-6 {
-        flex: 0 0 50%;
-    }
-}
-
 /* Улучшение для очень маленьких экранов */
 @media (max-width: 360px) {
     .day-card {
@@ -670,54 +649,18 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 0.7;
 }
 
-/* Telegram-specific optimizations */
-body.telegram-webapp {
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-}
-
-/* Улучшение для основной кнопки Telegram */
-.telegram-main-button {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-    z-index: 1000;
-}
-
-/* Анимация для Telegram уведомлений */
-@keyframes telegram-notification {
-    0% { transform: translateY(100%); opacity: 0; }
-    10% { transform: translateY(0); opacity: 1; }
-    90% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(100%); opacity: 0; }
-}
-
-/* Оптимизация для быстрой прокрутки в Telegram */
+/* Оптимизация для быстрой прокрутки */
 .day-card {
     -webkit-overflow-scrolling: touch;
     will-change: transform;
 }
 
-/* Оптимизация изображений для Telegram */
+/* Оптимизация изображений */
 .promo-image-container img {
     max-width: 100%;
     height: auto;
     -webkit-user-drag: none;
     user-drag: none;
-}
-
-/* Улучшение для модальных окон в Telegram */
-.modal-dialog {
-    margin: env(safe-area-inset-top) auto env(safe-area-inset-bottom) auto;
-}
-
-/* Гарантия что контент не скрывается под нативными элементами Telegram */
-.container-fluid, .container {
-    padding-left: max(15px, env(safe-area-inset-left));
-    padding-right: max(15px, env(safe-area-inset-right));
 }
 
 /* Дополнительные стили для соответствия ecoplace */
@@ -752,4 +695,33 @@ body.telegram-webapp {
 
 .position-absolute {
     position: absolute !important;
+}
+
+/* Стили для нового расположения описания промокода */
+.promo-description-block {
+    text-align: center;
+    margin-top: 1rem;
+    padding: 0 1rem;
+}
+
+.promo-description-text {
+    font-size: 1.1rem;
+    color: var(--dark-color);
+    line-height: 1.5;
+}
+
+/* Переупорядочение модального окна на мобильных */
+@media screen and (max-width: 768px) {
+    .modal-body .row {
+        flex-direction: column;
+    }
+    
+    .modal-body .col-md-6 {
+        width: 100%;
+    }
+    
+    .promo-description-block {
+        order: 3;
+        margin-top: 1.5rem;
+    }
 }
