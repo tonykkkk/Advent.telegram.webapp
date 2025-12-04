@@ -29,10 +29,7 @@
     },
     {
       "type": "special",
-      "title": "Флеш-акция",
       "image": "images/IMG_3023.jpeg",
-      "backgroundImage": "images/special-bg1.png",
-      "description": "Специальное предложение недели - скидка 40% на новогодние украшения!",
       "actionUrl": "https://ecoplace.ru/special-offer"
     },
     {
@@ -82,10 +79,7 @@
     },
     {
       "type": "special",
-      "title": "Сюрприз",
       "image": "images/special2.jpg",
-      "backgroundImage": "images/special-bg2.png",
-      "description": "Новогодний сюрприз от Деда Мороза - получите бесплатную доставку!",
       "actionUrl": "https://ecoplace.ru/surprise"
     },
     {
@@ -153,10 +147,7 @@
     },
     {
       "type": "special",
-      "title": "Розыгрыш",
       "image": "images/special3.jpg",
-      "backgroundImage": "images/special-bg3.png",
-      "description": "Участвуйте в розыгрыше новогодних подарков!",
       "actionUrl": "https://ecoplace.ru/contest"
     },
     {
@@ -224,10 +215,7 @@
     },
     {
       "type": "special",
-      "title": "Подарок",
       "image": "images/special4.jpg",
-      "backgroundImage": "images/special-bg4.png",
-      "description": "Каждому покупателю - новогодний подарок!",
       "actionUrl": "https://ecoplace.ru/gift"
     },
     {
@@ -286,10 +274,7 @@
     },
     {
       "type": "special",
-      "title": "Супер-акция",
       "image": "images/special5.jpg",
-      "backgroundImage": "images/special-bg5.png",
-      "description": "Супер-акция перед Новым годом - скидки до 70%!",
       "actionUrl": "https://ecoplace.ru/super-sale"
     },
     {
