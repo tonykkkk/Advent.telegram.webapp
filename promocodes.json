@@ -117,7 +117,7 @@
       "code": "FROSTY-13",
       "description": "13% скидка на музыкальные инструменты",
       "image": "images/gift15.jpg",
-      "backgroundImage": "images/day15-bg.jpg",
+      backgroundImage": "images/day15-bg.jpg",
       "productUrl": "https://example.com/products/musical-instruments"
     },
     {
@@ -251,20 +251,81 @@
   ],
   "specialCards": [
     {
-      "day": 8,
-      "type": "Акция",
+      "day": "s3.1",
+      "type": "Флеш-акция",
       "image": "images/special1.jpg",
       "backgroundImage": "images/special-bg1.png",
-      "description": "Специальное предложение недели",
+      "description": "Специальное предложение недели - скидка 40% на новогодние украшения!",
       "actionUrl": "https://ecoplace.ru/special-offer"
     },
     {
-      "day": 22,
+      "day": "s8.1",
       "type": "Сюрприз",
       "image": "images/special2.jpg",
       "backgroundImage": "images/special-bg2.png",
-      "description": "Новогодний сюрприз от Деда Мороза",
+      "description": "Новогодний сюрприз от Деда Мороза - получите бесплатную доставку!",
       "actionUrl": "https://ecoplace.ru/surprise"
+    },
+    {
+      "day": "s15.1",
+      "type": "Розыгрыш",
+      "image": "images/special3.jpg",
+      "backgroundImage": "images/special-bg3.png",
+      "description": "Участвуйте в розыгрыше новогодних подарков!",
+      "actionUrl": "https://ecoplace.ru/contest"
+    },
+    {
+      "day": "s22.1",
+      "type": "Подарок",
+      "image": "images/special4.jpg",
+      "backgroundImage": "images/special-bg4.png",
+      "description": "Каждому покупателю - новогодний подарок!",
+      "actionUrl": "https://ecoplace.ru/gift"
+    },
+    {
+      "day": "s28.1",
+      "type": "Супер-акция",
+      "image": "images/special5.jpg",
+      "backgroundImage": "images/special-bg5.png",
+      "description": "Супер-акция перед Новым годом - скидки до 70%!",
+      "actionUrl": "https://ecoplace.ru/super-sale"
+    }
+  ],
+  "specialCardsPositions": [
+    {
+      "day": 3,
+      "position": "after",
+      "specialData": {
+        "day": "s3.1"
+      }
+    },
+    {
+      "day": 8,
+      "position": "after",
+      "specialData": {
+        "day": "s8.1"
+      }
+    },
+    {
+      "day": 15,
+      "position": "after",
+      "specialData": {
+        "day": "s15.1"
+      }
+    },
+    {
+      "day": 22,
+      "position": "after",
+      "specialData": {
+        "day": "s22.1"
+      }
+    },
+    {
+      "day": 28,
+      "position": "after",
+      "specialData": {
+        "day": "s28.1"
+      }
     }
   ]
 }
