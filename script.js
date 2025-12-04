@@ -238,9 +238,7 @@ function loadDemoData() {
             const specialIndex = i === 3 ? 1 : i === 8 ? 2 : i === 15 ? 3 : i === 22 ? 4 : 5;
             calendarItems.push({
                 type: "special",
-                title: ["Флеш-акция", "Сюрприз", "Розыгрыш", "Подарок", "Супер-акция"][specialIndex - 1],
                 image: `images/special${specialIndex}.jpg`,
-                description: ["Специальное предложение недели!", "Новогодний сюрприз!", "Участвуйте в розыгрыше!", "Каждому покупателю подарок!", "Супер-акция перед Новым годом!"][specialIndex - 1],
                 actionUrl: `https://ecoplace.ru/special-${specialIndex}`
             });
         }
@@ -281,7 +279,7 @@ function createCalendar() {
     });
 }
 
-// Функция создания карточки дня
+// Функция создания карточки дня (ИСПРАВЛЕНО: фоновое изображение)
 function createDayCard(item, isDecember2025, currentDay) {
     const dayCard = document.createElement('div');
     dayCard.className = 'day-card';
@@ -318,23 +316,43 @@ function createDayCard(item, isDecember2025, currentDay) {
         snowflake = '<i class="fas fa-snowflake position-absolute top-0 start-0 m-1 text-primary" style="font-size: 0.7rem;"></i>';
     }
     
-    // Устанавливаем фоновое изображение
+    // Устанавливаем фоновое изображение через инлайновые стили
     let backgroundImageStyle = '';
     if (item.backgroundImage) {
-        backgroundImageStyle = `background-image: url('${item.backgroundImage}');`;
+        // Используем инлайновый стиль для фонового изображения
+        dayCard.style.backgroundImage = `url('${item.backgroundImage}')`;
+        dayCard.style.backgroundSize = 'cover';
+        dayCard.style.backgroundPosition = 'center';
+        dayCard.style.backgroundRepeat = 'no-repeat';
     }
     
-    dayCard.innerHTML = `
-        <style>
-            .day-card[data-day="${item.day}"]::before {
-                ${backgroundImageStyle}
-            }
-        </style>
+    // Вместо псевдоэлемента ::before, используем overlay для фонового изображения
+    const overlay = document.createElement('div');
+    overlay.style.position = 'absolute';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+    overlay.style.zIndex = '0';
+    
+    dayCard.appendChild(overlay);
+    
+    // Создаем контейнер для контента
+    const contentDiv = document.createElement('div');
+    contentDiv.style.position = 'relative';
+    contentDiv.style.zIndex = '1';
+    contentDiv.style.textAlign = 'center';
+    
+    // Добавляем контент
+    contentDiv.innerHTML = `
         ${snowflake}
         <div class="day-number">${item.day}</div>
         <div class="day-month">Декабрь</div>
         <div class="day-status">${statusText}</div>
     `;
+    
+    dayCard.appendChild(contentDiv);
     
     // Добавляем обработчик клика
     if (status === 'today') {
@@ -360,7 +378,7 @@ function createSpecialCard(item, index) {
     // Создаем элемент img для картинки
     const img = document.createElement('img');
     img.src = item.image;
-    img.alt = item.title || 'Специальное предложение';
+    img.alt = 'Специальное предложение';
     img.className = 'special-card-image';
     
     // Добавляем обработчик ошибки загрузки изображения
