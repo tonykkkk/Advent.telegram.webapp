@@ -963,3 +963,24 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 0.7;
     cursor: not-allowed;
 }
+// Обработчик данных от WebApp
+bot.on('message', async (msg) => {
+    if (msg.web_app_data) {
+        try {
+            const data = JSON.parse(msg.web_app_data.data);
+            
+            if (data.action === 'send_promo_to_chat') {
+                // Отправляем промокод пользователю
+                await bot.sendMessage(
+                    msg.chat.id,
+                    data.message,
+                    { parse_mode: 'Markdown' }
+                );
+                
+                console.log(`Промокод отправлен пользователю ${msg.chat.id}: ${data.promoCode}`);
+            }
+        } catch (error) {
+            console.error('Ошибка обработки WebApp данных:', error);
+        }
+    }
+});
