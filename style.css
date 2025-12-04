@@ -247,8 +247,29 @@ h2 {
     padding: 10px;
 }
 
+/* Карточка акции (специальная карточка без номера) */
+.special-card {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    background-color: #fff;
+    width: 100%;
+    -webkit-user-select: none;
+    user-select: none;
+    padding: 10px;
+}
+
 /* Фоновое изображение для карточки */
-.day-card::before {
+.day-card::before,
+.special-card::before {
     content: "";
     position: absolute;
     top: 0;
@@ -263,35 +284,41 @@ h2 {
     transition: opacity 0.3s ease;
 }
 
-.day-card:hover::before {
+.day-card:hover::before,
+.special-card:hover::before {
     opacity: 0.25;
 }
 
 /* Размеры карточек для разных устройств */
 @media (min-width: 576px) {
-    .day-card {
+    .day-card,
+    .special-card {
         height: 130px;
     }
 }
 
 @media (min-width: 768px) {
-    .day-card {
+    .day-card,
+    .special-card {
         height: 140px;
     }
 }
 
 @media (min-width: 992px) {
-    .day-card {
+    .day-card,
+    .special-card {
         height: 150px;
     }
 }
 
-.day-card:active {
+.day-card:active,
+.special-card:active {
     transform: scale(0.98);
     opacity: 0.9;
 }
 
-.day-card:hover {
+.day-card:hover,
+.special-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
@@ -303,6 +330,12 @@ h2 {
     border-width: 2px;
     animation: pulse 2s infinite;
     -webkit-animation: pulse 2s infinite;
+}
+
+/* ИСПРАВЛЕНИЕ: Цвет текста статуса "Сегодня" */
+.day-card.today .day-status {
+    background-color: rgba(255, 183, 77, 0.9);
+    color: #b36b00 !important; /* Темный цвет для хорошей читаемости */
 }
 
 @keyframes pulse {
@@ -332,7 +365,8 @@ h2 {
 }
 
 .day-card.missed:hover,
-.day-card.future:hover {
+.day-card.future:hover,
+.special-card.disabled:hover {
     transform: none;
     box-shadow: none;
     cursor: not-allowed;
@@ -349,15 +383,31 @@ h2 {
     z-index: 2;
 }
 
+/* Изображение в специальной карточке */
+.special-card-image {
+    max-width: 80%;
+    max-height: 60px;
+    object-fit: contain;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 @media (min-width: 576px) {
     .day-number {
         font-size: 2.2rem;
+    }
+    .special-card-image {
+        max-height: 70px;
     }
 }
 
 @media (min-width: 768px) {
     .day-number {
         font-size: 2.4rem;
+    }
+    .special-card-image {
+        max-height: 80px;
     }
 }
 
@@ -387,8 +437,24 @@ h2 {
     text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
 }
 
+/* Тип специальной карточки */
+.special-card-type {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-top: 5px;
+    font-family: 'Esqadero FF CY 4F', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 2;
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
 @media (min-width: 576px) {
-    .day-month {
+    .day-month,
+    .special-card-type {
         font-size: 1rem;
     }
 }
@@ -427,7 +493,7 @@ h2 {
 
 .today .day-status {
     background-color: rgba(255, 183, 77, 0.9);
-    color: var(--warning-color);
+    color: #b36b00 !important; /* ИСПРАВЛЕНИЕ: Темный цвет для хорошей читаемости */
 }
 
 .missed .day-status {
@@ -641,7 +707,8 @@ h1, h2, h3, h4, h5, h6 {
         font-size: 1.5rem;
     }
     
-    .day-card {
+    .day-card,
+    .special-card {
         height: 110px;
         padding: 0.75rem;
     }
@@ -650,7 +717,12 @@ h1, h2, h3, h4, h5, h6 {
         font-size: 1.8rem;
     }
     
-    .day-month {
+    .special-card-image {
+        max-height: 50px;
+    }
+    
+    .day-month,
+    .special-card-type {
         font-size: 0.8rem;
     }
     
@@ -671,12 +743,17 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Улучшение для очень маленьких экранов */
 @media (max-width: 360px) {
-    .day-card {
+    .day-card,
+    .special-card {
         height: 100px;
     }
     
     .day-number {
         font-size: 1.6rem;
+    }
+    
+    .special-card-image {
+        max-height: 45px;
     }
     
     .container, .container-fluid {
@@ -726,13 +803,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Оптимизация для быстрой прокрутки */
-.day-card {
+.day-card,
+.special-card {
     -webkit-overflow-scrolling: touch;
     will-change: transform;
 }
 
 /* Оптимизация изображений */
-.promo-image-container img {
+.promo-image-container img,
+.special-card-image {
     max-width: 100%;
     height: auto;
     -webkit-user-drag: none;
@@ -802,4 +881,68 @@ h1, h2, h3, h4, h5, h6 {
         order: 3;
         margin-top: 1.5rem;
     }
+}
+/* Добавить в конец файла style.css */
+
+/* Стили для кнопки отправки промокода боту */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-success {
+    background-color: #2e7d32;
+    border-color: #2e7d32;
+    color: white;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+/* Анимация для кнопки отправки */
+@keyframes sendPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+#share-to-bot-btn:not(:disabled) {
+    animation: sendPulse 2s infinite;
+}
+
+#share-to-bot-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Индикатор того, что это Telegram Mini App */
+.telegram-indicator {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background-color: #0088cc;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    z-index: 1000;
+    display: none;
+}
+
+body.telegram-webapp .telegram-indicator {
+    display: block;
 }
