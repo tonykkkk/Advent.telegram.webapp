@@ -245,7 +245,7 @@ function openPromoCard(day) {
     document.getElementById('promo-description').textContent = promo.description;
     document.getElementById('promo-code-text').textContent = promo.code;
     
-    // Устанавливаем ссылку на товар
+    // Устанавливаем ссылку на товару
     const productBtn = document.getElementById('product-btn');
     if (promo.productUrl) {
         productBtn.href = promo.productUrl;
@@ -274,13 +274,6 @@ function openPromoCard(day) {
     };
     img.src = promo.image;
     img.alt = `Промокод для дня ${day} декабря`;
-    
-    // После открытия сегодняшнего дня обновляем страницу через 2 секунды
-    // чтобы показать, что день стал "пропущен"
-    setTimeout(() => {
-        // После показа промокода перезагружаем страницу
-        location.reload();
-    }, 2000);
     
     // Показываем модальное окно
     if (promoModal) {
