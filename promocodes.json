@@ -248,5 +248,23 @@
       "backgroundImage": "images/day31-bg.jpg",
       "productUrl": "https://example.com/products/super-sale"
     }
+  ],
+  "specialCards": [
+    {
+      "day": 8,
+      "type": "Акция",
+      "image": "images/special1.jpg",
+      "backgroundImage": "images/special-bg1.png",
+      "description": "Специальное предложение недели",
+      "actionUrl": "https://ecoplace.ru/special-offer"
+    },
+    {
+      "day": 22,
+      "type": "Сюрприз",
+      "image": "images/special2.jpg",
+      "backgroundImage": "images/special-bg2.png",
+      "description": "Новогодний сюрприз от Деда Мороза",
+      "actionUrl": "https://ecoplace.ru/surprise"
+    }
   ]
 }
