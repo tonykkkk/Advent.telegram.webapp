@@ -27,26 +27,26 @@
     {
       "day": 4,
       "code": "XMASGIFT-25",
-      "description": "25% скидка на игрушки и подарки",
-      "image": "images/gift4.jpg",
-      "backgroundImage": "images/day4-bg.jpg",
-      "productUrl": "https://example.com/products/toys-gifts"
+      "description": "25% скидка на косметическое средство",
+      "image": "images/gift.png",
+      "backgroundImage": "images/placeholder1.png",
+      "productUrl": "https://ecoplace.ru"
     },
     {
       "day": 5,
       "code": "HOLIDAY-30",
-      "description": "30% скидка на зимнюю одежду",
-      "image": "images/gift5.jpg",
-      "backgroundImage": "images/day5-bg.jpg",
-      "productUrl": "https://example.com/products/winter-clothing"
+      "description": "25% скидка на косметическое средство",
+      "image": "images/gift.png",
+      "backgroundImage": "images/placeholder1.png",
+      "productUrl": "https://ecoplace.ru"
     },
     {
       "day": 6,
       "code": "FESTIVE-12",
-      "description": "Скидка 12% на косметику и парфюмерию",
-      "image": "images/gift6.jpg",
-      "backgroundImage": "images/day6-bg.jpg",
-      "productUrl": "https://example.com/products/cosmetics-perfume"
+      "description": "25% скидка на косметическое средство",
+      "image": "images/gift.png",
+      "backgroundImage": "images/placeholder1.png",
+      "productUrl": "https://ecoplace.ru"
     },
     {
       "day": 7,
