@@ -5,17 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Новогодний Advent календарь 2025</title>
     
-    <!-- Telegram Web App SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Font Awesome для иконок -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Dancing+Script:wght@500;600&display=swap" rel="stylesheet">
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
@@ -39,19 +33,13 @@
                         <p class="lead text-light mb-4">Открывайте окошки каждый день декабря, чтобы получить эксклюзивные промокоды и подарки!</p>
                         
                         <div class="row justify-content-center">
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                                 <div class="card bg-transparent border-light">
                                     <div class="card-body py-3">
                                         <div class="row text-center">
-                                            <div class="col-6">
+                                            <div class="col-12">
                                                 <p class="mb-1 text-light">Сегодня:</p>
                                                 <p class="fw-bold fs-5 text-white" id="current-date">1 декабря 2025</p>
-                                            </div>
-                                            <div class="col-6">
-                                                <p class="mb-1 text-light">Открыто окошек:</p>
-                                                <p class="fw-bold fs-5 text-white">
-                                                    <span id="opened-count">0</span> из <span id="total-count">31</span>
-                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -70,7 +58,7 @@
                 <div class="row mb-4">
                     <div class="col-12">
                         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-3">
-                            <h2 class="fw-bold text-center text-md-start mb-3 mb-md-0 text-primary">
+                            <h2 class="fw-bold text-center text-md-start mb-3 mb-md-0 text-primary calendar-title">
                                 <i class="fas fa-calendar-alt me-2"></i>Декабрь 2025
                             </h2>
                             
@@ -86,7 +74,11 @@
                                     </div>
                                     <div class="d-flex align-items-center">
                                         <span class="legend-dot legend-closed me-2"></span>
-                                        <span class="small text-dark">Закрыто</span>
+                                        <span class="small text-dark">Пропущено</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <span class="legend-dot legend-future me-2"></span>
+                                        <span class="small text-dark">Будущее</span>
                                     </div>
                                 </div>
                             </div>
@@ -99,16 +91,6 @@
                     <div class="col-12">
                         <div class="calendar-grid" id="calendar-container">
                             <!-- Окошки календаря будут сгенерированы через JavaScript -->
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Инструкция для Telegram -->
-                <div class="row mt-4 d-none" id="telegram-instruction">
-                    <div class="col-12">
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <strong>В Telegram Web App:</strong> Все окошки открыты для демонстрации. Нажмите на любое окошко, чтобы увидеть промокод.
                         </div>
                     </div>
                 </div>
@@ -175,7 +157,7 @@
                             
                             <div class="mb-4">
                                 <h6 class="text-uppercase text-muted small mb-2">Описание промокода:</h6>
-                                <p class="fs-5 text-dark" id="promo-description">
+                                <p class="fs-5 text-dark promo-description-font" id="promo-description">
                                     Скидка 15% на все новогодние украшения
                                 </p>
                             </div>
@@ -206,21 +188,5 @@
     
     <!-- Custom JavaScript -->
     <script src="script.js"></script>
-    
-    <!-- Инициализация Telegram Web App -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (window.Telegram && window.Telegram.WebApp) {
-                const tg = window.Telegram.WebApp;
-                
-                tg.expand();
-                tg.enableClosingConfirmation();
-                
-                document.getElementById('telegram-instruction').classList.remove('d-none');
-                
-                tg.ready();
-            }
-        });
-    </script>
 </body>
 </html>
