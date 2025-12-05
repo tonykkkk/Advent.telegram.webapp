@@ -23,146 +23,15 @@ if (!Element.prototype.closest) {
 // Глобальные переменные
 let promoModal = null;
 let calendarItems = [];
-let telegramWebApp = null;
 let currentPromoItem = null;
-
-// Инициализация Telegram WebApp
-function initTelegramWebApp() {
-    if (typeof window.Telegram !== 'undefined' && window.Telegram.WebApp) {
-        telegramWebApp = window.Telegram.WebApp;
-        
-        // Расширяем на весь экран
-        telegramWebApp.expand();
-        
-        // Скрываем кнопку "Назад"
-        telegramWebApp.BackButton.hide();
-        
-        console.log('Telegram WebApp инициализирован:', {
-            платформа: telegramWebApp.platform,
-            версия: telegramWebApp.version,
-            user: telegramWebApp.initDataUnsafe.user
-        });
-        
-        return telegramWebApp;
-    }
-    return null;
-}
 
 // Функция для показа уведомления
 function showAlert(message, type = 'info') {
-    if (telegramWebApp) {
-        if (type === 'success') {
-            telegramWebApp.showPopup({
-                title: '🎉 Успех!',
-                message: message,
-                buttons: [{ type: 'ok' }]
-            });
-        } else if (type === 'error') {
-            telegramWebApp.showPopup({
-                title: '⚠️ Ошибка',
-                message: message,
-                buttons: [{ type: 'ok' }]
-            });
-        } else {
-            telegramWebApp.showAlert(message);
-        }
-    } else {
-        // Fallback для браузера
-        alert(message);
-    }
+    // Fallback для браузера
+    alert(message);
 }
 
-// Функция отправки промокода через WebApp в диалог с ботом
-function sendPromoCodeToUser() {
-    if (!telegramWebApp) {
-        console.log('Telegram WebApp не инициализирован');
-        return false;
-    }
-    
-    if (!currentPromoItem || !currentPromoItem.code) {
-        console.error('Нет данных промокода для отправки');
-        return false;
-    }
-    
-    // Формируем сообщение с промокодом
-    const message = `🎁 *Промокод дня ${currentPromoItem.day} декабря* 🎁\n\n` +
-                   `📝 *Описание:* ${currentPromoItem.description}\n\n` +
-                   `🎫 *Промокод:* \`${currentPromoItem.code}\`\n\n` +
-                   `✨ *Скопируйте и используйте на сайте!*`;
-    
-    console.log('Отправляем промокод:', currentPromoItem.code);
-    
-    try {
-        // Метод 1: Отправка через WebApp API (основной метод)
-        if (telegramWebApp.sendData) {
-            const data = {
-                action: 'send_promo_to_chat',
-                promoCode: currentPromoItem.code,
-                description: currentPromoItem.description,
-                day: currentPromoItem.day,
-                message: message
-            };
-            
-            telegramWebApp.sendData(JSON.stringify(data));
-            console.log('Промокод отправлен через sendData:', data);
-            
-            // Показываем уведомление об успешной отправке
-            setTimeout(() => {
-                showAlert(`✅ Промокод дня ${currentPromoItem.day} отправлен вам в диалог с ботом!`, 'success');
-            }, 500);
-            
-            return true;
-        }
-        
-        // Метод 2: Если sendData не работает, пробуем другие методы
-        console.warn('Метод sendData не доступен, пробуем альтернативные методы');
-        
-        // Метод 2.1: Попробуем открыть диалог с ботом через deep link
-        try {
-            // Получаем текст для кнопки "Поделиться"
-            const shareText = `🎁 Промокод дня ${currentPromoItem.day} декабря: ${currentPromoItem.code}\n${currentPromoItem.description}`;
-            
-            // Пытаемся использовать WebApp функцию для отправки сообщения
-            if (telegramWebApp.shareMessage) {
-                telegramWebApp.shareMessage(shareText);
-                return true;
-            }
-        } catch (e) {
-            console.log('Метод shareMessage не доступен:', e);
-        }
-        
-        // Метод 2.2: Используем openTelegramLink для открытия диалога с ботом
-        try {
-            const encodedMessage = encodeURIComponent(message);
-            const botUsername = 'ecoplace_bot'; // Имя бота должно быть здесь
-            const shareUrl = `https://t.me/${botUsername}?start=promo_${currentPromoItem.day}&text=${encodedMessage}`;
-            
-            telegramWebApp.openTelegramLink(shareUrl);
-            console.log('Открыта ссылка для отправки:', shareUrl);
-            return true;
-        } catch (e) {
-            console.log('Метод openTelegramLink не доступен:', e);
-        }
-        
-        // Метод 3: Fallback - показываем инструкцию
-        showAlert(
-            `Промокод скопирован в буфер обмена!\n\n` +
-            `Для отправки боту:\n` +
-            `1. Вернитесь в диалог с ботом\n` +
-            `2. Вставьте промокод: ${currentPromoItem.code}\n` +
-            `3. Отправьте сообщение`,
-            'info'
-        );
-        return false;
-        
-    } catch (error) {
-        console.error('Ошибка отправки промокода:', error);
-        showAlert('Произошла ошибка при отправке промокода', 'error');
-        return false;
-    }
-}
-
-// Улучшенная функция копирования с отправкой боту
+// Улучшенная функция копирования
 function copyToClipboard(text) {
     return new Promise(function(resolve, reject) {
         if (navigator.clipboard && window.isSecureContext) {
@@ -211,46 +80,39 @@ async function loadCalendarData() {
         
     } catch (error) {
         console.error('Ошибка загрузки данных календаря:', error);
-        console.log('Используются демо-данные');
-        loadDemoData();
-        return true; // Возвращаем true, чтобы приложение продолжило работу с демо-данными
+        // Показываем сообщение об ошибке вместо загрузки демо-данных
+        showErrorState();
+        return false;
     }
 }
 
-// Демо-данные на случай ошибки загрузки JSON
-function loadDemoData() {
-    calendarItems = [];
-    
-    // Создаем демо-данные: 31 день + 5 специальных карточек
-    for (let i = 1; i <= 31; i++) {
-        calendarItems.push({
-            type: "day",
-            day: i,
-            code: `NY2025-DAY${i}`,
-            description: `Эксклюзивный промокод на день ${i} декабря 2025 года. Скидка на праздничные товары!`,
-            image: `images/gift${Math.min(i, 31)}.jpg`,
-            backgroundImage: `images/day${Math.min(i, 31)}-bg.jpg`,
-            productUrl: `https://ecoplace.ru/products/december-${i}`
-        });
-        
-        // Добавляем специальные карточки после определенных дней
-        if (i === 3 || i === 8 || i === 15 || i === 22 || i === 28) {
-            const specialIndex = i === 3 ? 1 : i === 8 ? 2 : i === 15 ? 3 : i === 22 ? 4 : 5;
-            calendarItems.push({
-                type: "special",
-                image: `images/special${specialIndex}.jpg`,
-                actionUrl: `https://ecoplace.ru/special-${specialIndex}`
-            });
-        }
-    }
-    
-    console.log('Демо-данные загружены:', calendarItems.length, 'элементов');
+// Функция отображения состояния ошибки
+function showErrorState() {
+    const calendarContainer = document.getElementById('calendar-container');
+    calendarContainer.innerHTML = `
+        <div class="col-12">
+            <div class="alert alert-danger text-center p-5">
+                <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                <h3 class="alert-heading">Не удалось загрузить данные календаря</h3>
+                <p class="mb-0">Пожалуйста, проверьте подключение к интернету и попробуйте обновить страницу.</p>
+                <button class="btn btn-warning mt-3" onclick="location.reload()">
+                    <i class="fas fa-redo me-2"></i>Обновить страницу
+                </button>
+            </div>
+        </div>
+    `;
 }
 
 // Функция создания календаря
 function createCalendar() {
     const calendarContainer = document.getElementById('calendar-container');
     calendarContainer.innerHTML = '';
+    
+    // Если данные не загружены, показываем ошибку
+    if (!calendarItems || calendarItems.length === 0) {
+        showErrorState();
+        return;
+    }
     
     // Текущая дата
     const today = new Date();
@@ -317,7 +179,6 @@ function createDayCard(item, isDecember2025, currentDay) {
     }
     
     // Устанавливаем фоновое изображение через инлайновые стили
-    let backgroundImageStyle = '';
     if (item.backgroundImage) {
         // Используем инлайновый стиль для фонового изображения
         dayCard.style.backgroundImage = `url('${item.backgroundImage}')`;
@@ -525,11 +386,6 @@ function openPromoCard(item) {
     if (promoModal) {
         promoModal.show();
     }
-    
-    // Автоматически отправляем промокод пользователю через 1 секунду
-    setTimeout(() => {
-        sendPromoCodeToUser();
-    }, 1000);
 }
 
 // Настройка обработчиков событий
@@ -593,9 +449,6 @@ function setupEventListeners() {
 async function initApp() {
     console.log('Инициализация приложения...');
     
-    // Инициализируем Telegram WebApp
-    telegramWebApp = initTelegramWebApp();
-    
     // Инициализируем модальное окно Bootstrap
     const modalElement = document.getElementById('promoModal');
     if (modalElement) {
@@ -603,15 +456,17 @@ async function initApp() {
     }
     
     // Загружаем данные календаря
-    await loadCalendarData();
+    const loaded = await loadCalendarData();
     
-    // Создаем календарь
-    createCalendar();
-    
-    // Настраиваем обработчики событий
-    setupEventListeners();
-    
-    console.log('Приложение инициализировано');
+    if (loaded) {
+        // Создаем календарь
+        createCalendar();
+        
+        // Настраиваем обработчики событий
+        setupEventListeners();
+        
+        console.log('Приложение инициализировано');
+    }
     
     // Для отладки - выводим информацию о текущей дате
     const today = new Date();
@@ -629,6 +484,7 @@ document.addEventListener('DOMContentLoaded', function() {
         initApp().catch(error => {
             console.error('Ошибка инициализации приложения:', error);
             showAlert('Произошла ошибка при загрузке приложения', 'error');
+            showErrorState();
         });
     }, 100);
 });
