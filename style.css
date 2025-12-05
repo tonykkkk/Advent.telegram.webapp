@@ -257,6 +257,12 @@ h1 {
     line-height: 1.2;
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
+    /* ИСПРАВЛЕНИЕ: Убираем иконку, выравнивание по левому краю */
+    text-align: left;
+}
+
+h1 .fa-gifts {
+    display: none; /* Скрываем иконку */
 }
 
 h2 {
@@ -1012,6 +1018,8 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1.1rem;
     color: var(--text-secondary);
     font-weight: 400;
+    /* ИСПРАВЛЕНИЕ: Выравнивание по левому краю */
+    text-align: left;
 }
 
 .text-light {
@@ -1093,6 +1101,11 @@ h1, h2, h3, h4, h5, h6 {
     .day-status {
         font-size: 0.7rem;
         padding: 0.2rem 0.6rem;
+    }
+    
+    /* На мобильных центрируем заголовки */
+    h1, .lead {
+        text-align: center;
     }
 }
 
@@ -1215,4 +1228,24 @@ img, canvas, video {
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
     }
+}
+
+/* ИСПРАВЛЕНИЕ: Стили для контента под логотипом */
+.header-content {
+    margin-top: 4.5rem; /* Отступ примерно 3 высоты логотипа (1.5rem * 3) */
+}
+
+/* Стили для блока с датой */
+.date-info-card {
+    margin-top: 1.5rem;
+}
+
+.date-info-item {
+    margin-bottom: 0.5rem;
+}
+
+.days-to-new-year {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 400;
 }
