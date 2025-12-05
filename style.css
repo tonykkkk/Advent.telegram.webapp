@@ -38,11 +38,19 @@
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
     tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 html {
     font-size: 16px;
     -webkit-text-size-adjust: 100%;
+    height: 100%;
+    -webkit-overflow-scrolling: touch;
 }
 
 html, body {
@@ -50,6 +58,8 @@ html, body {
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
+    width: 100%;
+    overscroll-behavior: none;
 }
 
 /* ИСПРАВЛЕНИЕ: Применяем шрифт Esqadero FF CY 4F ко всем элементам */
@@ -86,13 +96,18 @@ body {
     line-height: 1.5;
     max-width: 100vw;
     overflow-x: hidden;
+    overflow-y: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-weight: 400; /* Обычное начертание для основного текста */
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
 }
 
 .container-fluid {
     min-height: 100vh;
+    overflow: hidden;
+    position: relative;
 }
 
 .container {
@@ -100,6 +115,7 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1rem;
+    position: relative;
 }
 
 /* Фон с темно-красным градиентом */
@@ -113,6 +129,8 @@ body::before {
     background: linear-gradient(135deg, rgba(49, 0, 5, 0.05) 0%, rgba(125, 10, 20, 0.05) 100%);
     z-index: -2;
     pointer-events: none;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 /* Шапка с изображением без градиента */
@@ -123,6 +141,8 @@ body::before {
     background-repeat: no-repeat;
     position: relative;
     overflow: hidden;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
 }
 
 .header-bg::before {
@@ -135,6 +155,8 @@ body::before {
     background: var(--dark-red-gradient-light);
     z-index: 0;
     opacity: 50%;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 .header-bg .container {
@@ -146,6 +168,8 @@ body::before {
 .calendar-logo {
     text-align: center;
     margin-bottom: 1.5rem;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
 }
 
 .calendar-logo img {
@@ -155,6 +179,8 @@ body::before {
     display: block;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
 }
 
 @media (max-width: 768px) {
@@ -175,18 +201,24 @@ h1 {
     font-weight: 700;
     margin-bottom: 1rem;
     line-height: 1.2;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
 }
 
 h2 {
     font-size: 1.5rem;
     font-weight: 600;
     margin: 1.5rem 0 0.75rem 0;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
 }
 
 /* Футер в темно-красном стиле */
 .footer-bg {
     background: var(--dark-red-gradient);
     background: -webkit-linear-gradient(135deg, #310005 0%, #7D0A14 100%);
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
 }
 
 /* Сетка календаря с темно-красным градиентом */
@@ -197,6 +229,9 @@ h2 {
     margin: 20px 0;
     position: relative;
     overflow: hidden;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
 }
 
 .calendar-container-wrapper::before {
@@ -209,6 +244,8 @@ h2 {
     background: var(--dark-red-gradient);
     opacity: 0.1;
     z-index: -1;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 /* Календарь - ГРИД СИСТЕМА (3 карточки в ряд на мобильных) */
@@ -219,6 +256,9 @@ h2 {
     padding: 5px;
     position: relative;
     z-index: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
 }
 
 /* Планшеты и большие телефоны (576px+) - 4 карточки */
@@ -279,6 +319,12 @@ h2 {
     -webkit-user-select: none;
     user-select: none;
     padding: 10px;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    contain: layout style;
 }
 
 /* Фоновое изображение для карточки дня - ИСПРАВЛЕНО */
@@ -295,6 +341,8 @@ h2 {
     opacity: 0.15;
     z-index: 0;
     transition: opacity 0.3s ease;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 .day-card:hover::before {
@@ -318,6 +366,12 @@ h2 {
     background: none;
     box-shadow: none !important;
     outline: none;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    contain: layout style;
 }
 
 /* Убираем все эффекты при наведении */
@@ -337,6 +391,8 @@ h2 {
     padding: 0;
     border: none;
     box-shadow: none;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 /* Размеры карточек для разных устройств */
@@ -383,14 +439,39 @@ h2 {
     background: -webkit-linear-gradient(135deg, #310005 0%, #7D0A14 100%) !important;
     border: none !important;
     box-shadow: none !important;
-    animation: none;
-    -webkit-animation: none;
+    animation: bounceToday 2s infinite ease-in-out;
+    -webkit-animation: bounceToday 2s infinite ease-in-out;
+}
+
+/* Анимация bouncing для сегодняшнего дня */
+@keyframes bounceToday {
+    0%, 100% {
+        transform: translateY(0);
+        box-shadow: 0 0 0 rgba(49, 0, 5, 0.5);
+    }
+    50% {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(49, 0, 5, 0.4);
+    }
+}
+
+@-webkit-keyframes bounceToday {
+    0%, 100% {
+        -webkit-transform: translateY(0);
+        box-shadow: 0 0 0 rgba(49, 0, 5, 0.5);
+    }
+    50% {
+        -webkit-transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(49, 0, 5, 0.4);
+    }
 }
 
 /* Убираем тень при наведении на сегодняшний день */
 .day-card.today:hover {
-    transform: translateY(-3px);
-    box-shadow: none !important;
+    animation: none;
+    -webkit-animation: none;
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(49, 0, 5, 0.5) !important;
 }
 
 /* ИСПРАВЛЕНИЕ: Цвет текста статуса "Сегодня" - белый */
@@ -399,6 +480,31 @@ h2 {
     color: white !important;
     backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.3);
+    animation: pulseStatus 2s infinite ease-in-out;
+    -webkit-animation: pulseStatus 2s infinite ease-in-out;
+}
+
+/* Анимация пульсации для статуса сегодняшнего дня */
+@keyframes pulseStatus {
+    0%, 100% {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: scale(1);
+    }
+    50% {
+        background-color: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+    }
+}
+
+@-webkit-keyframes pulseStatus {
+    0%, 100% {
+        background-color: rgba(255, 255, 255, 0.2);
+        -webkit-transform: scale(1);
+    }
+    50% {
+        background-color: rgba(255, 255, 255, 0.3);
+        -webkit-transform: scale(1.05);
+    }
 }
 
 .day-card.missed {
@@ -410,8 +516,6 @@ h2 {
 
 .day-card.future {
     background-color: rgba(232, 245, 233, 0.8);
-   
-   
     opacity: 0.8;
 }
 
@@ -431,6 +535,8 @@ h2 {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     position: relative;
     z-index: 1; /* Изменено с 2 на 1 для корректного отображения поверх фона */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 @media (min-width: 576px) {
@@ -449,6 +555,26 @@ h2 {
 .day-card.today .day-number {
     color: white !important;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    animation: glowText 2s infinite ease-in-out;
+    -webkit-animation: glowText 2s infinite ease-in-out;
+}
+
+@keyframes glowText {
+    0%, 100% {
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+}
+
+@-webkit-keyframes glowText {
+    0%, 100% {
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
+    }
 }
 
 .day-card.missed .day-number {
@@ -470,6 +596,8 @@ h2 {
     position: relative;
     z-index: 1; /* Изменено с 2 на 1 для корректного отображения поверх фона */
     text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 @media (min-width: 576px) {
@@ -503,6 +631,8 @@ h2 {
     z-index: 1; /* Изменено с 2 на 1 для корректного отображения поверх фона */
     backdrop-filter: blur(5px);
     background-color: rgba(255, 255, 255, 0.8);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 @media (min-width: 576px) {
@@ -533,6 +663,8 @@ h2 {
     overflow: hidden;
     border: 1px solid var(--border-color);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
 }
 
 .bg-gradient-promo {
@@ -545,6 +677,8 @@ h2 {
     position: absolute;
     top: 10px;
     right: 15px;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 .snowflakes i {
@@ -553,6 +687,8 @@ h2 {
     margin-left: 5px;
     animation: snowflake-spin 5s infinite linear;
     -webkit-animation: snowflake-spin 5s infinite linear;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 .snowflake-2 {
@@ -583,6 +719,8 @@ h2 {
     transition: all 0.2s ease;
     -webkit-user-select: text;
     user-select: text;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
 }
 
 .promo-code-box:active {
@@ -602,6 +740,8 @@ h2 {
     background-color: #e8f5e9;
     color: var(--success-color);
     border: 1px solid #c8e6c9;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
 }
 
 @keyframes fadeInOut {
@@ -628,6 +768,8 @@ h2 {
     background: var(--light-color);
     border: 1px solid var(--border-color);
     margin-bottom: 1.5rem;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
 }
 
 /* Кнопки в стиле ecoplace */
@@ -642,6 +784,8 @@ h2 {
     text-align: center;
     text-decoration: none;
     transition: background-color 0.2s ease;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
 }
 
 /* ИЗМЕНЕНИЕ: Стиль кнопки для сегодняшнего дня в модальном окне */
@@ -760,6 +904,34 @@ h1, h2, h3, h4, h5, h6 {
         padding: 0.65rem 1.25rem;
         width: 100%;
     }
+    
+    /* Уменьшаем анимацию на мобильных */
+    .day-card.today {
+        animation: bounceTodayMobile 2s infinite ease-in-out;
+        -webkit-animation: bounceTodayMobile 2s infinite ease-in-out;
+    }
+    
+    @keyframes bounceTodayMobile {
+        0%, 100% {
+            transform: translateY(0);
+            box-shadow: 0 0 0 rgba(49, 0, 5, 0.5);
+        }
+        50% {
+            transform: translateY(-3px);
+            box-shadow: 0 3px 10px rgba(49, 0, 5, 0.4);
+        }
+    }
+    
+    @-webkit-keyframes bounceTodayMobile {
+        0%, 100% {
+            -webkit-transform: translateY(0);
+            box-shadow: 0 0 0 rgba(49, 0, 5, 0.5);
+        }
+        50% {
+            -webkit-transform: translateY(-3px);
+            box-shadow: 0 3px 10px rgba(49, 0, 5, 0.4);
+        }
+    }
 }
 
 /* Улучшение для очень маленьких экранов */
@@ -817,6 +989,8 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 0.8;
     position: relative;
     z-index: 3;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 /* Оптимизация для быстрой прокрутки */
@@ -833,6 +1007,10 @@ h1, h2, h3, h4, h5, h6 {
     height: auto;
     -webkit-user-drag: none;
     user-drag: none;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 /* Дополнительные стили для соответствия ecoplace */
@@ -846,7 +1024,6 @@ h1, h2, h3, h4, h5, h6 {
     color: rgba(255, 255, 255, 0.9) !important;
     font-weight: 400;
 }
-
 .text-white {
     color: white !important;
     font-weight: 400;
@@ -880,6 +1057,8 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center;
     margin-top: 1rem;
     padding: 0 1rem;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
 }
 
 .promo-description-text {
@@ -957,4 +1136,45 @@ p, span, div {
 
 .alert-success {
     font-weight: 600;
+}
+
+/* ФИКС для проблем с ресайзом в WebView */
+.fix-webview-resize {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    perspective: 1000;
+    -webkit-perspective: 1000;
+}
+
+/* Гарантия, что контент правильно масштабируется */
+img, canvas, video {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Предотвращение мерцания при анимациях */
+* {
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+
+/* Оптимизация для iOS */
+@supports (-webkit-touch-callout: none) {
+    .day-card,
+    .special-card {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+    }
+}
+
+/* Стили для неактивных специальных карточек */
+.special-card.inactive {
+    cursor: default;
+    opacity: 0.7;
+}
+
+.special-card.inactive:hover {
+    transform: none;
 }
