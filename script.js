@@ -679,8 +679,8 @@ async function initApp() {
                 // Расширяем WebView на весь экран
                 window.Telegram.WebApp.expand();
                 
-                // Включаем поддержку viewport
-                window.Telegram.WebApp.enableClosingConfirmation();
+              
+                
                 
                 console.log('Telegram WebApp инициализирован');
             } catch (error) {
