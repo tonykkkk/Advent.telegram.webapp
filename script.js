@@ -178,26 +178,29 @@ function createDayCard(item, isDecember2025, currentDay) {
         snowflake = '<i class="fas fa-snowflake position-absolute top-0 start-0 m-1 text-primary" style="font-size: 0.7rem;"></i>';
     }
     
-    // Устанавливаем фоновое изображение через инлайновые стили
-    if (item.backgroundImage) {
-        // Используем инлайновый стиль для фонового изображения
+    // Для сегодняшнего дня используем градиент вместо фонового изображения
+    if (status !== 'today' && item.backgroundImage) {
+        // Используем инлайновый стиль для фонового изображения только для не-сегодняшних дней
         dayCard.style.backgroundImage = `url('${item.backgroundImage}')`;
         dayCard.style.backgroundSize = 'cover';
         dayCard.style.backgroundPosition = 'center';
         dayCard.style.backgroundRepeat = 'no-repeat';
     }
     
-    // Вместо псевдоэлемента ::before, используем overlay для фонового изображения
-    const overlay = document.createElement('div');
-    overlay.style.position = 'absolute';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    overlay.style.width = '100%';
-    overlay.style.height = '100%';
-    overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
-    overlay.style.zIndex = '0';
-    
-    dayCard.appendChild(overlay);
+    // Для сегодняшнего дня не добавляем overlay
+    if (status !== 'today') {
+        // Вместо псевдоэлемента ::before, используем overlay для фонового изображения
+        const overlay = document.createElement('div');
+        overlay.style.position = 'absolute';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+        overlay.style.zIndex = '0';
+        
+        dayCard.appendChild(overlay);
+    }
     
     // Создаем контейнер для контента
     const contentDiv = document.createElement('div');
