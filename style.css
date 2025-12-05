@@ -134,6 +134,7 @@ body::before {
     height: 100%;
     background: var(--dark-red-gradient-light);
     z-index: 0;
+    opacity: 50%;
 }
 
 .header-bg .container {
