@@ -409,8 +409,8 @@ h2 {
 
 .day-card.future {
     background-color: rgba(232, 245, 233, 0.8);
-    border-color: var(--success-color);
-    cursor: not-allowed;
+   
+   
     opacity: 0.8;
 }
 
