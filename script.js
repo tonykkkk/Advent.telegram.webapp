@@ -24,6 +24,8 @@ if (!Element.prototype.closest) {
 let promoModal = null;
 let calendarItems = [];
 let currentPromoItem = null;
+let resizeTimeout = null;
+let isResizing = false;
 
 // Функция для показа уведомления
 function showAlert(message, type = 'info') {
@@ -44,18 +46,26 @@ function copyToClipboard(text) {
             textArea.style.position = 'fixed';
             textArea.style.left = '-999999px';
             textArea.style.top = '-999999px';
+            textArea.style.opacity = '0';
+            textArea.style.pointerEvents = 'none';
             document.body.appendChild(textArea);
             
             textArea.focus();
             textArea.select();
             
             try {
-                document.execCommand('copy');
-                resolve();
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    resolve();
+                } else {
+                    reject(new Error('Не удалось скопировать текст'));
+                }
             } catch (err) {
                 reject(err);
             } finally {
-                textArea.remove();
+                setTimeout(() => {
+                    document.body.removeChild(textArea);
+                }, 100);
             }
         }
     });
@@ -139,12 +149,56 @@ function createCalendar() {
             calendarContainer.appendChild(specialCard);
         }
     });
+    
+    // Принудительно перерисовываем элементы после создания
+    setTimeout(() => {
+        forceRedraw(calendarContainer);
+        
+        // Добавляем мигание для сегодняшнего дня через 1 секунду после загрузки
+        highlightTodayCard();
+    }, 50);
+}
+
+// Функция для выделения сегодняшней карточки дополнительной анимацией
+function highlightTodayCard() {
+    const todayCard = document.querySelector('.day-card.today');
+    if (todayCard) {
+        // Добавляем дополнительную анимацию мигания при загрузке
+        setTimeout(() => {
+            todayCard.style.animation = 'bounceToday 1s ease-in-out 3';
+            todayCard.addEventListener('animationend', function() {
+                this.style.animation = 'bounceToday 2s infinite ease-in-out';
+            }, { once: true });
+        }, 1000);
+    }
+}
+
+// Функция принудительной перерисовки элементов
+function forceRedraw(element) {
+    if (!element) return;
+    
+    // Временное изменение стиля для перерисовки
+    const originalDisplay = element.style.display;
+    element.style.display = 'none';
+    
+    // Используем requestAnimationFrame для плавной перерисовки
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            element.style.display = originalDisplay || '';
+            
+            // Принудительная перерисовка всех дочерних элементов
+            const allElements = element.querySelectorAll('*');
+            allElements.forEach(el => {
+                el.style.transform = 'translateZ(0)';
+            });
+        });
+    });
 }
 
 // Функция создания карточки дня (ИСПРАВЛЕНО: фоновое изображение)
 function createDayCard(item, isDecember2025, currentDay) {
     const dayCard = document.createElement('div');
-    dayCard.className = 'day-card';
+    dayCard.className = 'day-card fix-webview-resize';
     dayCard.dataset.type = 'day';
     dayCard.dataset.day = item.day;
     
@@ -198,6 +252,7 @@ function createDayCard(item, isDecember2025, currentDay) {
         overlay.style.height = '100%';
         overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
         overlay.style.zIndex = '0';
+        overlay.classList.add('fix-webview-resize');
         
         dayCard.appendChild(overlay);
     }
@@ -207,13 +262,14 @@ function createDayCard(item, isDecember2025, currentDay) {
     contentDiv.style.position = 'relative';
     contentDiv.style.zIndex = '1';
     contentDiv.style.textAlign = 'center';
+    contentDiv.classList.add('fix-webview-resize');
     
     // Добавляем контент
     contentDiv.innerHTML = `
         ${snowflake}
-        <div class="day-number">${item.day}</div>
-        <div class="day-month">Декабря</div>
-        <div class="day-status">${statusText}</div>
+        <div class="day-number fix-webview-resize">${item.day}</div>
+        <div class="day-month fix-webview-resize">Декабря</div>
+        <div class="day-status fix-webview-resize">${statusText}</div>
     `;
     
     dayCard.appendChild(contentDiv);
@@ -224,6 +280,9 @@ function createDayCard(item, isDecember2025, currentDay) {
             openPromoCard(item);
         });
         dayCard.style.cursor = 'pointer';
+        
+        // Добавляем дополнительный эффект для сегодняшнего дня
+        dayCard.title = 'Нажмите, чтобы открыть сегодняшний промокод!';
     } else {
         dayCard.style.cursor = 'not-allowed';
         dayCard.style.opacity = '0.7';
@@ -235,7 +294,7 @@ function createDayCard(item, isDecember2025, currentDay) {
 // Функция создания специальной карточки (ТОЛЬКО КАРТИНКА)
 function createSpecialCard(item, index) {
     const specialCard = document.createElement('div');
-    specialCard.className = 'special-card';
+    specialCard.className = 'special-card fix-webview-resize';
     specialCard.dataset.type = 'special';
     specialCard.dataset.index = index;
     
@@ -243,7 +302,7 @@ function createSpecialCard(item, index) {
     const img = document.createElement('img');
     img.src = item.image;
     img.alt = 'Специальное предложение';
-    img.className = 'special-card-image';
+    img.className = 'special-card-image fix-webview-resize';
     
     // Добавляем обработчик ошибки загрузки изображения
     img.onerror = function() {
@@ -254,11 +313,20 @@ function createSpecialCard(item, index) {
     // Добавляем картинку в карточку
     specialCard.appendChild(img);
     
-    // Добавляем обработчик клика для перехода по URL
-    specialCard.addEventListener('click', function() {
-        openSpecialCard(item);
-    });
-    specialCard.style.cursor = 'pointer';
+    // ИСПРАВЛЕНИЕ: Проверяем, есть ли ссылка для перехода
+    if (item.actionUrl && item.actionUrl.trim() !== '') {
+        // Добавляем обработчик клика для перехода по URL
+        specialCard.addEventListener('click', function() {
+            openSpecialCard(item);
+        });
+        specialCard.style.cursor = 'pointer';
+        specialCard.title = 'Нажмите для перехода к акции';
+    } else {
+        // Если ссылки нет, делаем карточку неактивной
+        specialCard.classList.add('inactive');
+        specialCard.style.cursor = 'default';
+        specialCard.title = 'Специальное предложение';
+    }
     
     return specialCard;
 }
@@ -266,13 +334,15 @@ function createSpecialCard(item, index) {
 // Функция открытия специальной карточки
 function openSpecialCard(item) {
     if (!item) {
-        showAlert('Данные карточки не найдены', 'error');
+        // Не показываем ошибку пользователю, просто не делаем ничего
+        console.log('Данные карточки не найдены');
         return;
     }
     
     // Проверяем, есть ли URL для перехода
     if (!item.actionUrl || item.actionUrl.trim() === '') {
-        showAlert('Ссылка для перехода не указана', 'error');
+        // ИСПРАВЛЕНИЕ: Не показываем ошибку пользователю
+        console.log('Ссылка для перехода не указана');
         return;
     }
     
@@ -302,8 +372,13 @@ function openPromoCard(item) {
     // Добавляем анимацию открытия
     if (dayCard) {
         dayCard.classList.add('card-opening');
+        // Временно отключаем bouncing анимацию во время открытия
+        dayCard.style.animation = 'cardOpen 0.8s ease';
+        
         setTimeout(() => {
             dayCard.classList.remove('card-opening');
+            // Возвращаем bouncing анимацию
+            dayCard.style.animation = 'bounceToday 2s infinite ease-in-out';
         }, 800);
     }
     
@@ -344,7 +419,7 @@ function openPromoCard(item) {
         imgContainer.className = 'text-center';
         
         // Добавляем изображение
-        img.className = 'img-fluid rounded';
+        img.className = 'img-fluid rounded fix-webview-resize';
         img.style.maxHeight = '180px';
         img.style.objectFit = 'contain';
         img.alt = `Промокод для дня ${item.day} декабря`;
@@ -352,7 +427,7 @@ function openPromoCard(item) {
         
         // Добавляем описание под картинкой
         const descriptionDiv = document.createElement('div');
-        descriptionDiv.className = 'promo-description-block';
+        descriptionDiv.className = 'promo-description-block fix-webview-resize';
         descriptionDiv.innerHTML = `
             <p class="promo-description-text">${item.description}</p>
         `;
@@ -360,6 +435,9 @@ function openPromoCard(item) {
         promoImageElement.innerHTML = '';
         promoImageElement.appendChild(imgContainer);
         promoImageElement.appendChild(descriptionDiv);
+        
+        // Принудительная перерисовка после загрузки изображения
+        forceRedraw(promoImageElement);
     };
     img.onerror = function() {
         promoImageElement.innerHTML = `
@@ -391,6 +469,44 @@ function openPromoCard(item) {
     }
 }
 
+// Функция для обработки ресайза окна
+function handleResize() {
+    if (isResizing) return;
+    
+    isResizing = true;
+    
+    if (resizeTimeout) {
+        clearTimeout(resizeTimeout);
+    }
+    
+    resizeTimeout = setTimeout(() => {
+        // Принудительно перерисовываем календарь после ресайза
+        const calendarContainer = document.getElementById('calendar-container');
+        if (calendarContainer) {
+            forceRedraw(calendarContainer);
+        }
+        
+        isResizing = false;
+    }, 250);
+}
+
+// Функция для принудительной перерисовки всех элементов
+function forceFullRedraw() {
+    // Перерисовываем основные контейнеры
+    const containers = [
+        document.getElementById('calendar-container'),
+        document.querySelector('.calendar-container-wrapper'),
+        document.querySelector('.header-bg'),
+        document.querySelector('.footer-bg')
+    ];
+    
+    containers.forEach(container => {
+        if (container) {
+            forceRedraw(container);
+        }
+    });
+}
+
 // Настройка обработчиков событий
 function setupEventListeners() {
     // Обработчик клика для копирования промокода
@@ -409,6 +525,7 @@ function setupEventListeners() {
                 
                 // Показываем уведомление на странице
                 copyAlert.classList.remove('d-none');
+                forceRedraw(copyAlert);
                 
                 // Добавляем анимацию на промокод
                 promoCodeContainer.style.transform = 'scale(0.95)';
@@ -446,11 +563,36 @@ function setupEventListeners() {
             currentPromoItem = null;
         });
     }
+    
+    // Обработчик ресайза окна
+    window.addEventListener('resize', handleResize);
+    
+    // Обработчик для скролла (для WebView Telegram)
+    window.addEventListener('scroll', function() {
+        // Принудительная перерисовка при скролле
+        requestAnimationFrame(() => {
+            forceFullRedraw();
+        });
+    }, { passive: true });
+    
+    // Обработчик для ориентации устройства
+    window.addEventListener('orientationchange', function() {
+        // Даем время на изменение ориентации
+        setTimeout(() => {
+            forceFullRedraw();
+        }, 500);
+    });
 }
 
 // Основная функция инициализации
 async function initApp() {
     console.log('Инициализация приложения...');
+    
+    // Принудительная установка viewport для WebView
+    const viewportMeta = document.querySelector('meta[name="viewport"]');
+    if (viewportMeta) {
+        viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no';
+    }
     
     // Инициализируем модальное окно Bootstrap
     const modalElement = document.getElementById('promoModal');
@@ -468,7 +610,27 @@ async function initApp() {
         // Настраиваем обработчики событий
         setupEventListeners();
         
+        // Инициализация для Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+            try {
+                // Расширяем WebView на весь экран
+                window.Telegram.WebApp.expand();
+                
+                // Включаем поддержку viewport
+                window.Telegram.WebApp.enableClosingConfirmation();
+                
+                console.log('Telegram WebApp инициализирован');
+            } catch (error) {
+                console.warn('Ошибка инициализации Telegram WebApp:', error);
+            }
+        }
+        
         console.log('Приложение инициализировано');
+        
+        // Принудительная перерисовка после загрузки
+        setTimeout(() => {
+            forceFullRedraw();
+        }, 100);
     }
     
     // Для отладки - выводим информацию о текущей дате
@@ -483,6 +645,7 @@ async function initApp() {
 
 // Запуск приложения при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
+    // Даем время на загрузку DOM
     setTimeout(() => {
         initApp().catch(error => {
             console.error('Ошибка инициализации приложения:', error);
@@ -490,4 +653,12 @@ document.addEventListener('DOMContentLoaded', function() {
             showErrorState();
         });
     }, 100);
+});
+
+// Запуск приложения также при полной загрузке страницы
+window.addEventListener('load', function() {
+    // Перерисовываем после полной загрузки всех ресурсов
+    setTimeout(() => {
+        forceFullRedraw();
+    }, 500);
 });
