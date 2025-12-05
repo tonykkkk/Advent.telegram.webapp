@@ -56,16 +56,19 @@ function getDaysWord(days) {
 // Функция для расчета дней до Нового года
 function calculateDaysToNewYear() {
     const today = new Date();
-    const currentYear = today.getFullYear();
     
-    // Новый год - 1 января следующего года
-    const newYear = new Date(currentYear + 1, 0, 1);
+    // Устанавливаем время на 00:00:00 для точного расчета дней
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    
+    // Новый год - 1 января следующего года в 00:00:00
+    const nextYear = today.getFullYear() + 1;
+    const newYear = new Date(nextYear, 0, 1); // 1 января следующего года
     
     // Разница в миллисекундах
-    const diffTime = newYear - today;
+    const diffTime = newYear - todayStart;
     
-    // Конвертируем в дни
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    // Конвертируем в дни (правильно, без округления вверх)
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     
     return diffDays;
 }
@@ -318,7 +321,7 @@ function createDayCard(item, isDecember2025, currentDay) {
     if (isDecember2025) {
         if (item.day === currentDay) {
             status = 'today';
-            statusText = 'Открыть';
+            statusText = 'Открыть промокод';
         } else if (item.day < currentDay) {
             status = 'missed';
             statusText = 'Закончился';
