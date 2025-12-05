@@ -282,6 +282,11 @@
       "productUrl": "https://ecoplace.ru/products/office-supplies"
     },
     {
+      "type": "special",
+      "image": "images/special5.jpg",
+      "actionUrl": ""
+    },
+    {
       "type": "day",
       "day": 30,
       "code": "COUNTDOWN-40",
