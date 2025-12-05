@@ -361,7 +361,8 @@ h2 {
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
-    height: 120px;
+    /* ИСПРАВЛЕНИЕ: Делаем карточку квадратной */
+    aspect-ratio: 1 / 1; /* Соотношение сторон 1:1 для квадрата */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -409,7 +410,8 @@ h2 {
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
-    height: 120px;
+    /* ИСПРАВЛЕНИЕ: Делаем карточку квадратной */
+    aspect-ratio: 1 / 1; /* Соотношение сторон 1:1 для квадрата */
     position: relative;
     overflow: hidden;
     width: 100%;
@@ -449,33 +451,7 @@ h2 {
     transform: translateZ(0);
 }
 
-/* Размеры карточек для разных устройств */
-@media (min-width: 576px) {
-    .day-card {
-        height: 130px;
-    }
-    .special-card {
-        height: 130px;
-    }
-}
-
-@media (min-width: 768px) {
-    .day-card {
-        height: 140px;
-    }
-    .special-card {
-        height: 140px;
-    }
-}
-
-@media (min-width: 992px) {
-    .day-card {
-        height: 150px;
-    }
-    .special-card {
-        height: 150px;
-    }
-}
+/* Убраны фиксированные высоты, теперь карточки квадратные благодаря aspect-ratio */
 
 .day-card:active {
     transform: scale(0.98);
@@ -593,9 +569,16 @@ h2 {
     transform: translateZ(0);
 }
 
+/* Адаптивные размеры текста для квадратных карточек */
 @media (min-width: 576px) {
     .day-number {
         font-size: 2.2rem;
+    }
+    .day-month {
+        font-size: 1rem;
+    }
+    .day-status {
+        font-size: 0.85rem;
     }
 }
 
@@ -654,12 +637,6 @@ h2 {
     transform: translateZ(0);
 }
 
-@media (min-width: 576px) {
-    .day-month {
-        font-size: 1rem;
-    }
-}
-
 /* ИЗМЕНЕНИЕ: Цвет месяца для сегодняшнего дня - белый */
 .day-card.today .day-month {
     color: white !important;
@@ -687,12 +664,6 @@ h2 {
     background-color: rgba(255, 255, 255, 0.8);
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
-}
-
-@media (min-width: 576px) {
-    .day-status {
-        font-size: 0.85rem;
-    }
 }
 
 /* ИСПРАВЛЕНИЕ: Цвет статуса для сегодняшнего дня - белый */
@@ -928,35 +899,9 @@ h1, h2, h3, h4, h5, h6 {
         font-size: 1.5rem;
     }
     
-    .day-card,
-    .special-card {
-        height: 110px;
-    }
-    
-    .day-card {
-        padding: 0.75rem;
-    }
-    
-    .day-number {
-        font-size: 1.8rem;
-    }
-    
-    .day-month {
-        font-size: 0.8rem;
-    }
-    
-    .day-status {
-        font-size: 0.7rem;
-        padding: 0.2rem 0.6rem;
-    }
-    
-    .modal-dialog {
-        margin: 0.5rem;
-    }
-    
-    .btn {
-        padding: 0.65rem 1.25rem;
-        width: 100%;
+    /* Меньше снежинок на мобильных */
+    .snowflake {
+        opacity: 0.6;
     }
     
     /* Уменьшаем анимацию на мобильных */
@@ -986,20 +931,10 @@ h1, h2, h3, h4, h5, h6 {
             box-shadow: 0 3px 10px rgba(49, 0, 5, 0.4);
         }
     }
-    
-    /* Меньше снежинок на мобильных */
-    .snowflake {
-        opacity: 0.6;
-    }
 }
 
-/* Улучшение для очень маленьких экранов */
+/* Для очень маленьких экранов (меньше 360px) */
 @media (max-width: 360px) {
-    .day-card,
-    .special-card {
-        height: 100px;
-    }
-    
     .day-number {
         font-size: 1.6rem;
     }
@@ -1141,6 +1076,24 @@ h1, h2, h3, h4, h5, h6 {
         order: 3;
         margin-top: 1.5rem;
     }
+    
+    /* Уменьшаем отступы в карточках на мобильных */
+    .day-card {
+        padding: 0.5rem;
+    }
+    
+    .day-number {
+        font-size: 1.8rem;
+    }
+    
+    .day-month {
+        font-size: 0.8rem;
+    }
+    
+    .day-status {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.6rem;
+    }
 }
 
 /* Стили для информационного alert */
@@ -1217,6 +1170,42 @@ img, canvas, video {
 * {
     -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;
+}
+
+/* Fallback для браузеров, которые не поддерживают aspect-ratio */
+@supports not (aspect-ratio: 1 / 1) {
+    .day-card {
+        position: relative;
+        height: 0;
+        padding-bottom: 100%; /* Создает квадрат через padding */
+    }
+    
+    .day-card > *:not(.day-card::before) {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .special-card {
+        position: relative;
+        height: 0;
+        padding-bottom: 100%; /* Создает квадрат через padding */
+    }
+    
+    .special-card-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 }
 
 /* Оптимизация для iOS */
