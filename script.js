@@ -321,7 +321,7 @@ function createDayCard(item, isDecember2025, currentDay) {
     if (isDecember2025) {
         if (item.day === currentDay) {
             status = 'today';
-            statusText = 'Открыть промокод';
+            statusText = 'Открыть';
         } else if (item.day < currentDay) {
             status = 'missed';
             statusText = 'Закончился';
