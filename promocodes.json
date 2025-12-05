@@ -29,8 +29,8 @@
     },
     {
       "type": "special",
-      "image": "images/IMG_3023.jpeg",
-      "actionUrl": "https://ecoplace.ru/special-offer"
+      "image": "images/special1.jpg",
+      "actionUrl": ""
     },
     {
       "type": "day",
@@ -78,11 +78,6 @@
       "productUrl": "https://ecoplace.ru/products/home-goods"
     },
     {
-      "type": "special",
-      "image": "images/IMG_3023.jpeg",
-      "actionUrl": "https://ecoplace.ru/surprise"
-    },
-    {
       "type": "day",
       "day": 9,
       "code": "MIRACLE-14",
@@ -90,6 +85,11 @@
       "image": "images/gift9.jpg",
       "backgroundImage": "images/placeholder2.png",
       "productUrl": "https://ecoplace.ru/products/home-appliances"
+    },
+    {
+      "type": "special",
+      "image": "images/special2.jpg",
+      "actionUrl": ""
     },
     {
       "type": "day",
@@ -146,11 +146,6 @@
       "productUrl": "https://ecoplace.ru/products/musical-instruments"
     },
     {
-      "type": "special",
-      "image": "images/IMG_3023.jpeg",
-      "actionUrl": "https://ecoplace.ru/contest"
-    },
-    {
       "type": "day",
       "day": 16,
       "code": "REINDEER-16",
@@ -167,6 +162,11 @@
       "image": "images/gift17.jpg",
       "backgroundImage": "images/placeholder1.png",
       "productUrl": "https://ecoplace.ru/products/travel-tours"
+    },
+    {
+      "type": "special",
+      "image": "images/special3.jpg",
+      "actionUrl": ""
     },
     {
       "type": "day",
@@ -214,11 +214,6 @@
       "productUrl": "https://ecoplace.ru/products/jewelry"
     },
     {
-      "type": "special",
-      "image": "images/IMG_3023.jpeg",
-      "actionUrl": "https://ecoplace.ru/gift"
-    },
-    {
       "type": "day",
       "day": 23,
       "code": "MISTLETOE-32",
@@ -235,6 +230,11 @@
       "image": "images/gift24.jpg",
       "backgroundImage": "images/placeholder2.png",
       "productUrl": "https://ecoplace.ru/products/furniture-interior"
+    },
+    {
+      "type": "special",
+      "image": "images/special4.jpg",
+      "actionUrl": ""
     },
     {
       "type": "day",
@@ -271,11 +271,6 @@
       "image": "images/gift28.jpg",
       "backgroundImage": "images/placeholder3.png",
       "productUrl": "https://ecoplace.ru/products/entertainment-services"
-    },
-    {
-      "type": "special",
-      "image": "images/IMG_3023.jpeg",
-      "actionUrl": "https://ecoplace.ru/super-sale"
     },
     {
       "type": "day",
