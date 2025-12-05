@@ -46,7 +46,7 @@
       "day": 5,
       "code": "HOLIDAY-30",
       "description": "30% скидка на косметические средства",
-      "image": "images/gift.jpg",
+      "image": "images/gift.png",
       "backgroundImage": "images/placeholder3.png",
       "productUrl": "https://ecoplace.ru"
     },
@@ -55,7 +55,7 @@
       "day": 6,
       "code": "FESTIVE-12",
       "description": "12% скидка на косметические средства",
-      "image": "images/gift.jpg",
+      "image": "images/gift.png",
       "backgroundImage": "images/placeholder2.png",
       "productUrl": "https://ecoplace.ru"
     },
@@ -64,7 +64,7 @@
       "day": 7,
       "code": "WINTER-18",
       "description": "18% скидка на спортивные товары",
-      "image": "images/gift.jpg",
+      "image": "images/gift.png",
       "backgroundImage": "images/placeholder1.png",
       "productUrl": "https://ecoplace.ru/products/sports-goods"
     },
@@ -124,7 +124,7 @@
       "code": "CHEER-23",
       "description": "23% скидка на товары для сада",
       "image": "images/gift13.jpg",
-      "backgroundImage": "images/day13-bg.jpg",
+      "backgroundImage": "images/placeholder2.png",
       "productUrl": "https://ecoplace.ru/products/garden-goods"
     },
     {
@@ -133,7 +133,7 @@
       "code": "TWINKLE-27",
       "description": "27% скидка на автомобильные аксессуары",
       "image": "images/gift14.jpg",
-      "backgroundImage": "images/day14-bg.jpg",
+      "backgroundImage": "images/placeholder1.png",
       "productUrl": "https://ecoplace.ru/products/car-accessories"
     },
     {
@@ -142,7 +142,7 @@
       "code": "FROSTY-13",
       "description": "13% скидка на музыкальные инструменты",
       "image": "images/gift15.jpg",
-      "backgroundImage": "images/day15-bg.jpg",
+      "backgroundImage": "images/placeholder2.png",
       "productUrl": "https://ecoplace.ru/products/musical-instruments"
     },
     {
@@ -156,7 +156,7 @@
       "code": "REINDEER-16",
       "description": "16% скидка на товары для животных",
       "image": "images/gift16.jpg",
-      "backgroundImage": "images/day16-bg.jpg",
+      "backgroundImage": "images/placeholder3.png",
       "productUrl": "https://ecoplace.ru/products/pet-supplies"
     },
     {
@@ -165,7 +165,7 @@
       "code": "SLEIGH-21",
       "description": "21% скидка на путешествия и туры",
       "image": "images/gift17.jpg",
-      "backgroundImage": "images/day17-bg.jpg",
+      "backgroundImage": "images/placeholder1.png",
       "productUrl": "https://ecoplace.ru/products/travel-tours"
     },
     {
@@ -174,7 +174,7 @@
       "code": "CANDLE-24",
       "description": "24% скидка на товары для праздника",
       "image": "images/gift18.jpg",
-      "backgroundImage": "images/day18-bg.jpg",
+      "backgroundImage": "images/placeholder3.png",
       "productUrl": "https://ecoplace.ru/products/party-supplies"
     },
     {
@@ -183,7 +183,7 @@
       "code": "GINGERBREAD-26",
       "description": "26% скидка на продукты питания",
       "image": "images/gift19.jpg",
-      "backgroundImage": "images/day19-bg.jpg",
+      "backgroundImage": "images/placeholder2.png",
       "productUrl": "https://ecoplace.ru/products/food-products"
     },
     {
@@ -192,7 +192,7 @@
       "code": "NORTHPOLE-28",
       "description": "28% скидка на гаджеты и аксессуары",
       "image": "images/gift20.jpg",
-      "backgroundImage": "images/day20-bg.jpg",
+      "backgroundImage": "images/placeholder1.png",
       "productUrl": "https://ecoplace.ru/products/gadgets-accessories"
     },
     {
@@ -201,7 +201,7 @@
       "code": "STARLIGHT-29",
       "description": "29% скидка на товары для здоровья",
       "image": "images/gift21.jpg",
-      "backgroundImage": "images/day21-bg.jpg",
+      "backgroundImage": "images/placeholder3.png",
       "productUrl": "https://ecoplace.ru/products/health-goods"
     },
     {
@@ -210,7 +210,7 @@
       "code": "ICICLE-31",
       "description": "31% скидка на ювелирные изделия",
       "image": "images/gift22.jpg",
-      "backgroundImage": "images/day22-bg.jpg",
+      "backgroundImage": "images/placeholder2.png",
       "productUrl": "https://ecoplace.ru/products/jewelry"
     },
     {
@@ -224,7 +224,7 @@
       "code": "MISTLETOE-32",
       "description": "32% скидка на цветы и букеты",
       "image": "images/gift23.jpg",
-      "backgroundImage": "images/day23-bg.jpg",
+      "backgroundImage": "images/placeholder1.png",
       "productUrl": "https://ecoplace.ru/products/flowers-bouquets"
     },
     {
@@ -233,7 +233,7 @@
       "code": "EVERGREEN-33",
       "description": "33% скидка на мебель и интерьер",
       "image": "images/gift24.jpg",
-      "backgroundImage": "images/day24-bg.jpg",
+      "backgroundImage": "images/placeholder2.png",
       "productUrl": "https://ecoplace.ru/products/furniture-interior"
     },
     {
@@ -242,7 +242,7 @@
       "code": "CHIMNEY-34",
       "description": "34% скидка на товары для детей",
       "image": "images/gift25.jpg",
-      "backgroundImage": "images/day25-bg.jpg",
+      "backgroundImage": "images/placeholder3.png",
       "productUrl": "https://ecoplace.ru/products/kids-goods"
     },
     {
@@ -251,7 +251,7 @@
       "code": "FIREPLACE-36",
       "description": "36% скидка на товары для активного отдыха",
       "image": "images/gift26.jpg",
-      "backgroundImage": "images/day26-bg.jpg",
+      "backgroundImage": "images/placeholder1.png",
       "productUrl": "https://ecoplace.ru/products/outdoor-activities"
     },
     {
@@ -260,7 +260,7 @@
       "code": "COCOA-37",
       "description": "37% скидка на кофе и чай",
       "image": "images/gift27.jpg",
-      "backgroundImage": "images/day27-bg.jpg",
+      "backgroundImage": "images/placeholder2.png",
       "productUrl": "https://ecoplace.ru/products/coffee-tea"
     },
     {
@@ -269,7 +269,7 @@
       "code": "CAROL-38",
       "description": "38% скидка на развлекательные услуги",
       "image": "images/gift28.jpg",
-      "backgroundImage": "images/day28-bg.jpg",
+      "backgroundImage": "images/placeholder3.png",
       "productUrl": "https://ecoplace.ru/products/entertainment-services"
     },
     {
@@ -283,7 +283,7 @@
       "code": "BELLS-39",
       "description": "39% скидка на товары для офиса",
       "image": "images/gift29.jpg",
-      "backgroundImage": "images/day29-bg.jpg",
+      "backgroundImage": "images/placeholder1.png",
       "productUrl": "https://ecoplace.ru/products/office-supplies"
     },
     {
@@ -292,7 +292,7 @@
       "code": "COUNTDOWN-40",
       "description": "40% скидка на коллекционные товары",
       "image": "images/gift30.jpg",
-      "backgroundImage": "images/day30-bg.jpg",
+      "backgroundImage": "images/placeholder3.png",
       "productUrl": "https://ecoplace.ru/products/collectibles"
     },
     {
@@ -301,7 +301,7 @@
       "code": "FIREWORKS-50",
       "description": "СУПЕР-ПРОМОКОД: 50% скидка на любой товар!",
       "image": "images/gift31.jpg",
-      "backgroundImage": "images/day31-bg.jpg",
+      "backgroundImage": "images/placeholder2.png",
       "productUrl": "https://ecoplace.ru/products/super-sale"
     }
   ]
