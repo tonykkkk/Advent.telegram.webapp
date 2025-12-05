@@ -71,6 +71,61 @@ function copyToClipboard(text) {
     });
 }
 
+// Функция создания снежинок
+function createSnowflakes() {
+    const snowContainer = document.createElement('div');
+    snowContainer.className = 'snow-container';
+    snowContainer.id = 'snow-container';
+    document.body.appendChild(snowContainer);
+    
+    const snowflakeCount = window.innerWidth < 768 ? 40 : 80; // Меньше снежинок на мобильных
+    
+    for (let i = 0; i < snowflakeCount; i++) {
+        const snowflake = document.createElement('div');
+        snowflake.className = 'snowflake';
+        
+        // Случайный размер снежинки от 2px до 8px
+        const size = Math.random() * 6 + 2;
+        snowflake.style.width = `${size}px`;
+        snowflake.style.height = `${size}px`;
+        
+        // Случайная позиция по горизонтали
+        const startX = Math.random() * 100;
+        snowflake.style.left = `${startX}%`;
+        
+        // Случайная задержка начала анимации
+        const delay = Math.random() * 5;
+        snowflake.style.animationDelay = `${delay}s`;
+        
+        // Случайная длительность анимации от 10 до 20 секунд
+        const duration = Math.random() * 10 + 10;
+        snowflake.style.animationDuration = `${duration}s`;
+        
+        // Случайная прозрачность
+        const opacity = Math.random() * 0.6 + 0.4;
+        snowflake.style.opacity = opacity;
+        
+        // Случайный цвет снежинки (белый с разными оттенками)
+        const colorVariation = Math.random() * 40 + 200;
+        snowflake.style.background = `rgba(${colorVariation}, ${colorVariation}, 255, ${opacity})`;
+        
+        // Случайное боковое движение
+        const xMovement = Math.random() * 40 - 20;
+        snowflake.style.setProperty('--x-movement', `${xMovement}px`);
+        
+        snowContainer.appendChild(snowflake);
+    }
+    
+    // Обновляем снежинки при ресайзе
+    window.addEventListener('resize', function() {
+        const snowContainer = document.getElementById('snow-container');
+        if (snowContainer) {
+            snowContainer.remove();
+            createSnowflakes();
+        }
+    });
+}
+
 // Функция загрузки данных календаря
 async function loadCalendarData() {
     try {
@@ -322,8 +377,7 @@ function createSpecialCard(item, index) {
         specialCard.style.cursor = 'pointer';
         specialCard.title = 'Нажмите для перехода к акции';
     } else {
-        // Если ссылки нет, делаем карточку неактивной
-        specialCard.classList.add('inactive');
+        // ИСПРАВЛЕНИЕ: Если ссылки нет, просто не делаем карточку кликабельной
         specialCard.style.cursor = 'default';
         specialCard.title = 'Специальное предложение';
     }
@@ -580,6 +634,12 @@ function setupEventListeners() {
         // Даем время на изменение ориентации
         setTimeout(() => {
             forceFullRedraw();
+            // Пересоздаем снежинки при смене ориентации
+            const snowContainer = document.getElementById('snow-container');
+            if (snowContainer) {
+                snowContainer.remove();
+                createSnowflakes();
+            }
         }, 500);
     });
 }
@@ -587,6 +647,9 @@ function setupEventListeners() {
 // Основная функция инициализации
 async function initApp() {
     console.log('Инициализация приложения...');
+    
+    // Создаем снежинки
+    createSnowflakes();
     
     // Принудительная установка viewport для WebView
     const viewportMeta = document.querySelector('meta[name="viewport"]');
