@@ -33,6 +33,57 @@ function showAlert(message, type = 'info') {
     alert(message);
 }
 
+// Функция для склонения слова "день" в зависимости от числа
+function getDaysWord(days) {
+    const lastDigit = days % 10;
+    const lastTwoDigits = days % 100;
+    
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+        return 'дней';
+    }
+    
+    if (lastDigit === 1) {
+        return 'день';
+    }
+    
+    if (lastDigit >= 2 && lastDigit <= 4) {
+        return 'дня';
+    }
+    
+    return 'дней';
+}
+
+// Функция для расчета дней до Нового года
+function calculateDaysToNewYear() {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    
+    // Новый год - 1 января следующего года
+    const newYear = new Date(currentYear + 1, 0, 1);
+    
+    // Разница в миллисекундах
+    const diffTime = newYear - today;
+    
+    // Конвертируем в дни
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    return diffDays;
+}
+
+// Функция для обновления отображения дней до Нового года
+function updateDaysToNewYearDisplay() {
+    const daysElement = document.getElementById('days-to-new-year');
+    if (!daysElement) return;
+    
+    const days = calculateDaysToNewYear();
+    const daysWord = getDaysWord(days);
+    
+    daysElement.textContent = `${days} ${daysWord}`;
+    
+    // Добавляем класс для стилизации
+    daysElement.classList.add('days-to-new-year');
+}
+
 // Улучшенная функция копирования
 function copyToClipboard(text) {
     return new Promise(function(resolve, reject) {
@@ -192,6 +243,9 @@ function createCalendar() {
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
     document.getElementById('current-date').textContent = today.toLocaleDateString('ru-RU', options);
     
+    // Обновляем отображение дней до Нового года
+    updateDaysToNewYearDisplay();
+    
     // Создаем карточки для всех элементов календаря в порядке их следования в массиве
     calendarItems.forEach((item, index) => {
         if (item.type === 'day') {
@@ -264,7 +318,7 @@ function createDayCard(item, isDecember2025, currentDay) {
     if (isDecember2025) {
         if (item.day === currentDay) {
             status = 'today';
-            statusText = 'Открыть';
+            statusText = 'Открыть промокод';
         } else if (item.day < currentDay) {
             status = 'missed';
             statusText = 'Закончился';
@@ -679,9 +733,6 @@ async function initApp() {
                 // Расширяем WebView на весь экран
                 window.Telegram.WebApp.expand();
                 
-              
-                
-                
                 console.log('Telegram WebApp инициализирован');
             } catch (error) {
                 console.warn('Ошибка инициализации Telegram WebApp:', error);
@@ -702,7 +753,8 @@ async function initApp() {
         день: today.getDate(),
         месяц: today.getMonth() + 1,
         год: today.getFullYear(),
-        декабрь2025: (today.getMonth() === 11 && today.getFullYear() === 2025)
+        декабрь2025: (today.getMonth() === 11 && today.getFullYear() === 2025),
+        днейДоНовогоГода: calculateDaysToNewYear()
     });
 }
 
