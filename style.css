@@ -32,20 +32,6 @@
     font-style: normal;
 }
 
-@font-face {
-    font-family: 'Esqadero FF CY 4F';
-    src: url('https://fonts.cdnfonts.com/s/27287/Esqadero FF CY 4F-Bold.woff') format('woff');
-    font-weight: 700;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Esqadero FF CY 4F';
-    src: url('https://fonts.cdnfonts.com/s/27287/Esqadero FF CY 4F-Italic.woff') format('woff');
-    font-weight: 400;
-    font-style: italic;
-}
-
 * {
     margin: 0;
     padding: 0;
