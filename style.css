@@ -257,8 +257,8 @@ h1 {
     line-height: 1.2;
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
-    /* ИСПРАВЛЕНИЕ: Убираем иконку, выравнивание по левому краю */
-    text-align: left;
+    /* ИСПРАВЛЕНИЕ: Выравнивание по левому краю для всех размеров экранов */
+    text-align: left !important;
 }
 
 h1 .fa-gifts {
@@ -895,6 +895,8 @@ h1, h2, h3, h4, h5, h6 {
 
     h1 {
         font-size: 1.6rem;
+        /* ИСПРАВЛЕНИЕ: Выравнивание по левому краю и на мобильных */
+        text-align: left !important;
     }
 
     .promo-code-box {
@@ -1018,8 +1020,8 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1.1rem;
     color: var(--text-secondary);
     font-weight: 400;
-    /* ИСПРАВЛЕНИЕ: Выравнивание по левому краю */
-    text-align: left;
+    /* ИСПРАВЛЕНИЕ: Выравнивание по левому краю для всех размеров экранов */
+    text-align: left !important;
 }
 
 .text-light {
@@ -1101,11 +1103,6 @@ h1, h2, h3, h4, h5, h6 {
     .day-status {
         font-size: 0.7rem;
         padding: 0.2rem 0.6rem;
-    }
-    
-    /* На мобильных центрируем заголовки */
-    h1, .lead {
-        text-align: center;
     }
 }
 
@@ -1230,9 +1227,9 @@ img, canvas, video {
     }
 }
 
-/* ИСПРАВЛЕНИЕ: Стили для контента под логотипом */
+/* ИСПРАВЛЕНИЕ: Стили для контента под логотипом - УВЕЛИЧИВАЕМ ОТСТУП В 2 РАЗА */
 .header-content {
-    margin-top: 4.5rem; /* Отступ примерно 3 высоты логотипа (1.5rem * 3) */
+    margin-top: 9rem !important; /* Увеличен в 2 раза: было 4.5rem, стало 9rem */
 }
 
 /* Стили для блока с датой */
@@ -1241,11 +1238,21 @@ img, canvas, video {
 }
 
 .date-info-item {
-    margin-bottom: 0.5rem;
+    /* ИСПРАВЛЕНИЕ: Уменьшаем отступы снизу, делаем их равными сверху */
+    margin-bottom: 0.25rem !important; /* Было 0.5rem, уменьшили в 2 раза */
+}
+
+.date-info-item:last-child {
+    margin-bottom: 0 !important; /* Убираем отступ у последнего элемента */
 }
 
 .days-to-new-year {
     font-size: 0.9rem;
     color: rgba(255, 255, 255, 0.8);
     font-weight: 400;
+}
+
+/* ИСПРАВЛЕНИЕ: Уменьшаем отступы в карточке с датой */
+.date-card-body {
+    padding: 0.75rem 1rem !important; /* Уменьшаем внутренние отступы карточки */
 }
