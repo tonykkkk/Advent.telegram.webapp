@@ -296,16 +296,16 @@ function createDayCard(item, isDecember2025, currentDay) {
             statusText = 'Сегодня';
         } else if (item.day < currentDay) {
             status = 'missed';
-            statusText = 'Пропущено';
+            statusText = 'Закончился';
         } else {
             // Будущие дни стилизуем как открытые (с зеленым фоном)
             status = 'future';
-            statusText = 'Будущее';
+            statusText = 'Ждем';
         }
     } else {
         // Если не декабрь 2025 - все дни будущие (с зеленым фоном)
         status = 'future';
-        statusText = 'Будущее';
+        statusText = 'Ждем';
     }
     
     dayCard.classList.add(status);
