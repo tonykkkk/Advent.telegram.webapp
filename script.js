@@ -155,19 +155,19 @@ function createDayCard(item, isDecember2025, currentDay) {
     if (isDecember2025) {
         if (item.day === currentDay) {
             status = 'today';
-            statusText = 'Сегодня';
+            statusText = 'Открыть промокод';
         } else if (item.day < currentDay) {
             status = 'missed';
             statusText = 'Закончился';
         } else {
             // Будущие дни стилизуем как открытые (с зеленым фоном)
             status = 'future';
-            statusText = 'Ждем';
+            statusText = 'Скоро';
         }
     } else {
         // Если не декабрь 2025 - все дни будущие (с зеленым фоном)
         status = 'future';
-        statusText = 'Ждем';
+        statusText = 'Скоро';
     }
     
     dayCard.classList.add(status);
@@ -212,7 +212,7 @@ function createDayCard(item, isDecember2025, currentDay) {
     contentDiv.innerHTML = `
         ${snowflake}
         <div class="day-number">${item.day}</div>
-        <div class="day-month">Декабрь</div>
+        <div class="day-month">Декабря</div>
         <div class="day-status">${statusText}</div>
     `;
     
