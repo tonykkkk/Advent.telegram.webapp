@@ -1,4 +1,3 @@
-
 // Полифиллы для совместимости
 if (!NodeList.prototype.forEach) {
     NodeList.prototype.forEach = Array.prototype.forEach;
@@ -280,9 +279,7 @@ function highlightTodayCard() {
         setTimeout(() => {
             todayCard.style.animation = 'bounceToday 1s ease-in-out 3';
             todayCard.addEventListener('animationend', function() {
-                // После завершения начальной анимации включаем постоянную
                 this.style.animation = 'bounceToday 2s infinite ease-in-out';
-                this.dataset.animationActive = 'true';
             }, { once: true });
         }, 1000);
     }
@@ -464,7 +461,7 @@ function openSpecialCard(item) {
     window.open(item.actionUrl, '_blank');
 }
 
-// Функция открытия карточки с промокодом (ИСПРАВЛЕНА: разделение анимаций)
+// Функция открытия карточки с промокодом
 function openPromoCard(item) {
     const dayCard = document.querySelector(`.day-card[data-day="${item.day}"]`);
     
@@ -483,139 +480,19 @@ function openPromoCard(item) {
         return;
     }
     
-    // ИСПРАВЛЕНИЕ: Отключаем анимацию bouncing перед началом анимации открытия
+    // Добавляем анимацию открытия
     if (dayCard) {
-        // Сохраняем текущее состояние анимации
-        dayCard.dataset.originalAnimation = dayCard.style.animation;
-        dayCard.dataset.animationWasActive = dayCard.dataset.animationActive || 'false';
-        
-        // Отключаем анимацию bouncing
-        dayCard.style.animation = 'none';
-        dayCard.dataset.animationActive = 'false';
-        
-        // Добавляем класс для анимации открытия
         dayCard.classList.add('card-opening');
+        // Временно отключаем bouncing анимацию во время открытия
+        dayCard.style.animation = 'cardOpen 0.8s ease';
         
-        // Запускаем анимацию открытия
-        dayCard.style.animation = 'cardOpen 0.8s ease forwards';
-        
-        // После завершения анимации открытия, показываем модальное окно
         setTimeout(() => {
-            // Убираем класс анимации открытия
             dayCard.classList.remove('card-opening');
-            dayCard.style.animation = 'none';
-            
-            // Заполняем модальное окно данными
-            fillModalWithData(item);
-            
-            // Показываем модальное окно в центре viewport
-            showModalInViewportCenter();
+            // Возвращаем bouncing анимацию
+            dayCard.style.animation = 'bounceToday 2s infinite ease-in-out';
         }, 800);
-    } else {
-        // Если карточка не найдена, просто показываем модальное окно
-        fillModalWithData(item);
-        showModalInViewportCenter();
-    }
-}
-
-// Функция для показа модального окна в центре viewport
-function showModalInViewportCenter() {
-    if (!promoModal) return;
-    
-    const modalElement = document.getElementById('promoModal');
-    const body = document.body;
-    
-    // Добавляем классы для фиксации положения
-    body.classList.add('modal-open');
-    body.style.overflow = 'hidden';
-    body.style.paddingRight = '0'; // Убираем padding для scrollbar
-    
-    // Показываем модальное окно
-    modalElement.classList.add('show');
-    modalElement.style.display = 'block';
-    modalElement.style.opacity = '1';
-    
-    // Центрируем модальное окно в viewport
-    const modalDialog = modalElement.querySelector('.modal-dialog');
-    if (modalDialog) {
-        // Сбрасываем любые предыдущие стили
-        modalDialog.style.margin = '0';
-        modalDialog.style.position = 'fixed';
-        modalDialog.style.top = '50%';
-        modalDialog.style.left = '50%';
-        modalDialog.style.transform = 'translate(-50%, -50%)';
-        modalDialog.style.maxHeight = '90vh';
-        modalDialog.style.overflowY = 'auto';
     }
     
-    // Добавляем обработчик закрытия модального окна
-    const closeModal = function() {
-        // Убираем классы и восстанавливаем скролл
-        modalElement.classList.remove('show');
-        modalElement.style.display = 'none';
-        body.classList.remove('modal-open');
-        body.style.overflow = '';
-        body.style.paddingRight = '';
-        
-        // Сбрасываем позиционирование
-        if (modalDialog) {
-            modalDialog.style.margin = '';
-            modalDialog.style.position = '';
-            modalDialog.style.top = '';
-            modalDialog.style.left = '';
-            modalDialog.style.transform = '';
-            modalDialog.style.maxHeight = '';
-            modalDialog.style.overflowY = '';
-        }
-        
-        // Восстанавливаем анимацию bouncing на карточке сегодняшнего дня
-        const todayCard = document.querySelector('.day-card.today');
-        if (todayCard && todayCard.dataset.animationWasActive === 'true') {
-            setTimeout(() => {
-                todayCard.style.animation = todayCard.dataset.originalAnimation || 'bounceToday 2s infinite ease-in-out';
-                todayCard.dataset.animationActive = 'true';
-            }, 300);
-        }
-        
-        // Удаляем обработчик событий
-        document.removeEventListener('click', closeOnOutsideClick);
-        document.removeEventListener('keydown', closeOnEsc);
-    };
-    
-    // Обработчик клика вне модального окна
-    const closeOnOutsideClick = function(e) {
-        if (modalElement.classList.contains('show') && 
-            !e.target.closest('.modal-content') && 
-            !e.target.closest('.day-card.today')) {
-            closeModal();
-        }
-    };
-    
-    // Обработчик нажатия ESC
-    const closeOnEsc = function(e) {
-        if (e.key === 'Escape' && modalElement.classList.contains('show')) {
-            closeModal();
-        }
-    };
-    
-    // Обработчик клика на кнопку закрытия
-    const closeButtons = modalElement.querySelectorAll('[data-bs-dismiss="modal"], .btn-close');
-    closeButtons.forEach(btn => {
-        // Удаляем старые обработчики и добавляем новый
-        btn.removeEventListener('click', closeModal);
-        btn.addEventListener('click', closeModal);
-    });
-    
-    // Добавляем обработчики событий
-    document.addEventListener('click', closeOnOutsideClick);
-    document.addEventListener('keydown', closeOnEsc);
-    
-    // Сохраняем функцию закрытия для использования из других мест
-    modalElement._closeModal = closeModal;
-}
-
-// Функция заполнения модального окна данными (вынесена отдельно)
-function fillModalWithData(item) {
     if (!item) {
         showAlert('Промокод для этого дня не найден', 'error');
         return;
@@ -696,6 +573,11 @@ function fillModalWithData(item) {
             <i class="fas fa-info-circle me-1"></i>Промокод действителен только сегодня, ${todayFormatted}
         `;
     }
+    
+    // Показываем модальное окно
+    if (promoModal) {
+        promoModal.show();
+    }
 }
 
 // Функция для обработки ресайза окна
@@ -713,17 +595,6 @@ function handleResize() {
         const calendarContainer = document.getElementById('calendar-container');
         if (calendarContainer) {
             forceRedraw(calendarContainer);
-        }
-        
-        // Перецентрируем модальное окно если оно открыто
-        const modalElement = document.getElementById('promoModal');
-        if (modalElement && modalElement.classList.contains('show')) {
-            const modalDialog = modalElement.querySelector('.modal-dialog');
-            if (modalDialog) {
-                modalDialog.style.top = '50%';
-                modalDialog.style.left = '50%';
-                modalDialog.style.transform = 'translate(-50%, -50%)';
-            }
         }
         
         isResizing = false;
@@ -795,6 +666,15 @@ function setupEventListeners() {
         });
     }
     
+    // Обработчик закрытия модального окна
+    const modalElement = document.getElementById('promoModal');
+    if (modalElement) {
+        modalElement.addEventListener('hidden.bs.modal', function() {
+            // Сбрасываем состояние
+            currentPromoItem = null;
+        });
+    }
+    
     // Обработчик ресайза окна
     window.addEventListener('resize', handleResize);
     
@@ -817,16 +697,6 @@ function setupEventListeners() {
                 snowContainer.remove();
                 createSnowflakes();
             }
-            // Перецентрируем модальное окно если оно открыто
-            const modalElement = document.getElementById('promoModal');
-            if (modalElement && modalElement.classList.contains('show')) {
-                const modalDialog = modalElement.querySelector('.modal-dialog');
-                if (modalDialog) {
-                    modalDialog.style.top = '50%';
-                    modalDialog.style.left = '50%';
-                    modalDialog.style.transform = 'translate(-50%, -50%)';
-                }
-            }
         }, 500);
     });
 }
@@ -844,20 +714,10 @@ async function initApp() {
         viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no';
     }
     
-    // Инициализируем модальное окно
+    // Инициализируем модальное окно Bootstrap
     const modalElement = document.getElementById('promoModal');
     if (modalElement) {
-        promoModal = {
-            show: function() {
-                showModalInViewportCenter();
-            },
-            hide: function() {
-                const closeFunc = modalElement._closeModal;
-                if (closeFunc) {
-                    closeFunc();
-                }
-            }
-        };
+        promoModal = new bootstrap.Modal(modalElement);
     }
     
     // Загружаем данные календаря
@@ -884,7 +744,7 @@ async function initApp() {
         
         console.log('Приложение инициализировано');
         
-        // Принудительная перерисовка после загрузке
+        // Принудительная перерисовка после загрузки
         setTimeout(() => {
             forceFullRedraw();
         }, 100);
