@@ -714,116 +714,46 @@ h2 {
     color: var(--success-color);
 }
 
-/* ИСПРАВЛЕННАЯ Анимация открытия карточки - ПЛАВНАЯ БЕЗ РЫВКОВ */
+/* ИСПРАВЛЕННАЯ Анимация открытия карточки - ПЛАВНАЯ ДЛЯ ВСЕХ УСТРОЙСТВ */
 @keyframes cardOpenSmooth {
     0% { 
-        transform: scale(1) rotate(0deg); 
+        transform: scale(1); 
         opacity: 1;
-        filter: brightness(1) blur(0px);
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
-    30% { 
-        transform: scale(0.85) rotate(-5deg); 
-        opacity: 0.9;
-        filter: brightness(1.1) blur(0.5px);
-    }
-    60% { 
-        transform: scale(1.05) rotate(5deg); 
-        opacity: 0.95;
-        filter: brightness(0.9) blur(0.3px);
+    50% { 
+        transform: scale(0.92); 
+        opacity: 0.85;
     }
     100% { 
-        transform: scale(1) rotate(0deg); 
+        transform: scale(1); 
         opacity: 1;
-        filter: brightness(1) blur(0px);
         box-shadow: 0 5px 20px rgba(49, 0, 5, 0.3);
     }
 }
 
 @-webkit-keyframes cardOpenSmooth {
     0% { 
-        -webkit-transform: scale(1) rotate(0deg); 
+        -webkit-transform: scale(1); 
         opacity: 1;
-        filter: brightness(1) blur(0px);
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
-    30% { 
-        -webkit-transform: scale(0.85) rotate(-5deg); 
-        opacity: 0.9;
-        filter: brightness(1.1) blur(0.5px);
-    }
-    60% { 
-        -webkit-transform: scale(1.05) rotate(5deg); 
-        opacity: 0.95;
-        filter: brightness(0.9) blur(0.3px);
+    50% { 
+        -webkit-transform: scale(0.92); 
+        opacity: 0.85;
     }
     100% { 
-        -webkit-transform: scale(1) rotate(0deg); 
+        -webkit-transform: scale(1); 
         opacity: 1;
-        filter: brightness(1) blur(0px);
         box-shadow: 0 5px 20px rgba(49, 0, 5, 0.3);
     }
 }
 
-/* Анимация для мобильных устройств (упрощенная) */
-@media screen and (max-width: 768px) {
-    @keyframes cardOpenMobile {
-        0% { 
-            transform: scale(1);
-            opacity: 1;
-        }
-        50% { 
-            transform: scale(0.9);
-            opacity: 0.8;
-        }
-        100% { 
-            transform: scale(1);
-            opacity: 1;
-        }
-    }
-    
-    @-webkit-keyframes cardOpenMobile {
-        0% { 
-            -webkit-transform: scale(1);
-            opacity: 1;
-        }
-        50% { 
-            -webkit-transform: scale(0.9);
-            opacity: 0.8;
-        }
-        100% { 
-            -webkit-transform: scale(1);
-            opacity: 1;
-        }
-    }
-    
-    /* Уменьшаем анимацию bouncing на мобильных */
-    .day-card.today {
-        animation: bounceTodayMobile 2s infinite ease-in-out !important;
-        -webkit-animation: bounceTodayMobile 2s infinite ease-in-out !important;
-    }
-    
-    @keyframes bounceTodayMobile {
-        0%, 100% {
-            transform: translateY(0);
-            box-shadow: 0 0 0 rgba(49, 0, 5, 0.5);
-        }
-        50% {
-            transform: translateY(-3px);
-            box-shadow: 0 3px 10px rgba(49, 0, 5, 0.4);
-        }
-    }
-    
-    @-webkit-keyframes bounceTodayMobile {
-        0%, 100% {
-            -webkit-transform: translateY(0);
-            box-shadow: 0 0 0 rgba(49, 0, 5, 0.5);
-        }
-        50% {
-            -webkit-transform: translateY(-3px);
-            box-shadow: 0 3px 10px rgba(49, 0, 5, 0.4);
-        }
-    }
+.card-opening {
+    animation: cardOpenSmooth 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    -webkit-animation: cardOpenSmooth 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    z-index: 10 !important;
+    will-change: transform, opacity !important;
 }
 
 /* Анимация для устройств с низкой производительностью */
@@ -837,80 +767,79 @@ h2 {
     }
 }
 
-/* Улучшение плавности анимаций */
-.animate-once {
-    animation-fill-mode: forwards;
-    -webkit-animation-fill-mode: forwards;
-}
-
-/* ИСПРАВЛЕНИЕ: Кастомные стили для модального окна Bootstrap */
+/* ИСПРАВЛЕНИЕ: Полностью переписанные стили для модального окна Bootstrap */
 .modal {
     z-index: 1060 !important;
     display: none !important;
     overflow: hidden !important;
+    padding-right: 0 !important;
 }
 
 .modal.show {
     display: block !important;
-    animation: modalFadeIn 0.3s ease-out forwards !important;
-    -webkit-animation: modalFadeIn 0.3s ease-out forwards !important;
 }
 
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+/* ИСПРАВЛЕНИЕ: Плавное затемнение фона без скачков */
+.modal-backdrop {
+    z-index: 1050 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background-color: rgba(0, 0, 0, 0) !important;
+    opacity: 0 !important;
+    transition: opacity 0.25s ease-out, background-color 0.25s ease-out !important;
+    -webkit-transition: opacity 0.25s ease-out, background-color 0.25s ease-out !important;
 }
 
-@-webkit-keyframes modalFadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+.modal-backdrop.show {
+    opacity: 1 !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
 }
 
+/* ИСПРАВЛЕНИЕ: Убираем стандартную анимацию Bootstrap и добавляем свою */
 .modal.fade .modal-dialog {
-    transform: translate(0, 0) scale(0.95) !important;
-    -webkit-transform: translate(0, 0) scale(0.95) !important;
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out !important;
-    -webkit-transition: transform 0.3s ease-out, opacity 0.3s ease-out !important;
+    transform: none !important;
+    -webkit-transform: none !important;
+    transition: none !important;
+    -webkit-transition: none !important;
     opacity: 0 !important;
 }
 
 .modal.show .modal-dialog {
-    transform: translate(0, 0) scale(1) !important;
-    -webkit-transform: translate(0, 0) scale(1) !important;
     opacity: 1 !important;
+    animation: modalScaleIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    -webkit-animation: modalScaleIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
 }
 
-/* ИСПРАВЛЕНИЕ: Плавное затемнение фона */
-.modal-backdrop {
-    z-index: 1050 !important;
-    background-color: rgba(0, 0, 0, 0) !important;
-    transition: background-color 0.3s ease-out !important;
-    -webkit-transition: background-color 0.3s ease-out !important;
+@keyframes modalScaleIn {
+    0% {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
-.modal-backdrop.show {
-    background-color: rgba(0, 0, 0, 0.5) !important;
+@-webkit-keyframes modalScaleIn {
+    0% {
+        -webkit-transform: scale(0.95);
+        opacity: 0;
+    }
+    100% {
+        -webkit-transform: scale(1);
+        opacity: 1;
+    }
 }
 
-/* Убираем стандартные анимации Bootstrap которые вызывают рывки */
-.modal.fade .modal-dialog {
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out !important;
-    -webkit-transition: transform 0.3s ease-out, opacity 0.3s ease-out !important;
-}
-
-/* Модальное окно в темно-красном стиле */
+/* ИСПРАВЛЕНИЕ: Убираем обводку у модального окна */
 .modal-content {
     border-radius: 12px !important;
     overflow: hidden !important;
-    border: 2px solid var(--dark-red-1) !important;
+    border: none !important; /* Убираем обводку */
     box-shadow: 0 10px 40px rgba(49, 0, 5, 0.3) !important;
     -webkit-transform: translate3d(0, 0, 0) !important;
     transform: translate3d(0, 0, 0) !important;
@@ -1058,15 +987,6 @@ h2 {
     transform: scale(0.98);
 }
 
-/* Гарантия, что модальное окно отображается поверх всего */
-.modal {
-    z-index: 1060 !important;
-}
-
-.modal-backdrop {
-    z-index: 1050 !important;
-}
-
 /* Улучшение отображения текста */
 h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
@@ -1115,22 +1035,66 @@ h1, h2, h3, h4, h5, h6 {
         opacity: 0.6;
     }
     
-    /* Упрощаем анимации на мобильных */
-    .modal.fade .modal-dialog {
-        transform: translate(0, 0) scale(0.98) !important;
-        -webkit-transform: translate(0, 0) scale(0.98) !important;
-        transition: transform 0.2s ease-out, opacity 0.2s ease-out !important;
-        -webkit-transition: transform 0.2s ease-out, opacity 0.2s ease-out !important;
+    /* Уменьшаем анимацию bouncing на мобильных */
+    .day-card.today {
+        animation: bounceTodayMobile 2s infinite ease-in-out !important;
+        -webkit-animation: bounceTodayMobile 2s infinite ease-in-out !important;
     }
     
+    @keyframes bounceTodayMobile {
+        0%, 100% {
+            transform: translateY(0);
+            box-shadow: 0 0 0 rgba(49, 0, 5, 0.5);
+        }
+        50% {
+            transform: translateY(-3px);
+            box-shadow: 0 3px 10px rgba(49, 0, 5, 0.4);
+        }
+    }
+    
+    @-webkit-keyframes bounceTodayMobile {
+        0%, 100% {
+            -webkit-transform: translateY(0);
+            box-shadow: 0 0 0 rgba(49, 0, 5, 0.5);
+        }
+        50% {
+            -webkit-transform: translateY(-3px);
+            box-shadow: 0 3px 10px rgba(49, 0, 5, 0.4);
+        }
+    }
+    
+    /* Упрощенная анимация открытия карточки на мобильных */
+    .card-opening {
+        animation: cardOpenSmooth 0.3s ease !important;
+        -webkit-animation: cardOpenSmooth 0.3s ease !important;
+    }
+    
+    /* Упрощенная анимация модального окна на мобильных */
     .modal.show .modal-dialog {
-        transform: translate(0, 0) scale(1) !important;
-        -webkit-transform: translate(0, 0) scale(1) !important;
+        animation: modalScaleInMobile 0.25s ease !important;
+        -webkit-animation: modalScaleInMobile 0.25s ease !important;
     }
     
-    .modal-backdrop {
-        transition: background-color 0.2s ease-out !important;
-        -webkit-transition: background-color 0.2s ease-out !important;
+    @keyframes modalScaleInMobile {
+        0% {
+            transform: scale(0.98);
+            opacity: 0;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+    
+    @-webkit-keyframes modalScaleInMobile {
+        0% {
+            -webkit-transform: scale(0.98);
+            opacity: 0;
+        }
+        100% {
+            -webkit-transform: scale(1);
+            opacity: 1;
+        }
     }
 }
 
@@ -1450,7 +1414,7 @@ img, canvas, video {
     padding: 0.75rem 1rem !important; /* Уменьшаем внутренние отступы карточки */
 }
 
-/* Ключевые исправления для устранения рывков */
+/* ИСПРАВЛЕНИЕ: Ключевые исправления для устранения всех проблем */
 .modal-open {
     overflow: hidden !important;
     padding-right: 0 !important;
@@ -1462,15 +1426,67 @@ img, canvas, video {
     min-height: calc(100% - 1rem) !important;
 }
 
-/* Улучшение плавности открытия модального окна */
-.modal.fade .modal-dialog {
-    will-change: transform, opacity !important;
-}
-
-.modal-backdrop.fade {
-    opacity: 0 !important;
-}
-
-.modal-backdrop.show {
+/* Убираем все конфликтующие стили Bootstrap */
+.fade:not(.show) {
     opacity: 1 !important;
+}
+
+/* Гарантируем правильный z-index для всех элементов */
+.modal {
+    z-index: 1060 !important;
+}
+
+.modal-backdrop {
+    z-index: 1050 !important;
+}
+
+/* Убираем прокрутку страницы при открытом модальном окне */
+body.modal-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ИСПРАВЛЕНИЕ: Для touch-устройств улучшаем отзывчивость */
+@media (hover: none) and (pointer: coarse) {
+    .day-card:active {
+        transform: scale(0.95) !important;
+        transition: transform 0.1s ease !important;
+    }
+    
+    .card-opening {
+        animation: cardOpenTouch 0.3s ease !important;
+        -webkit-animation: cardOpenTouch 0.3s ease !important;
+    }
+    
+    @keyframes cardOpenTouch {
+        0% { 
+            transform: scale(1); 
+        }
+        50% { 
+            transform: scale(0.9); 
+        }
+        100% { 
+            transform: scale(1); 
+        }
+    }
+    
+    @-webkit-keyframes cardOpenTouch {
+        0% { 
+            -webkit-transform: scale(1); 
+        }
+        50% { 
+            -webkit-transform: scale(0.9); 
+        }
+        100% { 
+            -webkit-transform: scale(1); 
+        }
+    }
+}
+
+/* ИСПРАВЛЕНИЕ: Убираем двойные анимации */
+.day-card.today.card-opening {
+    animation: cardOpenSmooth 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    -webkit-animation: cardOpenSmooth 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
 }
