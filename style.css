@@ -688,7 +688,7 @@ h2 {
     color: var(--success-color);
 }
 
-/* Кастомное модальное окно для предотвращения прыжков */
+/* Кастомное модальное окно с центрированием в viewport */
 #promoModal {
     display: none;
     position: fixed;
@@ -696,12 +696,12 @@ h2 {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1055;
+    z-index: 1060;
     overflow-x: hidden;
     overflow-y: auto;
     outline: 0;
     background-color: rgba(0, 0, 0, 0.5);
-    transition: opacity 0.15s linear;
+    -webkit-overflow-scrolling: touch;
 }
 
 #promoModal.show {
@@ -712,17 +712,16 @@ h2 {
 #promoModal .modal-dialog {
     position: relative;
     width: auto;
-    margin: 20px;
+    margin: 0;
     pointer-events: none;
     max-width: 800px;
-    transform: none !important;
     transition: transform 0.3s ease-out;
 }
 
 @media (min-width: 576px) {
     #promoModal .modal-dialog {
         max-width: 500px;
-        margin: 30px auto;
+        margin: 1.75rem auto;
     }
 }
 
@@ -730,10 +729,6 @@ h2 {
     #promoModal .modal-dialog {
         max-width: 800px;
     }
-}
-
-#promoModal.show .modal-dialog {
-    transform: none;
 }
 
 #promoModal .modal-content {
@@ -936,10 +931,6 @@ h2 {
     z-index: 1060 !important;
 }
 
-.modal-backdrop {
-    z-index: 1050 !important;
-}
-
 /* Улучшение отображения текста */
 h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
@@ -983,11 +974,11 @@ h1, h2, h3, h4, h5, h6 {
         font-size: 1.5rem;
     }
     
-    /* На мобильных делаем модальное окно на всю высоту */
+    /* На мобильных делаем модальное окно на всю высоту viewport */
     #promoModal .modal-dialog {
         margin: 0;
+        max-height: 100vh;
         height: 100%;
-        max-height: 100%;
     }
     
     #promoModal .modal-content {
@@ -1345,4 +1336,11 @@ img, canvas, video {
 /* ИСПРАВЛЕНИЕ: Уменьшаем отступы в карточке с датой */
 .date-card-body {
     padding: 0.75rem 1rem !important; /* Уменьшаем внутренние отступы карточки */
+}
+
+/* Стили для состояния modal-open */
+body.modal-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
 }
