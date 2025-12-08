@@ -1,5 +1,4 @@
-[file name]: script.js
-[file content begin]
+
 // Полифиллы для совместимости
 if (!NodeList.prototype.forEach) {
     NodeList.prototype.forEach = Array.prototype.forEach;
@@ -817,4 +816,3 @@ window.addEventListener('load', function() {
         forceFullRedraw();
     }, 500);
 });
-[file content end]
