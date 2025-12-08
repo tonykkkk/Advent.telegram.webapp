@@ -714,62 +714,55 @@ h2 {
     color: var(--success-color);
 }
 
-/* ИСПРАВЛЕННАЯ Анимация открытия карточки - более плавная */
-@keyframes cardOpen {
+/* ИСПРАВЛЕННАЯ Анимация открытия карточки - ПЛАВНАЯ БЕЗ РЫВКОВ */
+@keyframes cardOpenSmooth {
     0% { 
-        transform: scale(1) rotateY(0deg); 
+        transform: scale(1) rotate(0deg); 
         opacity: 1;
+        filter: brightness(1) blur(0px);
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
-    25% { 
-        transform: scale(0.95) rotateY(90deg); 
-        opacity: 0.8;
+    30% { 
+        transform: scale(0.85) rotate(-5deg); 
+        opacity: 0.9;
+        filter: brightness(1.1) blur(0.5px);
     }
-    50% { 
-        transform: scale(0.9) rotateY(180deg); 
-        opacity: 0.6;
-    }
-    75% { 
-        transform: scale(0.95) rotateY(270deg); 
-        opacity: 0.8;
+    60% { 
+        transform: scale(1.05) rotate(5deg); 
+        opacity: 0.95;
+        filter: brightness(0.9) blur(0.3px);
     }
     100% { 
-        transform: scale(1) rotateY(360deg); 
+        transform: scale(1) rotate(0deg); 
         opacity: 1;
+        filter: brightness(1) blur(0px);
         box-shadow: 0 5px 20px rgba(49, 0, 5, 0.3);
     }
 }
 
-@-webkit-keyframes cardOpen {
+@-webkit-keyframes cardOpenSmooth {
     0% { 
-        -webkit-transform: scale(1) rotateY(0deg); 
+        -webkit-transform: scale(1) rotate(0deg); 
         opacity: 1;
+        filter: brightness(1) blur(0px);
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
-    25% { 
-        -webkit-transform: scale(0.95) rotateY(90deg); 
-        opacity: 0.8;
+    30% { 
+        -webkit-transform: scale(0.85) rotate(-5deg); 
+        opacity: 0.9;
+        filter: brightness(1.1) blur(0.5px);
     }
-    50% { 
-        -webkit-transform: scale(0.9) rotateY(180deg); 
-        opacity: 0.6;
-    }
-    75% { 
-        -webkit-transform: scale(0.95) rotateY(270deg); 
-        opacity: 0.8;
+    60% { 
+        -webkit-transform: scale(1.05) rotate(5deg); 
+        opacity: 0.95;
+        filter: brightness(0.9) blur(0.3px);
     }
     100% { 
-        -webkit-transform: scale(1) rotateY(360deg); 
+        -webkit-transform: scale(1) rotate(0deg); 
         opacity: 1;
+        filter: brightness(1) blur(0px);
         box-shadow: 0 5px 20px rgba(49, 0, 5, 0.3);
     }
-}
-
-.card-opening {
-    animation: cardOpen 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    -webkit-animation: cardOpen 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    z-index: 10;
-    will-change: transform, opacity;
 }
 
 /* Анимация для мобильных устройств (упрощенная) */
@@ -781,7 +774,7 @@ h2 {
         }
         50% { 
             transform: scale(0.9);
-            opacity: 0.7;
+            opacity: 0.8;
         }
         100% { 
             transform: scale(1);
@@ -796,17 +789,12 @@ h2 {
         }
         50% { 
             -webkit-transform: scale(0.9);
-            opacity: 0.7;
+            opacity: 0.8;
         }
         100% { 
             -webkit-transform: scale(1);
             opacity: 1;
         }
-    }
-    
-    .card-opening {
-        animation: cardOpenMobile 0.4s ease !important;
-        -webkit-animation: cardOpenMobile 0.4s ease !important;
     }
     
     /* Уменьшаем анимацию bouncing на мобильных */
@@ -855,20 +843,86 @@ h2 {
     -webkit-animation-fill-mode: forwards;
 }
 
+/* ИСПРАВЛЕНИЕ: Кастомные стили для модального окна Bootstrap */
+.modal {
+    z-index: 1060 !important;
+    display: none !important;
+    overflow: hidden !important;
+}
+
+.modal.show {
+    display: block !important;
+    animation: modalFadeIn 0.3s ease-out forwards !important;
+    -webkit-animation: modalFadeIn 0.3s ease-out forwards !important;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal.fade .modal-dialog {
+    transform: translate(0, 0) scale(0.95) !important;
+    -webkit-transform: translate(0, 0) scale(0.95) !important;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out !important;
+    -webkit-transition: transform 0.3s ease-out, opacity 0.3s ease-out !important;
+    opacity: 0 !important;
+}
+
+.modal.show .modal-dialog {
+    transform: translate(0, 0) scale(1) !important;
+    -webkit-transform: translate(0, 0) scale(1) !important;
+    opacity: 1 !important;
+}
+
+/* ИСПРАВЛЕНИЕ: Плавное затемнение фона */
+.modal-backdrop {
+    z-index: 1050 !important;
+    background-color: rgba(0, 0, 0, 0) !important;
+    transition: background-color 0.3s ease-out !important;
+    -webkit-transition: background-color 0.3s ease-out !important;
+}
+
+.modal-backdrop.show {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Убираем стандартные анимации Bootstrap которые вызывают рывки */
+.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out !important;
+    -webkit-transition: transform 0.3s ease-out, opacity 0.3s ease-out !important;
+}
+
 /* Модальное окно в темно-красном стиле */
 .modal-content {
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    border: 2px solid var(--dark-red-1) !important;
+    box-shadow: 0 10px 40px rgba(49, 0, 5, 0.3) !important;
+    -webkit-transform: translate3d(0, 0, 0) !important;
+    transform: translate3d(0, 0, 0) !important;
+    transform-origin: center center !important;
+    -webkit-transform-origin: center center !important;
+    will-change: transform, opacity !important;
 }
 
 .bg-gradient-promo {
-    background: var(--dark-red-gradient);
-    background: -webkit-linear-gradient(135deg, #310005 0%, #7D0A14 100%);
-    padding: 1.5rem;
+    background: var(--dark-red-gradient) !important;
+    background: -webkit-linear-gradient(135deg, #310005 0%, #7D0A14 100%) !important;
+    padding: 1.5rem !important;
 }
 
 .snowflakes {
@@ -981,7 +1035,7 @@ h2 {
     cursor: pointer;
     text-align: center;
     text-decoration: none;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
 }
@@ -1059,6 +1113,24 @@ h1, h2, h3, h4, h5, h6 {
     /* Меньше снежинок на мобильных */
     .snowflake {
         opacity: 0.6;
+    }
+    
+    /* Упрощаем анимации на мобильных */
+    .modal.fade .modal-dialog {
+        transform: translate(0, 0) scale(0.98) !important;
+        -webkit-transform: translate(0, 0) scale(0.98) !important;
+        transition: transform 0.2s ease-out, opacity 0.2s ease-out !important;
+        -webkit-transition: transform 0.2s ease-out, opacity 0.2s ease-out !important;
+    }
+    
+    .modal.show .modal-dialog {
+        transform: translate(0, 0) scale(1) !important;
+        -webkit-transform: translate(0, 0) scale(1) !important;
+    }
+    
+    .modal-backdrop {
+        transition: background-color 0.2s ease-out !important;
+        -webkit-transition: background-color 0.2s ease-out !important;
     }
 }
 
@@ -1376,4 +1448,29 @@ img, canvas, video {
 /* ИСПРАВЛЕНИЕ: Уменьшаем отступы в карточке с датой */
 .date-card-body {
     padding: 0.75rem 1rem !important; /* Уменьшаем внутренние отступы карточки */
+}
+
+/* Ключевые исправления для устранения рывков */
+.modal-open {
+    overflow: hidden !important;
+    padding-right: 0 !important;
+}
+
+.modal-dialog-centered {
+    display: flex !important;
+    align-items: center !important;
+    min-height: calc(100% - 1rem) !important;
+}
+
+/* Улучшение плавности открытия модального окна */
+.modal.fade .modal-dialog {
+    will-change: transform, opacity !important;
+}
+
+.modal-backdrop.fade {
+    opacity: 0 !important;
+}
+
+.modal-backdrop.show {
+    opacity: 1 !important;
 }
