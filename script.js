@@ -68,7 +68,7 @@ function calculateDaysToNewYear() {
     const diffTime = newYear - todayStart;
     
     // Конвертируем в дни (правильно, без округления вверх)
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))-1;
     
     return diffDays;
 }
