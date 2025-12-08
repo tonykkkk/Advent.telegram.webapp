@@ -126,13 +126,17 @@ function copyToClipboard(text) {
     });
 }
 
-// Функция для остановки всех анимаций элемента
+// Функция для остановки всех анимаций элемента (улучшенная)
 function stopAnimations(element) {
     if (!element) return;
     
+    // Останавливаем все CSS анимации
     element.style.animation = 'none';
     element.style.webkitAnimation = 'none';
-    element.style.transition = 'none';
+    
+    // Сбрасываем transform
+    element.style.transform = '';
+    element.style.webkitTransform = '';
     
     // Принудительная перерисовка
     void element.offsetWidth;
@@ -474,7 +478,7 @@ function openSpecialCard(item) {
     window.open(item.actionUrl, '_blank');
 }
 
-// Функция открытия карточки с промокодом (ИСПРАВЛЕННАЯ - БЕЗ РЫВКОВ)
+// Функция открытия карточки с промокодом (ОКОНЧАТЕЛЬНО ИСПРАВЛЕННАЯ)
 function openPromoCard(item) {
     if (isModalOpening) return;
     isModalOpening = true;
@@ -500,47 +504,39 @@ function openPromoCard(item) {
     // Сначала готовим модальное окно
     prepareModalContent(item);
     
-    // Затем плавная анимация карточки
+    // Анимация карточки (работает и на мобильных)
     if (dayCard) {
-        // Сохраняем оригинальную анимацию
-        const originalAnimation = dayCard.style.animation;
-        
         // Останавливаем текущую анимацию
         stopAnimations(dayCard);
         
-        // Добавляем плавную анимацию открытия
-        dayCard.style.animation = 'cardOpenSmooth 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards';
-        dayCard.style.webkitAnimation = 'cardOpenSmooth 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards';
+        // Добавляем класс для анимации
+        dayCard.classList.add('card-opening');
         
-        // Ждем завершения анимации карточки
+        // Принудительная перерисовка для запуска анимации
+        void dayCard.offsetWidth;
+        
+        // Убираем класс после завершения анимации
         setTimeout(() => {
-            // Восстанавливаем оригинальную анимацию
-            dayCard.style.animation = originalAnimation;
-            dayCard.style.webkitAnimation = originalAnimation;
+            dayCard.classList.remove('card-opening');
             
-            // Открываем модальное окно с задержкой
+            // Открываем модальное окно с небольшой задержкой
             setTimeout(() => {
                 if (promoModal) {
-                    // Показываем модальное окно
                     promoModal.show();
-                    
-                    // Сброс флага через небольшой таймаут
-                    setTimeout(() => {
-                        isModalOpening = false;
-                    }, 100);
+                    isModalOpening = false;
                 }
             }, 50);
-        }, 500);
+        }, 500); // Длительность анимации карточки
     } else {
         // Если карточка не найдена, сразу открываем модальное окно
         if (promoModal) {
             promoModal.show();
-            setTimeout(() => {
-                isModalOpening = false;
-            }, 100);
+            isModalOpening = false;
         }
     }
 }
+
+
 
 // Функция подготовки содержимого модального окна
 function prepareModalContent(item) {
