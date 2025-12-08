@@ -7,7 +7,7 @@
       "description": "Скидка 15% на все новогодние украшения",
       "image": "images/gift1.jpg",
       "backgroundImage": "images/placeholder1.png",
-      "productUrl": "https://ecoplace.ru/products/christmas-decorations"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -16,7 +16,7 @@
       "description": "10% скидка на электронику",
       "image": "images/gift2.jpg",
       "backgroundImage": "images/placeholder2.png",
-      "productUrl": "https://ecoplace.ru/products/electronics"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -25,7 +25,7 @@
       "description": "Скидка 20% на книги и канцтовары",
       "image": "images/gift3.jpg",
       "backgroundImage": "images/placeholder3.png",
-      "productUrl": "https://ecoplace.ru/products/books-stationery"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "special",
@@ -39,7 +39,7 @@
       "description": "25% скидка на косметические средства",
       "image": "images/gift4.jpg",
       "backgroundImage": "images/placeholder1.png",
-      "productUrl": "https://ecoplace.ru"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -48,7 +48,7 @@
       "description": "30% скидка на косметические средства",
       "image": "images/gift.png",
       "backgroundImage": "images/placeholder3.png",
-      "productUrl": "https://ecoplace.ru"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -57,7 +57,7 @@
       "description": "12% скидка на косметические средства",
       "image": "images/gift.png",
       "backgroundImage": "images/placeholder2.png",
-      "productUrl": "https://ecoplace.ru"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -66,7 +66,7 @@
       "description": "18% скидка на спортивные товары",
       "image": "images/gift.png",
       "backgroundImage": "images/placeholder1.png",
-      "productUrl": "https://ecoplace.ru/products/sports-goods"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -75,7 +75,7 @@
       "description": "22% скидка на товары для дома",
       "image": "images/gift8.jpg",
       "backgroundImage": "images/placeholder3.png",
-      "productUrl": "https://ecoplace.ru/products/home-goods"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -84,7 +84,7 @@
       "description": "14% скидка на бытовую технику",
       "image": "images/gift9.jpg",
       "backgroundImage": "images/placeholder2.png",
-      "productUrl": "https://ecoplace.ru/products/home-appliances"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "special",
@@ -98,7 +98,7 @@
       "description": "35% скидка на украшения и бижутерию",
       "image": "images/gift10.jpg",
       "backgroundImage": "images/placeholder1.png",
-      "productUrl": "https://ecoplace.ru/products/jewelry-accessories"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -107,7 +107,7 @@
       "description": "17% скидка на товары для творчества",
       "image": "images/gift11.jpg",
       "backgroundImage": "images/placeholder2.png",
-      "productUrl": "https://ecoplace.ru/products/creative-goods"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -116,7 +116,7 @@
       "description": "19% скидка на кухонные принадлежности",
       "image": "images/gift12.jpg",
       "backgroundImage": "images/placeholder3.png",
-      "productUrl": "https://ecoplace.ru/products/kitchenware"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -125,7 +125,7 @@
       "description": "23% скидка на товары для сада",
       "image": "images/gift13.jpg",
       "backgroundImage": "images/placeholder2.png",
-      "productUrl": "https://ecoplace.ru/products/garden-goods"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -134,7 +134,7 @@
       "description": "27% скидка на автомобильные аксессуары",
       "image": "images/gift14.jpg",
       "backgroundImage": "images/placeholder1.png",
-      "productUrl": "https://ecoplace.ru/products/car-accessories"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -143,7 +143,7 @@
       "description": "13% скидка на музыкальные инструменты",
       "image": "images/gift15.jpg",
       "backgroundImage": "images/placeholder2.png",
-      "productUrl": "https://ecoplace.ru/products/musical-instruments"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -152,7 +152,7 @@
       "description": "16% скидка на товары для животных",
       "image": "images/gift16.jpg",
       "backgroundImage": "images/placeholder3.png",
-      "productUrl": "https://ecoplace.ru/products/pet-supplies"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -161,7 +161,7 @@
       "description": "21% скидка на путешествия и туры",
       "image": "images/gift17.jpg",
       "backgroundImage": "images/placeholder1.png",
-      "productUrl": "https://ecoplace.ru/products/travel-tours"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "special",
@@ -175,7 +175,7 @@
       "description": "24% скидка на товары для праздника",
       "image": "images/gift18.jpg",
       "backgroundImage": "images/placeholder3.png",
-      "productUrl": "https://ecoplace.ru/products/party-supplies"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -184,7 +184,7 @@
       "description": "26% скидка на продукты питания",
       "image": "images/gift19.jpg",
       "backgroundImage": "images/placeholder2.png",
-      "productUrl": "https://ecoplace.ru/products/food-products"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -193,7 +193,7 @@
       "description": "28% скидка на гаджеты и аксессуары",
       "image": "images/gift20.jpg",
       "backgroundImage": "images/placeholder1.png",
-      "productUrl": "https://ecoplace.ru/products/gadgets-accessories"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -202,7 +202,7 @@
       "description": "29% скидка на товары для здоровья",
       "image": "images/gift21.jpg",
       "backgroundImage": "images/placeholder3.png",
-      "productUrl": "https://ecoplace.ru/products/health-goods"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -211,7 +211,7 @@
       "description": "31% скидка на ювелирные изделия",
       "image": "images/gift22.jpg",
       "backgroundImage": "images/placeholder2.png",
-      "productUrl": "https://ecoplace.ru/products/jewelry"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -220,7 +220,7 @@
       "description": "32% скидка на цветы и букеты",
       "image": "images/gift23.jpg",
       "backgroundImage": "images/placeholder1.png",
-      "productUrl": "https://ecoplace.ru/products/flowers-bouquets"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -229,7 +229,7 @@
       "description": "33% скидка на мебель и интерьер",
       "image": "images/gift24.jpg",
       "backgroundImage": "images/placeholder2.png",
-      "productUrl": "https://ecoplace.ru/products/furniture-interior"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "special",
@@ -243,7 +243,7 @@
       "description": "34% скидка на товары для детей",
       "image": "images/gift25.jpg",
       "backgroundImage": "images/placeholder3.png",
-      "productUrl": "https://ecoplace.ru/products/kids-goods"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -252,7 +252,7 @@
       "description": "36% скидка на товары для активного отдыха",
       "image": "images/gift26.jpg",
       "backgroundImage": "images/placeholder1.png",
-      "productUrl": "https://ecoplace.ru/products/outdoor-activities"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -261,7 +261,7 @@
       "description": "37% скидка на кофе и чай",
       "image": "images/gift27.jpg",
       "backgroundImage": "images/placeholder2.png",
-      "productUrl": "https://ecoplace.ru/products/coffee-tea"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -270,7 +270,7 @@
       "description": "38% скидка на развлекательные услуги",
       "image": "images/gift28.jpg",
       "backgroundImage": "images/placeholder3.png",
-      "productUrl": "https://ecoplace.ru/products/entertainment-services"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -279,12 +279,7 @@
       "description": "39% скидка на товары для офиса",
       "image": "images/gift29.jpg",
       "backgroundImage": "images/placeholder1.png",
-      "productUrl": "https://ecoplace.ru/products/office-supplies"
-    },
-    {
-      "type": "special",
-      "image": "images/special5.png",
-      "actionUrl": ""
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -293,7 +288,7 @@
       "description": "40% скидка на коллекционные товары",
       "image": "images/gift30.jpg",
       "backgroundImage": "images/placeholder3.png",
-      "productUrl": "https://ecoplace.ru/products/collectibles"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
       "type": "day",
@@ -302,7 +297,12 @@
       "description": "СУПЕР-ПРОМОКОД: 50% скидка на любой товар!",
       "image": "images/gift31.jpg",
       "backgroundImage": "images/placeholder2.png",
-      "productUrl": "https://ecoplace.ru/products/super-sale"
+      "productUrl": "https://ecoplace.ru/?utm_source=advent"
+    },
+    {
+      "type": "special",
+      "image": "images/special5.png",
+      "actionUrl": "https://ecoplace.ru/loyalty-program/?utm_source=advent"
     }
   ]
 }
