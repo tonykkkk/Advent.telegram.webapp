@@ -360,12 +360,25 @@ h2 {
     }
 }
 
+/* Оптимизация анимаций для GPU */
+.day-card,
+.special-card {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    perspective: 1000;
+    -webkit-perspective: 1000;
+    will-change: transform, opacity;
+    contain: layout style paint;
+}
+
 /* Карточка дня с фоновым изображением */
 .day-card {
     border: 1px solid var(--border-color);
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     /* ИСПРАВЛЕНИЕ: Делаем карточку квадратной */
     aspect-ratio: 1 / 1; /* Соотношение сторон 1:1 для квадрата */
     display: flex;
@@ -384,7 +397,8 @@ h2 {
     will-change: transform, opacity;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    contain: layout style;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
 }
 
 /* Фоновое изображение для карточки дня - ИСПРАВЛЕНО */
@@ -407,6 +421,29 @@ h2 {
 
 .day-card:hover::before {
     opacity: 0.25;
+}
+
+.day-card:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+}
+
+.day-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Отключение hover-эффектов на мобильных для лучшей производительности */
+@media (hover: none) and (pointer: coarse) {
+    .day-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .promo-code-box:hover {
+        transform: none;
+        -webkit-transform: none;
+    }
 }
 
 /* Карточка акции (специальная карточка) - ТОЛЬКО КАРТИНКА */
@@ -457,16 +494,6 @@ h2 {
 }
 
 /* Убраны фиксированные высоты, теперь карточки квадратные благодаря aspect-ratio */
-
-.day-card:active {
-    transform: scale(0.98);
-    opacity: 0.9;
-}
-
-.day-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
 
 /* ИЗМЕНЕНИЕ: Стили для сегодняшнего дня с темно-красным градиентом */
 .day-card.today {
@@ -687,6 +714,147 @@ h2 {
     color: var(--success-color);
 }
 
+/* ИСПРАВЛЕННАЯ Анимация открытия карточки - более плавная */
+@keyframes cardOpen {
+    0% { 
+        transform: scale(1) rotateY(0deg); 
+        opacity: 1;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    25% { 
+        transform: scale(0.95) rotateY(90deg); 
+        opacity: 0.8;
+    }
+    50% { 
+        transform: scale(0.9) rotateY(180deg); 
+        opacity: 0.6;
+    }
+    75% { 
+        transform: scale(0.95) rotateY(270deg); 
+        opacity: 0.8;
+    }
+    100% { 
+        transform: scale(1) rotateY(360deg); 
+        opacity: 1;
+        box-shadow: 0 5px 20px rgba(49, 0, 5, 0.3);
+    }
+}
+
+@-webkit-keyframes cardOpen {
+    0% { 
+        -webkit-transform: scale(1) rotateY(0deg); 
+        opacity: 1;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    25% { 
+        -webkit-transform: scale(0.95) rotateY(90deg); 
+        opacity: 0.8;
+    }
+    50% { 
+        -webkit-transform: scale(0.9) rotateY(180deg); 
+        opacity: 0.6;
+    }
+    75% { 
+        -webkit-transform: scale(0.95) rotateY(270deg); 
+        opacity: 0.8;
+    }
+    100% { 
+        -webkit-transform: scale(1) rotateY(360deg); 
+        opacity: 1;
+        box-shadow: 0 5px 20px rgba(49, 0, 5, 0.3);
+    }
+}
+
+.card-opening {
+    animation: cardOpen 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    -webkit-animation: cardOpen 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    z-index: 10;
+    will-change: transform, opacity;
+}
+
+/* Анимация для мобильных устройств (упрощенная) */
+@media screen and (max-width: 768px) {
+    @keyframes cardOpenMobile {
+        0% { 
+            transform: scale(1);
+            opacity: 1;
+        }
+        50% { 
+            transform: scale(0.9);
+            opacity: 0.7;
+        }
+        100% { 
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+    
+    @-webkit-keyframes cardOpenMobile {
+        0% { 
+            -webkit-transform: scale(1);
+            opacity: 1;
+        }
+        50% { 
+            -webkit-transform: scale(0.9);
+            opacity: 0.7;
+        }
+        100% { 
+            -webkit-transform: scale(1);
+            opacity: 1;
+        }
+    }
+    
+    .card-opening {
+        animation: cardOpenMobile 0.4s ease !important;
+        -webkit-animation: cardOpenMobile 0.4s ease !important;
+    }
+    
+    /* Уменьшаем анимацию bouncing на мобильных */
+    .day-card.today {
+        animation: bounceTodayMobile 2s infinite ease-in-out !important;
+        -webkit-animation: bounceTodayMobile 2s infinite ease-in-out !important;
+    }
+    
+    @keyframes bounceTodayMobile {
+        0%, 100% {
+            transform: translateY(0);
+            box-shadow: 0 0 0 rgba(49, 0, 5, 0.5);
+        }
+        50% {
+            transform: translateY(-3px);
+            box-shadow: 0 3px 10px rgba(49, 0, 5, 0.4);
+        }
+    }
+    
+    @-webkit-keyframes bounceTodayMobile {
+        0%, 100% {
+            -webkit-transform: translateY(0);
+            box-shadow: 0 0 0 rgba(49, 0, 5, 0.5);
+        }
+        50% {
+            -webkit-transform: translateY(-3px);
+            box-shadow: 0 3px 10px rgba(49, 0, 5, 0.4);
+        }
+    }
+}
+
+/* Анимация для устройств с низкой производительностью */
+@media (prefers-reduced-motion: reduce) {
+    .card-opening,
+    .day-card.today,
+    .snowflake {
+        animation: none !important;
+        -webkit-animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* Улучшение плавности анимаций */
+.animate-once {
+    animation-fill-mode: forwards;
+    -webkit-animation-fill-mode: forwards;
+}
+
 /* Модальное окно в темно-красном стиле */
 .modal-content {
     border-radius: 8px;
@@ -836,24 +1004,6 @@ h2 {
     transform: scale(0.98);
 }
 
-/* Анимация открытия карточки */
-@keyframes cardOpen {
-    0% { transform: rotateY(0) scale(1); }
-    50% { transform: rotateY(180deg) scale(0.95); }
-    100% { transform: rotateY(360deg) scale(1); }
-}
-
-@-webkit-keyframes cardOpen {
-    0% { -webkit-transform: rotateY(0) scale(1); }
-    50% { -webkit-transform: rotateY(180deg) scale(0.95); }
-    100% { -webkit-transform: rotateY(360deg) scale(1); }
-}
-
-.card-opening {
-    animation: cardOpen 0.8s ease;
-    -webkit-animation: cardOpen 0.8s ease;
-}
-
 /* Гарантия, что модальное окно отображается поверх всего */
 .modal {
     z-index: 1060 !important;
@@ -909,34 +1059,6 @@ h1, h2, h3, h4, h5, h6 {
     /* Меньше снежинок на мобильных */
     .snowflake {
         opacity: 0.6;
-    }
-    
-    /* Уменьшаем анимацию на мобильных */
-    .day-card.today {
-        animation: bounceTodayMobile 2s infinite ease-in-out;
-        -webkit-animation: bounceTodayMobile 2s infinite ease-in-out;
-    }
-    
-    @keyframes bounceTodayMobile {
-        0%, 100% {
-            transform: translateY(0);
-            box-shadow: 0 0 0 rgba(49, 0, 5, 0.5);
-        }
-        50% {
-            transform: translateY(-3px);
-            box-shadow: 0 3px 10px rgba(49, 0, 5, 0.4);
-        }
-    }
-    
-    @-webkit-keyframes bounceTodayMobile {
-        0%, 100% {
-            -webkit-transform: translateY(0);
-            box-shadow: 0 0 0 rgba(49, 0, 5, 0.5);
-        }
-        50% {
-            -webkit-transform: translateY(-3px);
-            box-shadow: 0 3px 10px rgba(49, 0, 5, 0.4);
-        }
     }
 }
 
