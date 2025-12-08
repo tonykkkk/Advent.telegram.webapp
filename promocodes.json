@@ -73,7 +73,7 @@
       "day": 8,
       "code": "JOY2025-22",
       "description": "22% скидка на товары для дома",
-      "image": "images/gift8.jpg",
+      "image": "images/gift.png",
       "backgroundImage": "images/placeholder3.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
@@ -82,7 +82,7 @@
       "day": 9,
       "code": "MIRACLE-14",
       "description": "14% скидка на бытовую технику",
-      "image": "images/gift9.jpg",
+      "image": "images/gift.png",
       "backgroundImage": "images/placeholder2.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
@@ -96,7 +96,7 @@
       "day": 10,
       "code": "MAGIC-35",
       "description": "35% скидка на украшения и бижутерию",
-      "image": "images/gift10.jpg",
+      "image": "images/gift.png",
       "backgroundImage": "images/placeholder1.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
@@ -105,7 +105,7 @@
       "day": 11,
       "code": "CELEBRATE-17",
       "description": "17% скидка на товары для творчества",
-      "image": "images/gift11.jpg",
+      "image": "images/gift.png",
       "backgroundImage": "images/placeholder2.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
@@ -114,7 +114,7 @@
       "day": 12,
       "code": "SEASON-19",
       "description": "19% скидка на кухонные принадлежности",
-      "image": "images/gift12.jpg",
+      "image": "images/gift.png",
       "backgroundImage": "images/placeholder3.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
@@ -123,7 +123,7 @@
       "day": 13,
       "code": "CHEER-23",
       "description": "23% скидка на товары для сада",
-      "image": "images/gift13.jpg",
+      "image": "images/gift.png",
       "backgroundImage": "images/placeholder2.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
