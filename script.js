@@ -1,3 +1,5 @@
+[file name]: script.js
+[file content begin]
 // Полифиллы для совместимости
 if (!NodeList.prototype.forEach) {
     NodeList.prototype.forEach = Array.prototype.forEach;
@@ -26,7 +28,6 @@ let calendarItems = [];
 let currentPromoItem = null;
 let resizeTimeout = null;
 let isResizing = false;
-let isModalOpening = false; // Флаг открытия модального окна
 
 // Функция для показа уведомления
 function showAlert(message, type = 'info') {
@@ -124,22 +125,6 @@ function copyToClipboard(text) {
             }
         }
     });
-}
-
-// Функция для остановки всех анимаций элемента (улучшенная)
-function stopAnimations(element) {
-    if (!element) return;
-    
-    // Останавливаем все CSS анимации
-    element.style.animation = 'none';
-    element.style.webkitAnimation = 'none';
-    
-    // Сбрасываем transform
-    element.style.transform = '';
-    element.style.webkitTransform = '';
-    
-    // Принудительная перерисовка
-    void element.offsetWidth;
 }
 
 // Функция создания снежинок
@@ -296,7 +281,9 @@ function highlightTodayCard() {
         setTimeout(() => {
             todayCard.style.animation = 'bounceToday 1s ease-in-out 3';
             todayCard.addEventListener('animationend', function() {
+                // После завершения начальной анимации включаем постоянную
                 this.style.animation = 'bounceToday 2s infinite ease-in-out';
+                this.dataset.animationActive = 'true';
             }, { once: true });
         }, 1000);
     }
@@ -478,11 +465,8 @@ function openSpecialCard(item) {
     window.open(item.actionUrl, '_blank');
 }
 
-// Функция открытия карточки с промокодом (ОКОНЧАТЕЛЬНО ИСПРАВЛЕННАЯ)
+// Функция открытия карточки с промокодом (ИСПРАВЛЕНА: разделение анимаций)
 function openPromoCard(item) {
-    if (isModalOpening) return;
-    isModalOpening = true;
-    
     const dayCard = document.querySelector(`.day-card[data-day="${item.day}"]`);
     
     // Текущая дата для проверки
@@ -497,52 +481,52 @@ function openPromoCard(item) {
     
     if (!isToday) {
         showAlert('Этот день еще не наступил или уже прошел', 'error');
-        isModalOpening = false;
         return;
     }
     
-    // Сначала готовим модальное окно
-    prepareModalContent(item);
-    
-    // Анимация карточки (работает и на мобильных)
+    // ИСПРАВЛЕНИЕ: Отключаем анимацию bouncing перед началом анимации открытия
     if (dayCard) {
-        // Останавливаем текущую анимацию
-        stopAnimations(dayCard);
+        // Сохраняем текущее состояние анимации
+        dayCard.dataset.originalAnimation = dayCard.style.animation;
+        dayCard.dataset.animationWasActive = dayCard.dataset.animationActive || 'false';
         
-        // Добавляем класс для анимации
+        // Отключаем анимацию bouncing
+        dayCard.style.animation = 'none';
+        dayCard.dataset.animationActive = 'false';
+        
+        // Добавляем класс для анимации открытия
         dayCard.classList.add('card-opening');
         
-        // Принудительная перерисовка для запуска анимации
-        void dayCard.offsetWidth;
+        // Запускаем анимацию открытия
+        dayCard.style.animation = 'cardOpen 0.8s ease forwards';
         
-        // Убираем класс после завершения анимации
+        // После завершения анимации открытия, показываем модальное окно
         setTimeout(() => {
+            // Убираем класс анимации открытия
             dayCard.classList.remove('card-opening');
+            dayCard.style.animation = 'none';
             
-            // Открываем модальное окно с небольшой задержкой
-            setTimeout(() => {
-                if (promoModal) {
-                    promoModal.show();
-                    isModalOpening = false;
-                }
-            }, 50);
-        }, 500); // Длительность анимации карточки
+            // Заполняем модальное окно данными
+            fillModalWithData(item);
+            
+            // Показываем модальное окно
+            if (promoModal) {
+                promoModal.show();
+            }
+        }, 800);
     } else {
-        // Если карточка не найдена, сразу открываем модальное окно
+        // Если карточка не найдена, просто показываем модальное окно
+        fillModalWithData(item);
         if (promoModal) {
             promoModal.show();
-            isModalOpening = false;
         }
     }
 }
 
-
-
-// Функция подготовки содержимого модального окна
-function prepareModalContent(item) {
+// Функция заполнения модального окна данными (вынесена отдельно)
+function fillModalWithData(item) {
     if (!item) {
         showAlert('Промокод для этого дня не найден', 'error');
-        isModalOpening = false;
         return;
     }
     
@@ -553,7 +537,7 @@ function prepareModalContent(item) {
     document.getElementById('modal-day').textContent = item.day;
     document.getElementById('promo-code-text').textContent = item.code;
     
-    // Обновляем описание промокода
+    // Обновляем описание промокода (переносим под картинку)
     const descriptionElement = document.getElementById('promo-description');
     if (descriptionElement) {
         descriptionElement.textContent = item.description;
@@ -611,7 +595,7 @@ function prepareModalContent(item) {
     };
     img.src = item.image;
     
-    // Обновляем текст о действии промокода
+    // Обновляем текст о действии промокода (действует только сегодня)
     const promoValidElement = document.querySelector('.modal-footer .text-muted');
     if (promoValidElement) {
         const today = new Date();
@@ -661,67 +645,6 @@ function forceFullRedraw() {
     });
 }
 
-// Функция предзагрузки ресурсов
-async function preloadResources() {
-    // Предзагрузка часто используемых изображений
-    const images = ['logo.png', 'images/gift.png'];
-    images.forEach(src => {
-        const img = new Image();
-        img.src = src;
-    });
-}
-
-// Функция оптимизации viewport
-function optimizeViewport() {
-    const viewportMeta = document.querySelector('meta[name="viewport"]');
-    if (viewportMeta) {
-        // Оптимальные настройки для производительности
-        viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no';
-        
-        // Для iOS добавляем дополнительные настройки
-        if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
-            viewportMeta.content += ', minimal-ui';
-        }
-    }
-}
-
-// Настройка обработчиков для touch устройств
-function setupTouchHandlers() {
-    const dayCards = document.querySelectorAll('.day-card');
-    
-    dayCards.forEach(card => {
-        // Обработчик для touchstart
-        card.addEventListener('touchstart', function(e) {
-            if (this.classList.contains('today')) {
-                this.style.transform = 'scale(0.95)';
-                this.style.transition = 'transform 0.1s ease';
-            }
-        }, { passive: true });
-        
-        // Обработчик для touchend
-        card.addEventListener('touchend', function(e) {
-            if (this.classList.contains('today')) {
-                this.style.transform = '';
-                this.style.transition = '';
-            }
-        }, { passive: true });
-        
-        // Обработчик для touchcancel
-        card.addEventListener('touchcancel', function(e) {
-            if (this.classList.contains('today')) {
-                this.style.transform = '';
-                this.style.transition = '';
-            }
-        }, { passive: true });
-        
-        // Предотвращаем долгое нажатие
-        card.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            return false;
-        });
-    });
-}
-
 // Настройка обработчиков событий
 function setupEventListeners() {
     // Обработчик клика для копирования промокода
@@ -746,7 +669,6 @@ function setupEventListeners() {
                 promoCodeContainer.style.transform = 'scale(0.95)';
                 promoCodeContainer.style.backgroundColor = '#d4edda';
                 promoCodeContainer.style.borderColor = '#28a745';
-                promoCodeContainer.style.transition = 'all 0.2s ease';
                 
                 setTimeout(() => {
                     copyAlert.classList.add('d-none');
@@ -777,12 +699,16 @@ function setupEventListeners() {
         modalElement.addEventListener('hidden.bs.modal', function() {
             // Сбрасываем состояние
             currentPromoItem = null;
-        });
-        
-        // Обработчик перед открытием модального окна
-        modalElement.addEventListener('show.bs.modal', function() {
-            // Принудительная перерисовка модального окна
-            forceRedraw(modalElement);
+            
+            // ИСПРАВЛЕНИЕ: Возвращаем анимацию bouncing на карточку сегодняшнего дня
+            const todayCard = document.querySelector('.day-card.today');
+            if (todayCard && todayCard.dataset.animationWasActive === 'true') {
+                // Даем небольшую паузу перед возобновлением анимации
+                setTimeout(() => {
+                    todayCard.style.animation = todayCard.dataset.originalAnimation || 'bounceToday 2s infinite ease-in-out';
+                    todayCard.dataset.animationActive = 'true';
+                }, 300);
+            }
         });
     }
     
@@ -810,40 +736,25 @@ function setupEventListeners() {
             }
         }, 500);
     });
-    
-    // Настраиваем обработчики для touch устройств
-    setupTouchHandlers();
 }
 
 // Основная функция инициализации
 async function initApp() {
     console.log('Инициализация приложения...');
     
-    // Предварительная загрузка ресурсов
-    await preloadResources();
-    
     // Создаем снежинки
     createSnowflakes();
     
-    // Оптимизация viewport
-    optimizeViewport();
+    // Принудительная установка viewport для WebView
+    const viewportMeta = document.querySelector('meta[name="viewport"]');
+    if (viewportMeta) {
+        viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no';
+    }
     
-    // Инициализируем модальное окно Bootstrap с кастомными настройками
+    // Инициализируем модальное окно Bootstrap
     const modalElement = document.getElementById('promoModal');
     if (modalElement) {
-        // Создаем модальное окно с кастомными настройками
-        const modalOptions = {
-            backdrop: 'static',
-            keyboard: true,
-            focus: true
-        };
-        
-        promoModal = new bootstrap.Modal(modalElement, modalOptions);
-        
-        // Настраиваем стили для backdrop
-        const backdrop = document.createElement('div');
-        backdrop.className = 'modal-backdrop-custom';
-        document.body.appendChild(backdrop);
+        promoModal = new bootstrap.Modal(modalElement);
     }
     
     // Загружаем данные календаря
@@ -859,7 +770,9 @@ async function initApp() {
         // Инициализация для Telegram WebApp
         if (window.Telegram && window.Telegram.WebApp) {
             try {
+                // Расширяем WebView на весь экран
                 window.Telegram.WebApp.expand();
+                
                 console.log('Telegram WebApp инициализирован');
             } catch (error) {
                 console.warn('Ошибка инициализации Telegram WebApp:', error);
@@ -868,7 +781,7 @@ async function initApp() {
         
         console.log('Приложение инициализировано');
         
-        // Принудительная перерисовка после загрузки
+        // Принудительная перерисовка после загрузке
         setTimeout(() => {
             forceFullRedraw();
         }, 100);
@@ -904,3 +817,4 @@ window.addEventListener('load', function() {
         forceFullRedraw();
     }, 500);
 });
+[file content end]
