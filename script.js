@@ -26,6 +26,7 @@ let calendarItems = [];
 let currentPromoItem = null;
 let resizeTimeout = null;
 let isResizing = false;
+let isModalOpening = false; // Флаг открытия модального окна
 
 // Функция для показа уведомления
 function showAlert(message, type = 'info') {
@@ -131,6 +132,7 @@ function stopAnimations(element) {
     
     element.style.animation = 'none';
     element.style.webkitAnimation = 'none';
+    element.style.transition = 'none';
     
     // Принудительная перерисовка
     void element.offsetWidth;
@@ -472,8 +474,11 @@ function openSpecialCard(item) {
     window.open(item.actionUrl, '_blank');
 }
 
-// Функция открытия карточки с промокодом (ИСПРАВЛЕННАЯ АНИМАЦИЯ)
+// Функция открытия карточки с промокодом (ИСПРАВЛЕННАЯ - БЕЗ РЫВКОВ)
 function openPromoCard(item) {
+    if (isModalOpening) return;
+    isModalOpening = true;
+    
     const dayCard = document.querySelector(`.day-card[data-day="${item.day}"]`);
     
     // Текущая дата для проверки
@@ -488,39 +493,60 @@ function openPromoCard(item) {
     
     if (!isToday) {
         showAlert('Этот день еще не наступил или уже прошел', 'error');
+        isModalOpening = false;
         return;
     }
     
-    // Добавляем плавную анимацию открытия
+    // Сначала готовим модальное окно
+    prepareModalContent(item);
+    
+    // Затем плавная анимация карточки
     if (dayCard) {
+        // Сохраняем оригинальную анимацию
+        const originalAnimation = dayCard.style.animation;
+        
         // Останавливаем текущую анимацию
         stopAnimations(dayCard);
         
-        // Добавляем класс для анимации открытия
-        dayCard.classList.add('card-opening');
+        // Добавляем плавную анимацию открытия
+        dayCard.style.animation = 'cardOpenSmooth 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards';
+        dayCard.style.webkitAnimation = 'cardOpenSmooth 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards';
         
-        // Применяем CSS-анимацию (более плавную)
-        dayCard.style.animation = 'cardOpen 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-        dayCard.style.webkitAnimation = 'cardOpen 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-        
-        // Убираем класс после завершения анимации
+        // Ждем завершения анимации карточки
         setTimeout(() => {
-            dayCard.classList.remove('card-opening');
-            dayCard.style.animation = '';
-            dayCard.style.webkitAnimation = '';
+            // Восстанавливаем оригинальную анимацию
+            dayCard.style.animation = originalAnimation;
+            dayCard.style.webkitAnimation = originalAnimation;
             
-            // Через небольшую паузу возвращаем обычную анимацию
+            // Открываем модальное окно с задержкой
             setTimeout(() => {
-                if (dayCard.classList.contains('today')) {
-                    dayCard.style.animation = 'bounceToday 2s infinite ease-in-out';
-                    dayCard.style.webkitAnimation = 'bounceToday 2s infinite ease-in-out';
+                if (promoModal) {
+                    // Показываем модальное окно
+                    promoModal.show();
+                    
+                    // Сброс флага через небольшой таймаут
+                    setTimeout(() => {
+                        isModalOpening = false;
+                    }, 100);
                 }
+            }, 50);
+        }, 500);
+    } else {
+        // Если карточка не найдена, сразу открываем модальное окно
+        if (promoModal) {
+            promoModal.show();
+            setTimeout(() => {
+                isModalOpening = false;
             }, 100);
-        }, 600);
+        }
     }
-    
+}
+
+// Функция подготовки содержимого модального окна
+function prepareModalContent(item) {
     if (!item) {
         showAlert('Промокод для этого дня не найден', 'error');
+        isModalOpening = false;
         return;
     }
     
@@ -599,13 +625,6 @@ function openPromoCard(item) {
             <i class="fas fa-info-circle me-1"></i>Промокод действителен только сегодня, ${todayFormatted}
         `;
     }
-    
-    // Показываем модальное окно с небольшой задержкой для завершения анимации
-    setTimeout(() => {
-        if (promoModal) {
-            promoModal.show();
-        }
-    }, 300);
 }
 
 // Функция для обработки ресайза окна
@@ -763,6 +782,12 @@ function setupEventListeners() {
             // Сбрасываем состояние
             currentPromoItem = null;
         });
+        
+        // Обработчик перед открытием модального окна
+        modalElement.addEventListener('show.bs.modal', function() {
+            // Принудительная перерисовка модального окна
+            forceRedraw(modalElement);
+        });
     }
     
     // Обработчик ресайза окна
@@ -807,10 +832,22 @@ async function initApp() {
     // Оптимизация viewport
     optimizeViewport();
     
-    // Инициализируем модальное окно Bootstrap
+    // Инициализируем модальное окно Bootstrap с кастомными настройками
     const modalElement = document.getElementById('promoModal');
     if (modalElement) {
-        promoModal = new bootstrap.Modal(modalElement);
+        // Создаем модальное окно с кастомными настройками
+        const modalOptions = {
+            backdrop: 'static',
+            keyboard: true,
+            focus: true
+        };
+        
+        promoModal = new bootstrap.Modal(modalElement, modalOptions);
+        
+        // Настраиваем стили для backdrop
+        const backdrop = document.createElement('div');
+        backdrop.className = 'modal-backdrop-custom';
+        document.body.appendChild(backdrop);
     }
     
     // Загружаем данные календаря
