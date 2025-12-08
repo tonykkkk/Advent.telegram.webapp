@@ -223,6 +223,11 @@
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
+      "type": "special",
+      "image": "images/special4.jpg",
+      "actionUrl": ""
+    },
+    {
       "type": "day",
       "day": 24,
       "code": "EVERGREEN-33",
@@ -231,18 +236,14 @@
       "backgroundImage": "images/placeholder4.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
-    {
-      "type": "special",
-      "image": "images/special4.jpg",
-      "actionUrl": ""
-    },
+    
     {
       "type": "day",
       "day": 25,
       "code": "CHIMNEY-34",
       "description": "34% скидка на товары для детей",
       "image": "images/gift25.jpg",
-      "backgroundImage": "images/placeholder4.png",
+      "backgroundImage": "images/placeholder5.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
@@ -260,7 +261,7 @@
       "code": "COCOA-37",
       "description": "37% скидка на кофе и чай",
       "image": "images/gift27.jpg",
-      "backgroundImage": "images/placeholder4.png",
+      "backgroundImage": "images/placeholder5.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
@@ -278,7 +279,7 @@
       "code": "BELLS-39",
       "description": "39% скидка на товары для офиса",
       "image": "images/gift29.jpg",
-      "backgroundImage": "images/placeholder4.png",
+      "backgroundImage": "images/placeholder5.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
@@ -296,7 +297,7 @@
       "code": "FIREWORKS-50",
       "description": "СУПЕР-ПРОМОКОД: 50% скидка на любой товар!",
       "image": "images/gift31.jpg",
-      "backgroundImage": "images/placeholder4.png",
+      "backgroundImage": "images/placeholder5.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
