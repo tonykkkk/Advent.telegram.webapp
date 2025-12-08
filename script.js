@@ -27,7 +27,6 @@ let calendarItems = [];
 let currentPromoItem = null;
 let resizeTimeout = null;
 let isResizing = false;
-let scrollPosition = 0;
 
 // Функция для показа уведомления
 function showAlert(message, type = 'info') {
@@ -484,9 +483,6 @@ function openPromoCard(item) {
         return;
     }
     
-    // Сохраняем текущую позицию скролла
-    scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-    
     // ИСПРАВЛЕНИЕ: Отключаем анимацию bouncing перед началом анимации открытия
     if (dayCard) {
         // Сохраняем текущее состояние анимации
@@ -512,41 +508,44 @@ function openPromoCard(item) {
             // Заполняем модальное окно данными
             fillModalWithData(item);
             
-            // Показываем модальное окно в текущем положении скролла
-            showModalAtCurrentPosition();
+            // Показываем модальное окно в центре viewport
+            showModalInViewportCenter();
         }, 800);
     } else {
         // Если карточка не найдена, просто показываем модальное окно
         fillModalWithData(item);
-        showModalAtCurrentPosition();
+        showModalInViewportCenter();
     }
 }
 
-// Функция для показа модального окна в текущей позиции скролла
-function showModalAtCurrentPosition() {
+// Функция для показа модального окна в центре viewport
+function showModalInViewportCenter() {
     if (!promoModal) return;
     
-    // Сохраняем текущую позицию скролла перед показом модального окна
     const modalElement = document.getElementById('promoModal');
     const body = document.body;
     
     // Добавляем классы для фиксации положения
     body.classList.add('modal-open');
     body.style.overflow = 'hidden';
-    body.style.position = 'fixed';
-    body.style.width = '100%';
-    body.style.top = `-${scrollPosition}px`;
+    body.style.paddingRight = '0'; // Убираем padding для scrollbar
     
     // Показываем модальное окно
     modalElement.classList.add('show');
     modalElement.style.display = 'block';
-    modalElement.style.background = 'rgba(0, 0, 0, 0.5)';
+    modalElement.style.opacity = '1';
     
-    // Устанавливаем модальное окно в текущей позиции
+    // Центрируем модальное окно в viewport
     const modalDialog = modalElement.querySelector('.modal-dialog');
     if (modalDialog) {
-        modalDialog.style.marginTop = `${Math.max(scrollPosition + 20, 20)}px`;
-        modalDialog.style.marginBottom = '20px';
+        // Сбрасываем любые предыдущие стили
+        modalDialog.style.margin = '0';
+        modalDialog.style.position = 'fixed';
+        modalDialog.style.top = '50%';
+        modalDialog.style.left = '50%';
+        modalDialog.style.transform = 'translate(-50%, -50%)';
+        modalDialog.style.maxHeight = '90vh';
+        modalDialog.style.overflowY = 'auto';
     }
     
     // Добавляем обработчик закрытия модального окна
@@ -556,12 +555,18 @@ function showModalAtCurrentPosition() {
         modalElement.style.display = 'none';
         body.classList.remove('modal-open');
         body.style.overflow = '';
-        body.style.position = '';
-        body.style.width = '';
-        body.style.top = '';
+        body.style.paddingRight = '';
         
-        // Восстанавливаем позицию скролла
-        window.scrollTo(0, scrollPosition);
+        // Сбрасываем позиционирование
+        if (modalDialog) {
+            modalDialog.style.margin = '';
+            modalDialog.style.position = '';
+            modalDialog.style.top = '';
+            modalDialog.style.left = '';
+            modalDialog.style.transform = '';
+            modalDialog.style.maxHeight = '';
+            modalDialog.style.overflowY = '';
+        }
         
         // Восстанавливаем анимацию bouncing на карточке сегодняшнего дня
         const todayCard = document.querySelector('.day-card.today');
@@ -596,6 +601,8 @@ function showModalAtCurrentPosition() {
     // Обработчик клика на кнопку закрытия
     const closeButtons = modalElement.querySelectorAll('[data-bs-dismiss="modal"], .btn-close');
     closeButtons.forEach(btn => {
+        // Удаляем старые обработчики и добавляем новый
+        btn.removeEventListener('click', closeModal);
         btn.addEventListener('click', closeModal);
     });
     
@@ -708,6 +715,17 @@ function handleResize() {
             forceRedraw(calendarContainer);
         }
         
+        // Перецентрируем модальное окно если оно открыто
+        const modalElement = document.getElementById('promoModal');
+        if (modalElement && modalElement.classList.contains('show')) {
+            const modalDialog = modalElement.querySelector('.modal-dialog');
+            if (modalDialog) {
+                modalDialog.style.top = '50%';
+                modalDialog.style.left = '50%';
+                modalDialog.style.transform = 'translate(-50%, -50%)';
+            }
+        }
+        
         isResizing = false;
     }, 250);
 }
@@ -799,6 +817,16 @@ function setupEventListeners() {
                 snowContainer.remove();
                 createSnowflakes();
             }
+            // Перецентрируем модальное окно если оно открыто
+            const modalElement = document.getElementById('promoModal');
+            if (modalElement && modalElement.classList.contains('show')) {
+                const modalDialog = modalElement.querySelector('.modal-dialog');
+                if (modalDialog) {
+                    modalDialog.style.top = '50%';
+                    modalDialog.style.left = '50%';
+                    modalDialog.style.transform = 'translate(-50%, -50%)';
+                }
+            }
         }, 500);
     });
 }
@@ -816,13 +844,12 @@ async function initApp() {
         viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no';
     }
     
-    // Инициализируем модальное окно Bootstrap, но не используем стандартный показ
+    // Инициализируем модальное окно
     const modalElement = document.getElementById('promoModal');
     if (modalElement) {
-        // Создаем объект модального окна, но не показываем стандартным способом
         promoModal = {
             show: function() {
-                showModalAtCurrentPosition();
+                showModalInViewportCenter();
             },
             hide: function() {
                 const closeFunc = modalElement._closeModal;
