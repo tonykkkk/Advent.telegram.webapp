@@ -312,12 +312,17 @@ function openPromoCard(item) {
         return;
     }
 
-    // Простая визуальная обратная связь
+    // Визуальная и тактильная обратная связь
     if (dayCard) {
         dayCard.style.transform = 'scale(0.96)';
         setTimeout(() => {
             dayCard.style.transform = '';
         }, 200);
+    }
+
+    // Вибрация при открытии
+    if (navigator.vibrate) {
+        navigator.vibrate([20, 10, 20]); // "щелчок"
     }
 
     currentPromoItem = item;
