@@ -688,16 +688,71 @@ h2 {
     color: var(--success-color);
 }
 
-/* Модальное окно в темно-красном стиле */
-.modal-content {
+/* Кастомное модальное окно для предотвращения прыжков */
+#promoModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1055;
+    overflow-x: hidden;
+    overflow-y: auto;
+    outline: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    transition: opacity 0.15s linear;
+}
+
+#promoModal.show {
+    display: block;
+    opacity: 1;
+}
+
+#promoModal .modal-dialog {
+    position: relative;
+    width: auto;
+    margin: 20px;
+    pointer-events: none;
+    max-width: 800px;
+    transform: none !important;
+    transition: transform 0.3s ease-out;
+}
+
+@media (min-width: 576px) {
+    #promoModal .modal-dialog {
+        max-width: 500px;
+        margin: 30px auto;
+    }
+}
+
+@media (min-width: 992px) {
+    #promoModal .modal-dialog {
+        max-width: 800px;
+    }
+}
+
+#promoModal.show .modal-dialog {
+    transform: none;
+}
+
+#promoModal .modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid var(--border-color);
+    outline: 0;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
 }
 
+/* Стили для модального окна с темно-красным градиентом */
 .bg-gradient-promo {
     background: var(--dark-red-gradient);
     background: -webkit-linear-gradient(135deg, #310005 0%, #7D0A14 100%);
@@ -926,6 +981,20 @@ h1, h2, h3, h4, h5, h6 {
     
     #promo-code-text {
         font-size: 1.5rem;
+    }
+    
+    /* На мобильных делаем модальное окно на всю высоту */
+    #promoModal .modal-dialog {
+        margin: 0;
+        height: 100%;
+        max-height: 100%;
+    }
+    
+    #promoModal .modal-content {
+        height: 100%;
+        border-radius: 0;
+        max-height: 100vh;
+        overflow-y: auto;
     }
     
     /* Меньше снежинок на мобильных */
