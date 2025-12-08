@@ -125,6 +125,17 @@ function copyToClipboard(text) {
     });
 }
 
+// Функция для остановки всех анимаций элемента
+function stopAnimations(element) {
+    if (!element) return;
+    
+    element.style.animation = 'none';
+    element.style.webkitAnimation = 'none';
+    
+    // Принудительная перерисовка
+    void element.offsetWidth;
+}
+
 // Функция создания снежинок
 function createSnowflakes() {
     const snowContainer = document.createElement('div');
@@ -461,7 +472,7 @@ function openSpecialCard(item) {
     window.open(item.actionUrl, '_blank');
 }
 
-// Функция открытия карточки с промокодом
+// Функция открытия карточки с промокодом (ИСПРАВЛЕННАЯ АНИМАЦИЯ)
 function openPromoCard(item) {
     const dayCard = document.querySelector(`.day-card[data-day="${item.day}"]`);
     
@@ -480,17 +491,32 @@ function openPromoCard(item) {
         return;
     }
     
-    // Добавляем анимацию открытия
+    // Добавляем плавную анимацию открытия
     if (dayCard) {
-        dayCard.classList.add('card-opening');
-        // Временно отключаем bouncing анимацию во время открытия
-        dayCard.style.animation = 'cardOpen 0.8s ease';
+        // Останавливаем текущую анимацию
+        stopAnimations(dayCard);
         
+        // Добавляем класс для анимации открытия
+        dayCard.classList.add('card-opening');
+        
+        // Применяем CSS-анимацию (более плавную)
+        dayCard.style.animation = 'cardOpen 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+        dayCard.style.webkitAnimation = 'cardOpen 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+        
+        // Убираем класс после завершения анимации
         setTimeout(() => {
             dayCard.classList.remove('card-opening');
-            // Возвращаем bouncing анимацию
-            dayCard.style.animation = 'bounceToday 2s infinite ease-in-out';
-        }, 800);
+            dayCard.style.animation = '';
+            dayCard.style.webkitAnimation = '';
+            
+            // Через небольшую паузу возвращаем обычную анимацию
+            setTimeout(() => {
+                if (dayCard.classList.contains('today')) {
+                    dayCard.style.animation = 'bounceToday 2s infinite ease-in-out';
+                    dayCard.style.webkitAnimation = 'bounceToday 2s infinite ease-in-out';
+                }
+            }, 100);
+        }, 600);
     }
     
     if (!item) {
@@ -505,7 +531,7 @@ function openPromoCard(item) {
     document.getElementById('modal-day').textContent = item.day;
     document.getElementById('promo-code-text').textContent = item.code;
     
-    // Обновляем описание промокода (переносим под картинку)
+    // Обновляем описание промокода
     const descriptionElement = document.getElementById('promo-description');
     if (descriptionElement) {
         descriptionElement.textContent = item.description;
@@ -563,7 +589,7 @@ function openPromoCard(item) {
     };
     img.src = item.image;
     
-    // Обновляем текст о действии промокода (действует только сегодня)
+    // Обновляем текст о действии промокода
     const promoValidElement = document.querySelector('.modal-footer .text-muted');
     if (promoValidElement) {
         const today = new Date();
@@ -574,10 +600,12 @@ function openPromoCard(item) {
         `;
     }
     
-    // Показываем модальное окно
-    if (promoModal) {
-        promoModal.show();
-    }
+    // Показываем модальное окно с небольшой задержкой для завершения анимации
+    setTimeout(() => {
+        if (promoModal) {
+            promoModal.show();
+        }
+    }, 300);
 }
 
 // Функция для обработки ресайза окна
@@ -618,6 +646,67 @@ function forceFullRedraw() {
     });
 }
 
+// Функция предзагрузки ресурсов
+async function preloadResources() {
+    // Предзагрузка часто используемых изображений
+    const images = ['logo.png', 'images/gift.png'];
+    images.forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
+}
+
+// Функция оптимизации viewport
+function optimizeViewport() {
+    const viewportMeta = document.querySelector('meta[name="viewport"]');
+    if (viewportMeta) {
+        // Оптимальные настройки для производительности
+        viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no';
+        
+        // Для iOS добавляем дополнительные настройки
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+            viewportMeta.content += ', minimal-ui';
+        }
+    }
+}
+
+// Настройка обработчиков для touch устройств
+function setupTouchHandlers() {
+    const dayCards = document.querySelectorAll('.day-card');
+    
+    dayCards.forEach(card => {
+        // Обработчик для touchstart
+        card.addEventListener('touchstart', function(e) {
+            if (this.classList.contains('today')) {
+                this.style.transform = 'scale(0.95)';
+                this.style.transition = 'transform 0.1s ease';
+            }
+        }, { passive: true });
+        
+        // Обработчик для touchend
+        card.addEventListener('touchend', function(e) {
+            if (this.classList.contains('today')) {
+                this.style.transform = '';
+                this.style.transition = '';
+            }
+        }, { passive: true });
+        
+        // Обработчик для touchcancel
+        card.addEventListener('touchcancel', function(e) {
+            if (this.classList.contains('today')) {
+                this.style.transform = '';
+                this.style.transition = '';
+            }
+        }, { passive: true });
+        
+        // Предотвращаем долгое нажатие
+        card.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+    });
+}
+
 // Настройка обработчиков событий
 function setupEventListeners() {
     // Обработчик клика для копирования промокода
@@ -642,6 +731,7 @@ function setupEventListeners() {
                 promoCodeContainer.style.transform = 'scale(0.95)';
                 promoCodeContainer.style.backgroundColor = '#d4edda';
                 promoCodeContainer.style.borderColor = '#28a745';
+                promoCodeContainer.style.transition = 'all 0.2s ease';
                 
                 setTimeout(() => {
                     copyAlert.classList.add('d-none');
@@ -699,20 +789,23 @@ function setupEventListeners() {
             }
         }, 500);
     });
+    
+    // Настраиваем обработчики для touch устройств
+    setupTouchHandlers();
 }
 
 // Основная функция инициализации
 async function initApp() {
     console.log('Инициализация приложения...');
     
+    // Предварительная загрузка ресурсов
+    await preloadResources();
+    
     // Создаем снежинки
     createSnowflakes();
     
-    // Принудительная установка viewport для WebView
-    const viewportMeta = document.querySelector('meta[name="viewport"]');
-    if (viewportMeta) {
-        viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no';
-    }
+    // Оптимизация viewport
+    optimizeViewport();
     
     // Инициализируем модальное окно Bootstrap
     const modalElement = document.getElementById('promoModal');
@@ -733,9 +826,7 @@ async function initApp() {
         // Инициализация для Telegram WebApp
         if (window.Telegram && window.Telegram.WebApp) {
             try {
-                // Расширяем WebView на весь экран
                 window.Telegram.WebApp.expand();
-                
                 console.log('Telegram WebApp инициализирован');
             } catch (error) {
                 console.warn('Ошибка инициализации Telegram WebApp:', error);
