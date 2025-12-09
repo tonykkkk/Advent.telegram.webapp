@@ -1255,3 +1255,57 @@ img, canvas, video {
 .date-card-body {
     padding: 0.75rem 1rem !important; /* Уменьшаем внутренние отступы карточки */
 }
+
+/* Стили для описания промокода в модальном окне */
+.promo-description-block {
+    text-align: center;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+}
+
+.promo-description-text {
+    font-size: 1rem;
+    color: var(--dark-color);
+    line-height: 1.5;
+    font-weight: 400;
+    margin: 0;
+}
+
+/* Адаптация для мобильных */
+@media screen and (max-width: 768px) {
+    .modal-body .row {
+        flex-direction: column;
+    }
+    
+    .modal-body .col-md-6 {
+        width: 100%;
+    }
+    
+    .promo-description-block {
+        order: 2;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .promo-description-text {
+        font-size: 0.9rem;
+    }
+}
+
+/* Обеспечиваем правильное расположение элементов в левой колонке */
+.col-md-6.d-flex.flex-column {
+    justify-content: flex-start;
+}
+
+.promo-image-container {
+    flex-shrink: 0;
+}
+
+.promo-description-block {
+    flex-grow: 1;
+}
