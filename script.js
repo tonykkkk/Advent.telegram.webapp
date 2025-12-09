@@ -505,10 +505,12 @@ function openPromoCard(item) {
     document.getElementById('modal-day').textContent = item.day;
     document.getElementById('promo-code-text').textContent = item.code;
     
-    // Обновляем описание промокода (переносим под картинку)
+    // Обновляем описание промокода (теперь в отдельном блоке под картинкой)
     const descriptionElement = document.getElementById('promo-description');
-    if (descriptionElement) {
-        descriptionElement.textContent = item.description;
+    if (descriptionElement && item.description) {
+        descriptionElement.innerHTML = `
+            <div class="promo-description-text">${item.description}</div>
+        `;
     }
     
     // Устанавливаем ссылку на товар
@@ -536,16 +538,7 @@ function openPromoCard(item) {
         img.alt = `Промокод для дня ${item.day} декабря`;
         imgContainer.appendChild(img);
         
-        // Добавляем описание под картинкой
-        const descriptionDiv = document.createElement('div');
-        descriptionDiv.className = 'promo-description-block fix-webview-resize';
-        descriptionDiv.innerHTML = `
-            <p class="promo-description-text">${item.description}</p>
-        `;
-        
-        promoImageElement.innerHTML = '';
         promoImageElement.appendChild(imgContainer);
-        promoImageElement.appendChild(descriptionDiv);
         
         // Принудительная перерисовка после загрузки изображения
         forceRedraw(promoImageElement);
@@ -555,9 +548,6 @@ function openPromoCard(item) {
             <div class="text-center">
                 <i class="fas fa-gift fa-5x text-primary mb-3"></i>
                 <p class="text-muted small mb-3">Подарок дня ${item.day}</p>
-                <div class="promo-description-block">
-                    <p class="promo-description-text">${item.description}</p>
-                </div>
             </div>
         `;
     };
