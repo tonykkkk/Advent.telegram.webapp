@@ -796,8 +796,8 @@ h2 {
     justify-content: center;
     border-radius: 8px;
     /*background: var(--light-color);
-    border: 1px solid var(--border-color);*/
-    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;*/
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
 }
