@@ -180,6 +180,17 @@ function createSnowflakes() {
     });
 }
 
+// Функция показа состояния загрузки
+function showLoadingState() {
+    const calendarContainer = document.getElementById('calendar-container');
+    calendarContainer.innerHTML = `
+        <div class="calendar-loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Загрузка календаря...</p>
+        </div>
+    `;
+}
+
 // Функция загрузки данных календаря
 async function loadCalendarData() {
     try {
@@ -209,15 +220,12 @@ async function loadCalendarData() {
 function showErrorState() {
     const calendarContainer = document.getElementById('calendar-container');
     calendarContainer.innerHTML = `
-        <div class="col-12">
-            <div class="alert alert-danger text-center p-5">
-                <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
-                <h3 class="alert-heading">Не удалось загрузить данные календаря</h3>
-                <p class="mb-0">Пожалуйста, проверьте подключение к интернету и попробуйте обновить страницу.</p>
-                <button class="btn btn-warning mt-3" onclick="location.reload()">
-                    <i class="fas fa-redo me-2"></i>Обновить страницу
-                </button>
-            </div>
+        <div class="calendar-loading">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Не удалось загрузить данные календаря</p>
+            <button class="btn btn-sm btn-outline-primary mt-2" onclick="location.reload()">
+                <i class="fas fa-redo me-1"></i>Повторить
+            </button>
         </div>
     `;
 }
@@ -695,27 +703,20 @@ function setupEventListeners() {
 async function initApp() {
     console.log('Инициализация приложения...');
     
-    // Создаем снежинки
-    createSnowflakes();
+    // Показываем состояние загрузки
+    showLoadingState();
     
-    // Принудительная установка viewport для WebView
-    const viewportMeta = document.querySelector('meta[name="viewport"]');
-    if (viewportMeta) {
-        viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no';
-    }
-    
-    // Инициализируем модальное окно Bootstrap
-    const modalElement = document.getElementById('promoModal');
-    if (modalElement) {
-        promoModal = new bootstrap.Modal(modalElement);
-    }
-    
-    // Загружаем данные календаря
+    // ПЕРВОЕ: Загружаем данные календаря БЕЗ снежинок
     const loaded = await loadCalendarData();
     
+    // ВТОРОЕ: Создаем календарь сразу после загрузки данных
     if (loaded) {
-        // Создаем календарь
         createCalendar();
+        
+        // ТРЕТЬЕ: Только после отрисовки календаря создаем снежинки
+        setTimeout(() => {
+            createSnowflakes();
+        }, 100);
         
         // Настраиваем обработчики событий
         setupEventListeners();
@@ -723,9 +724,7 @@ async function initApp() {
         // Инициализация для Telegram WebApp
         if (window.Telegram && window.Telegram.WebApp) {
             try {
-                // Расширяем WebView на весь экран
                 window.Telegram.WebApp.expand();
-                
                 console.log('Telegram WebApp инициализирован');
             } catch (error) {
                 console.warn('Ошибка инициализации Telegram WebApp:', error);
@@ -737,7 +736,19 @@ async function initApp() {
         // Принудительная перерисовка после загрузки
         setTimeout(() => {
             forceFullRedraw();
-        }, 100);
+        }, 200);
+    }
+    
+    // Принудительная перерисовка viewport
+    const viewportMeta = document.querySelector('meta[name="viewport"]');
+    if (viewportMeta) {
+        viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no';
+    }
+    
+    // Инициализируем модальное окно Bootstrap
+    const modalElement = document.getElementById('promoModal');
+    if (modalElement) {
+        promoModal = new bootstrap.Modal(modalElement);
     }
     
     // Для отладки - выводим информацию о текущей дате
