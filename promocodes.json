@@ -299,11 +299,6 @@
       "image": "images/gift31.png",
       "backgroundImage": "images/placeholder5.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
-    },
-    {
-      "type": "special",
-      "image": "images/special5.png",
-      "actionUrl": "https://ecoplace.ru/loyalty-program/?utm_source=advent"
     }
   ]
 }
