@@ -318,6 +318,8 @@ h2 {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
     will-change: transform;
+    /* ДОБАВИТЬ: Минимальная высота для предотвращения схлопывания */
+    min-height: 200px;
 }
 
 /* Планшеты и большие телефоны (576px+) - 4 карточки */
@@ -1303,4 +1305,31 @@ img, canvas, video {
 
 .promo-description-block {
     flex-grow: 1;
+}
+
+/* Стили для состояния загрузки */
+.calendar-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: var(--text-secondary);
+    z-index: 1;
+    width: 100%;
+}
+
+.calendar-loading i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.calendar-loading p {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.calendar-loading .btn {
+    margin-top: 0.5rem;
 }
