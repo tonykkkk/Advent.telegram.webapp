@@ -134,7 +134,7 @@
       "description": "30% скидка на все кремы любого бренда",
       "image": "images/gift14.png",
       "backgroundImage": "images/placeholder1.png",
-      "productUrl": "https://ecoplace.ru/?utm_source=advent"
+      "productUrl": "https://ecoplace.ru/catalog/?q=крем&how=r&utm_source=advent"
     },
     {
       "type": "day",
