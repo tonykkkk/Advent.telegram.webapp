@@ -87,11 +87,6 @@
       "productUrl": "https://ecoplace.ru/catalog/ukhod_za_kozhey/32988/?utm_source=advent"
     },
     {
-      "type": "special",
-      "image": "images/special2.jpg",
-      "actionUrl": ""
-    },
-    {
       "type": "day",
       "day": 10,
       "code": "WinterGlow",
@@ -108,6 +103,21 @@
       "image": "images/gift11.png",
       "backgroundImage": "images/placeholder2.png",
       "productUrl": "https://ecoplace.ru/catalog/ukhod_za_kozhey/40106/?utm_source=advent"
+    },
+    {
+      "type": "special",
+      "image": "images/special6.jpg",
+      "actionUrl": "https://t.me/c/1723670481/3641"
+    },
+    {
+      "type": "special",
+      "image": "images/special7.jpg",
+      "actionUrl": "https://t.me/c/1723670481/3641"
+    },
+    {
+      "type": "special",
+      "image": "images/special8.jpg",
+      "actionUrl": "https://t.me/c/1723670481/3641"
     },
     {
       "type": "day",
@@ -254,6 +264,11 @@
       "image": "images/gift26.png",
       "backgroundImage": "images/placeholder4.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
+    },
+    {
+      "type": "special",
+      "image": "images/special2.jpg",
+      "actionUrl": ""
     },
     {
       "type": "day",
