@@ -266,11 +266,6 @@
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
-      "type": "special",
-      "image": "images/special2.jpg",
-      "actionUrl": ""
-    },
-    {
       "type": "day",
       "day": 27,
       "code": "COCOA-37",
@@ -278,6 +273,11 @@
       "image": "images/gift27.png",
       "backgroundImage": "images/placeholder5.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
+    },
+    {
+      "type": "special",
+      "image": "images/special2.jpg",
+      "actionUrl": ""
     },
     {
       "type": "day",
