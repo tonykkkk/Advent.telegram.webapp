@@ -226,8 +226,8 @@
     {
       "type": "day",
       "day": 23,
-      "code": "MISTLETOE-32",
-      "description": "32% скидка на цветы и букеты",
+      "code": "LipMagic",
+      "description": "30% скидка на бальзам-суфле WAKEMAKE Over Blurring Pot (4.5g)",
       "image": "images/gift23.png",
       "backgroundImage": "images/placeholder1.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
@@ -240,8 +240,8 @@
     {
       "type": "day",
       "day": 24,
-      "code": "EVERGREEN-33",
-      "description": "33% скидка на мебель и интерьер",
+      "code": "СИЯНИЕ",
+      "description": "В подарок косметичка с набором миниатюр dasique",
       "image": "images/gift24.png",
       "backgroundImage": "images/placeholder4.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
@@ -250,8 +250,8 @@
     {
       "type": "day",
       "day": 25,
-      "code": "CHIMNEY-34",
-      "description": "34% скидка на товары для детей",
+      "code": "ВОЛШЕБСТВО",
+      "description": "В подарок мини-тинт для губ dasique Juicy Glow Tint Mini (1.5g)",
       "image": "images/gift25.png",
       "backgroundImage": "images/placeholder5.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
@@ -259,8 +259,8 @@
     {
       "type": "day",
       "day": 26,
-      "code": "FIREPLACE-36",
-      "description": "36% скидка на товары для активного отдыха",
+      "code": "ЗВЕЗДА",
+      "description": "В подарок travel-версия крема для шеи и декольте MEDIPEEL⁺ Premium Collagen Naite Thread Neck Cream 2.0 (10g)",
       "image": "images/gift26.png",
       "backgroundImage": "images/placeholder4.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
@@ -268,8 +268,8 @@
     {
       "type": "day",
       "day": 27,
-      "code": "COCOA-37",
-      "description": "37% скидка на кофе и чай",
+      "code": "СПОКОЙСТВИЕ",
+      "description": "В подарок сыворотка с витамином С и центеллой азиатской BEAUTY OF JOSEON Light On Serum Centella+Vita C (30ml) ",
       "image": "images/gift27.png",
       "backgroundImage": "images/placeholder5.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
@@ -282,8 +282,8 @@
     {
       "type": "day",
       "day": 28,
-      "code": "CAROL-38",
-      "description": "38% скидка на развлекательные услуги",
+      "code": "УКРАШЕНИЕ",
+      "description": "В подарок набор кистей для макияжа dasique",
       "image": "images/gift28.png",
       "backgroundImage": "images/placeholder4.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
@@ -291,8 +291,8 @@
     {
       "type": "day",
       "day": 29,
-      "code": "BELLS-39",
-      "description": "39% скидка на товары для офиса",
+      "code": "ЛИФТИНГ",
+      "description": "В подарок travel-версия инновационного крема для лица MEDIPEEL⁺ Peptide 9 Volume and Tension Tox Cream PRO (10g)",
       "image": "images/gift29.png",
       "backgroundImage": "images/placeholder5.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
@@ -300,7 +300,7 @@
     {
       "type": "day",
       "day": 30,
-      "code": "COUNTDOWN-40",
+      "code": "ГАРМОНИЯ",
       "description": "40% скидка на коллекционные товары",
       "image": "images/gift30.png",
       "backgroundImage": "images/placeholder4.png",
@@ -309,7 +309,7 @@
     {
       "type": "day",
       "day": 31,
-      "code": "FIREWORKS-50",
+      "code": "ЧУДО",
       "description": "СУПЕР-ПРОМОКОД: 50% скидка на любой товар!",
       "image": "images/gift31.png",
       "backgroundImage": "images/placeholder5.png",
