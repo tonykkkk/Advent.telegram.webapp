@@ -224,10 +224,10 @@
       "productUrl": "https://ecoplace.ru/catalog/dekorativnaya_kosmetika_1/48407/?offer-id=49192&utm_source=advent"
     },
     {
-      "type": "day",
+      "type": "GiftDay",
       "day": 23,
-      "code": "LipMagic",
-      "description": "30% скидка на бальзам-суфле WAKEMAKE Over Blurring Pot (4.5g)",
+      "code": "СПОКОЙСТВИЕ",
+      "description": "В подарок travel-версия инновационного крема для лица MEDIPEEL⁺ Peptide 9 Volume and Tension Tox Cream PRO (10g)",
       "image": "images/gift23.png",
       "backgroundImage": "images/placeholder1.png",
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
@@ -238,7 +238,7 @@
       "actionUrl": ""
     },
     {
-      "type": "day",
+      "type": "GiftDay",
       "day": 24,
       "code": "СИЯНИЕ",
       "description": "В подарок косметичка с набором миниатюр dasique",
@@ -248,7 +248,7 @@
     },
     
     {
-      "type": "day",
+      "type": "GiftDay",
       "day": 25,
       "code": "ВОЛШЕБСТВО",
       "description": "В подарок мини-тинт для губ dasique Juicy Glow Tint Mini (1.5g)",
@@ -257,7 +257,7 @@
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
-      "type": "day",
+      "type": "GiftDay",
       "day": 26,
       "code": "ЗВЕЗДА",
       "description": "В подарок travel-версия крема для шеи и декольте MEDIPEEL⁺ Premium Collagen Naite Thread Neck Cream 2.0 (10g)",
@@ -266,7 +266,7 @@
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
-      "type": "day",
+      "type": "GiftDay",
       "day": 27,
       "code": "СПОКОЙСТВИЕ",
       "description": "В подарок сыворотка с витамином С и центеллой азиатской BEAUTY OF JOSEON Light On Serum Centella+Vita C (30ml) ",
@@ -280,7 +280,7 @@
       "actionUrl": ""
     },
     {
-      "type": "day",
+      "type": "GiftDay",
       "day": 28,
       "code": "УКРАШЕНИЕ",
       "description": "В подарок набор кистей для макияжа dasique",
@@ -289,7 +289,7 @@
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
-      "type": "day",
+      "type": "GiftDay",
       "day": 29,
       "code": "ЛИФТИНГ",
       "description": "В подарок travel-версия инновационного крема для лица MEDIPEEL⁺ Peptide 9 Volume and Tension Tox Cream PRO (10g)",
@@ -298,7 +298,7 @@
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
-      "type": "day",
+      "type": "GiftDay",
       "day": 30,
       "code": "ГАРМОНИЯ",
       "description": "40% скидка на коллекционные товары",
@@ -307,7 +307,7 @@
       "productUrl": "https://ecoplace.ru/?utm_source=advent"
     },
     {
-      "type": "day",
+      "type": "GiftDay",
       "day": 31,
       "code": "ЧУДО",
       "description": "СУПЕР-ПРОМОКОД: 50% скидка на любой товар!",
