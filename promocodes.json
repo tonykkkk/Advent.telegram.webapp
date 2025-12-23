@@ -224,13 +224,13 @@
       "productUrl": "https://ecoplace.ru/catalog/dekorativnaya_kosmetika_1/48407/?offer-id=49192&utm_source=advent"
     },
     {
-      "type": "GiftDay",
+      "type": "day",
       "day": 23,
-      "code": "СПОКОЙСТВИЕ",
-      "description": "В подарок косметичка с набором миниатюр dasique",
+      "code": "LipMagic",
+      "description": "30% скидка на бальзам-суфле WAKEMAKE Over Blurring Pot (4.5g)",
       "image": "images/gift23.png",
       "backgroundImage": "images/placeholder1.png",
-      "productUrl": "https://ecoplace.ru/?utm_source=advent"
+      "productUrl": "https://ecoplace.ru/catalog/dekorativnaya_kosmetika_1/47000/?offer-id=47039&utm_source=advent"
     },
     {
       "type": "special",
