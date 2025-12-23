@@ -259,8 +259,8 @@ function createCalendar() {
     
     // Создаем карточки для всех элементов календаря в порядке их следования в массиве
     calendarItems.forEach((item, index) => {
-        if (item.type === 'day') {
-            // Создаем карточку дня
+        if (item.type === 'day' || item.type === 'GiftDay') {
+            // Создаем карточку дня (работает и для day, и для GiftDay)
             const dayCard = createDayCard(item, isDecember2025, currentDay);
             calendarContainer.appendChild(dayCard);
         } else if (item.type === 'special') {
@@ -319,7 +319,7 @@ function forceRedraw(element) {
 function createDayCard(item, isDecember2025, currentDay) {
     const dayCard = document.createElement('div');
     dayCard.className = 'day-card fix-webview-resize';
-    dayCard.dataset.type = 'day';
+    dayCard.dataset.type = item.type;
     dayCard.dataset.day = item.day;
     
     // Определяем статус дня
@@ -427,7 +427,7 @@ function createSpecialCard(item, index) {
     // Добавляем обработчик ошибки загрузки изображения
     img.onerror = function() {
         // Если изображение не загрузилось, показываем placeholder
-        this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2Y1ZjVmNSIvPjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOTk5Ij5BQ0NJT048L3RleHQ+PC9zdmc+';
+        this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2Y1ZjVmNSIvPjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1mFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzk5OSI+QUNDSU9OPC90ZXh0Pjwvc3ZnPg==';
     };
     
     // Добавляем картинку в карточку
@@ -469,7 +469,7 @@ function openSpecialCard(item) {
     window.open(item.actionUrl, '_blank');
 }
 
-// Функция открытия карточки с промокодом
+// Функция открытия карточки с промокодом (добавлена поддержка GiftDay)
 function openPromoCard(item) {
     const dayCard = document.querySelector(`.day-card[data-day="${item.day}"]`);
     
@@ -513,7 +513,32 @@ function openPromoCard(item) {
     document.getElementById('modal-day').textContent = item.day;
     document.getElementById('promo-code-text').textContent = item.code;
     
-    // Обновляем описание промокода (теперь в отдельном блоке под картинкой)
+    // Настраиваем отображение в зависимости от типа дня
+    if (item.type === 'GiftDay') {
+        // Настройки для GiftDay
+        document.getElementById('promo-label').textContent = 'Волшебное слово:';
+        document.getElementById('gift-instruction').style.display = 'block';
+        document.getElementById('product-btn').innerHTML = '<i class="fas fa-shopping-cart me-2"></i>Сделать заказ на ecoplace.ru';
+        document.getElementById('promo-valid-text').innerHTML = '<i class="fas fa-info-circle me-1"></i>Волшебное слово действует при любой сумме покупки, до 31 декабря 2025';
+    } else {
+        // Настройки для обычного дня (day)
+        document.getElementById('promo-label').textContent = 'Ваш промокод:';
+        document.getElementById('gift-instruction').style.display = 'none';
+        document.getElementById('product-btn').innerHTML = '<i class="fas fa-shopping-cart me-2"></i>Купить на ecoplace.ru';
+        
+        // Обновляем текст о действии промокода (действует только сегодня)
+        const promoValidElement = document.getElementById('promo-valid-text');
+        if (promoValidElement) {
+            const today = new Date();
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            const todayFormatted = today.toLocaleDateString('ru-RU', options);
+            promoValidElement.innerHTML = `
+                <i class="fas fa-info-circle me-1"></i>Промокод действителен только сегодня, ${todayFormatted}
+            `;
+        }
+    }
+    
+    // Обновляем описание промокода
     const descriptionElement = document.getElementById('promo-description');
     if (descriptionElement && item.description) {
         descriptionElement.innerHTML = `
@@ -525,7 +550,6 @@ function openPromoCard(item) {
     const productBtn = document.getElementById('product-btn');
     if (item.productUrl) {
         productBtn.href = item.productUrl;
-        productBtn.textContent = 'Купить на ecoplace.ru';
         productBtn.style.display = 'block';
     } else {
         productBtn.style.display = 'none';
@@ -560,17 +584,6 @@ function openPromoCard(item) {
         `;
     };
     img.src = item.image;
-    
-    // Обновляем текст о действии промокода (действует только сегодня)
-    const promoValidElement = document.querySelector('.modal-footer .text-muted');
-    if (promoValidElement) {
-        const today = new Date();
-        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        const todayFormatted = today.toLocaleDateString('ru-RU', options);
-        promoValidElement.innerHTML = `
-            <i class="fas fa-info-circle me-1"></i>Промокод действителен только сегодня, ${todayFormatted}
-        `;
-    }
     
     // Показываем модальное окно
     if (promoModal) {
